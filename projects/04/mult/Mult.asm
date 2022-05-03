@@ -39,22 +39,27 @@ D;JLE	//Jump to end if term2 = zero
 @TERM1
 D=M
 (LOOP)
+@TERM2
+M=M-1	//Decrement term2
+D=M	//Put value of term2 into D for jump comparison	
+@WRITE
+D;JLT	//Jump straight to write if term is less than zero
 @RESULT
 D=M	//Get current value of result
 @TERM1
 D=D+M	//Add term1 to result
 @RESULT
 M=D	//Store result
-@TERM2
-M=M-1	//Decrement term2
-D=M	//Put value of term2 into D for jump comparison	
 @LOOP
-D;JGE	//Loop again if term2 is greater than/equal to zero
+0;JMP
 
+(WRITE)
 @RESULT
 D=M
 @R2
 M=D	//Store result
+@RESULT
+M=0	//Clear Result
 
 (END)
 @END
