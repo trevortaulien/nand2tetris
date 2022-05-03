@@ -14,51 +14,51 @@
 @R0
 D=M
 
-@TERM1
-M=D	//Write value at R0 to TERM1 Address
+@term1
+M=D	//Write value at R0 to term1 Address
 
 @R1
 D=M
 
-@TERM2
-M=D	//Write value at R1 to TERM2 Address
+@term2
+M=D	//Write value at R1 to term2 Address
 
 @R2
 M=0	//Write result to zero
 
-@TERM1
+@term1
 D=M
 @END
 D;JLE	//Jump to end if term1 = zero
 
-@TERM2
+@term2
 D=M
 @END
 D;JLE	//Jump to end if term2 = zero
 
-@TERM1
+@term1
 D=M
 (LOOP)
-@TERM2
+@term2
 M=M-1	//Decrement term2
 D=M	//Put value of term2 into D for jump comparison	
 @WRITE
 D;JLT	//Jump straight to write if term is less than zero
-@RESULT
+@result
 D=M	//Get current value of result
-@TERM1
+@term1
 D=D+M	//Add term1 to result
-@RESULT
+@result
 M=D	//Store result
 @LOOP
 0;JMP
 
 (WRITE)
-@RESULT
+@result
 D=M
 @R2
 M=D	//Store result
-@RESULT
+@result
 M=0	//Clear Result
 
 (END)
