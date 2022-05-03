@@ -13,49 +13,49 @@
 
 // Put your code here.
 
-@ONES
+@ones
 M=!D
 
-@ZEROS
+@zeros
 
 @KBD
 D=A
-@SCREENEND
+@screenend
 M=D
 
 @POLL
 0;JMP
 
 (BLACKOUT)
-@SCREENEND
+@screenend
 D=M		//get ending address
-@SCREENPOINTER
+@screenpointer
 D=D-M		//compute difference between current and end address
 @POLL
 D;JEQ		//if no difference then end of screen reached and exit to poll
-@ONES
+@ones
 D=M		//gather ones to write
-@SCREENPOINTER
+@screenpointer
 A=M		//get address to write
 M=D		//write ones to address
-@SCREENPOINTER
+@screenpointer
 M=M+1		//increment pointer
 @BLACKOUT	
 0;JMP
 
 (WHITEOUT)	//Same as blackout just writing zeros instead of ones
-@SCREENEND
+@screenend
 D=M
-@SCREENPOINTER
+@screenpointer
 D=D-M
 @POLL
 D;JEQ	
-@ZEROS
+@zeros
 D=M
-@SCREENPOINTER
+@screenpointer
 A=M
 M=D
-@SCREENPOINTER
+@screenpointer
 M=M+1
 @WHITEOUT
 0;JMP
@@ -63,7 +63,7 @@ M=M+1
 (POLL)
 @SCREEN
 D=A		//Getting base address of screen
-@SCREENPOINTER
+@screenpointer
 M=D		//Storing screen base address
 @KBD
 D=M		//Getting value of keyboard
