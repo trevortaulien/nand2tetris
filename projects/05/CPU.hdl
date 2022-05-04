@@ -39,5 +39,45 @@ CHIP CPU {
         pc[15];          // address of next instruction
 
     PARTS:
-    // Put your code here:
+    
+    //Instruction Mux
+    Mux16(a=instruction,b=ALUoutput,sel=instruction[15],out=AregIn);
+
+    //A register
+    Mux(a=true,b=instruction[5],sel=instruction[15],out=AregLoad);
+    ARegister(in=AregIn,load=AregLoad,out=AregOut);
+
+    //ALU y Input Mux
+    Mux16(a=AregOut,b=inM,sel=instruction[12],out=ALUy);
+
+    //Program Counter
+    Not(in=ALUoutZero,out=NotALUoutZero);
+    Not(in=ALUoutNeg,out=NotALUoutNeg);
+    And(a=NotALUoutZero,b=NotALUoutNeg,out=PCmuxB);
+    Or(a=ALUoutZero,b=NotALUoutNeg,out=PCmuxD);
+    And(a=NotALUoutZero,b=ALUoutNeg,out=PCmuxE);
+    Or(a=ALUoutZero,b=ALUoutNeg,out=PCmuxG);
+    Mux8Way16(a=false,b[0]=PCmuxB,c[0]=ALUoutZero,d[0]=PCmuxD,
+              e[0]=PCmuxE,f[0]=NotALUoutZero,g[0]=PCmuxG,h=true,
+	      sel=instruction[0..2],out[0]=Jump);
+    And(a=instruction[15],b=Jump,out=PCload);
+    Xor(a=PCload,b=true,out=PCinc);
+    PC(in=AregOut,load=PCload,inc=PCinc,reset=reset,out[0..14]=pc);
+    
+    //D register
+    Mux(a=false,b=instruction[4],sel=instruction[15],out=DregLoad);
+    DRegister(in=ALUoutput,load=DregLoad,out=DregOut);
+    
+    //ALU
+    ALU(x=DregOut,y=ALUy,
+    	zx=instruction[11],nx=instruction[10],zy=instruction[9],
+	ny=instruction[8],f=instruction[7],no=instruction[6],
+	out=ALUoutput,zr=ALUoutZero,ng=ALUoutNeg);
+
+    //writeM Mux
+    Mux(a=false,b=instruction[3],sel=instruction[15],out=writeM);
+
+    //Output Conditioning
+    Or16(a=ALUoutput,b=false,out=outM);
+    Or16(a=AregOut,b=false,out[0..14]=addressM);
 }
