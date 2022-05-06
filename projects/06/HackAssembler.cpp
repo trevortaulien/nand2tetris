@@ -1,21 +1,27 @@
 #include <iostream>
 #include <fstream>
-
-using namespace std;
+#include <string>
+#include <typeinfo>
 
 int main(){
-    ifstream testfile;
-    string goods;
-    testfile.open("add/Add.asm");    //default ios mode is in because used ifstream constructor
-    if(testfile.is_open()){
-        while(testfile.get(goods,25)){
-            cout << goods << '\n';
+    std::ifstream assemblyCode;
+    char c;
+    char goods[50];
+    assemblyCode.open("add/Add.asm");    //default ios mode is in because used ifstream constructor
+    if(assemblyCode.is_open()){
+        int i = 0;
+        while(assemblyCode.get(c)){
+            goods[i] = c;
+            i++;
         }
-        testfile.close();
+        std::cout << (goods) << std::endl;
+        assemblyCode.close();
     }
-    else cout << "No work :(";
+    else std::cout << "No work :(" << std::endl;
 
-    cout << goods;
+    // std::cout << (goods) << std::endl;
+    std::cout << typeid(goods).name() << std::endl;
+    // std::cout << "Printing, Printing, Printing" << std::endl;
 
     return 0;
 }
