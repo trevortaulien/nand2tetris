@@ -3,10 +3,9 @@
 #include <string>
 #include <typeinfo>
 
-int main(){
+void get_goods(char *goods){
     std::ifstream assemblyCode;
     char c;
-    char goods[50];
     assemblyCode.open("add/Add.asm");    //default ios mode is in because used ifstream constructor
     if(assemblyCode.is_open()){
         int i = 0;
@@ -14,14 +13,22 @@ int main(){
             goods[i] = c;
             i++;
         }
-        std::cout << (goods) << std::endl;
         assemblyCode.close();
     }
     else std::cout << "No work :(" << std::endl;
 
     // std::cout << (goods) << std::endl;
-    std::cout << typeid(goods).name() << std::endl;
+    // std::cout << typeid(goods).name() << std::endl;
     // std::cout << "Printing, Printing, Printing" << std::endl;
+
+}
+
+int main(){
+    
+    int goods_size = 500;
+    char goods[goods_size];
+    get_goods(goods);
+    std::cout << (goods) << std::endl;
 
     return 0;
 }
