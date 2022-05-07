@@ -17,8 +17,8 @@ def commentLine(line):
 
 def aInstruction(line):
     address = line.strip('@')
-    binary_address = f'{int(address):016b}'
-    print(binary_address)
+    instruction = f'{int(address):016b}'
+    return instruction
 
 def cInstruction(line):
     print(line)
@@ -40,7 +40,7 @@ for line in lines:
         instruction = cInstruction(line)
         machineCode.append(instruction)
 
-# print(lines)
+print(machineCode)
 
 
 print("I'm done :)")
