@@ -21,8 +21,65 @@ def inlineComment(line):
     else:
         return line
 
+def memoryManage(address):
+
+    def checkPredefined(address):
+        if address == 'R0':
+            return '0'
+        elif address == 'R1':
+            return '1'
+        elif address == 'R2':
+            return '2'
+        elif address == 'R3':
+            return '3'
+        elif address == 'R4':
+            return '4'
+        elif address == 'R5':
+            return '5'
+        elif address == 'R6':
+            return '6'
+        elif address == 'R7':
+            return '7'
+        elif address == 'R8':
+            return '8'
+        elif address == 'R9':
+            return '9'
+        elif address == 'R10':
+            return '10'
+        elif address == 'R11':
+            return '11'
+        elif address == 'R12':
+            return '12'
+        elif address == 'R13':
+            return '13'
+        elif address == 'R14':
+            return '14'
+        elif address == 'R15':
+            return '15'
+        elif address == 'SCREEN':
+            return '16384'
+        elif address == 'KBD':
+            return '24575'
+        elif address == 'SP':
+            return '0'
+        elif address == 'LCL':
+            return '1'
+        elif address == 'ARG':
+            return '2'
+        elif address == 'THIS':
+            return '3'
+        elif address == 'THAT':
+            return '4'
+        else:
+            return -1
+
+    if(checkPredefined(address) != -1):
+        address = checkPredefined(address)
+        return address
+
 def aInstruction(line):
     address = line.strip('@')
+    address = memoryManage(address)
     instruction = f'{int(address):016b}'
     return instruction
 
@@ -195,9 +252,11 @@ machineCode = []
 for line in lines:
     if(line[0] == '@'):
         instruction = aInstruction(line)
+        print(instruction)
         machineCode.append(instruction)
     else:
         instruction = cInstruction(line)
+        print(instruction)
         machineCode.append(instruction)
 
 print(machineCode)
