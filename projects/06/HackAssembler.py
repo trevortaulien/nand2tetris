@@ -77,6 +77,9 @@ def cMatch2Bin(field):
         bin = '1' + '000000'
     elif field == 'D|M':
         bin = '1' + '010101'
+    else:
+        print("No c match found. Given field:" + field)
+        quit()
 
     return bin
 
@@ -97,6 +100,9 @@ def dMatch2Bin(field):
         bin = '110'
     elif field == 'ADM':
         bin = '111'
+    else:
+        print("No d match found. Given field:" + field)
+        quit()
 
     return bin
 
@@ -117,27 +123,33 @@ def jMatch2Bin(field):
         bin = '110'
     elif field == 'JMP':
         bin = '111'
+    else:
+        print("No j match found. Given field:" + field)
+        quit()
 
     return bin
 
 def cInstruction(line):
-    if(line.find('=') == True):
+    if(line.find('=') != -1):
         d_cFields = line.split('=')
         dBin = dMatch2Bin(d_cFields[0])
         cBin = cMatch2Bin(d_cFields[1])
         jBin = '000'
 
-    elif(line.find(';') == True):
+    elif(line.find(';') != -1):
         c_jFields = line.split(';')
         dBin = '000'
         cBin = cMatch2Bin(c_jFields[0])
         jBin = jMatch2Bin(c_jFields[1])
 
-        
+    else:
+        print("cInstruction formatting no good. Line is: " + line)
+        quit()
+   
     instruction = '111' + cBin + dBin + jBin
     return(instruction)
 
-with open("projects/06/add/Add.asm", "r") as asmFile:
+with open("projects/06/rect/RectL.asm", "r") as asmFile:
     lines = asmFile.readlines()
 
 lines = list(filter(emptyLine,lines))
@@ -156,7 +168,7 @@ for line in lines:
 
 print(machineCode)
 
-with open("projects/06/add/Add.hack", "w") as macFile:
+with open("projects/06/rect/RectL.hack", "w") as macFile:
     macFile.write('\n'.join(machineCode))
 
 print("I'm done :)")
