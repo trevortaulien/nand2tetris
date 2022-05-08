@@ -14,6 +14,13 @@ def commentLine(line):
     else:
         return True
 
+def inlineComment(line):
+    if(line.find('/') != -1):
+        instr_and_comment = line.split('/')
+        return instr_and_comment[0]
+    else:
+        return line
+
 def aInstruction(line):
     address = line.strip('@')
     instruction = f'{int(address):016b}'
@@ -90,16 +97,38 @@ def dMatch2Bin(field):
         bin = '001'
     elif field == 'D':
         bin = '010'
+
     elif field == 'DM':
         bin = '011'
+    elif field == 'MD':
+        bin = '011'
+
     elif field == 'A':
         bin = '100'
+
     elif field == 'AM':
         bin = '101'
+    elif field == 'MA':
+        bin = '101'
+
     elif field == 'AD':
         bin = '110'
+    elif field == 'DA':
+        bin = '110'
+
     elif field == 'ADM':
         bin = '111'
+    elif field == 'MAD':
+        bin = '111'
+    elif field == 'DMA':
+        bin = '111'
+    elif field == 'DAM':
+        bin = '111'
+    elif field == 'AMD':
+        bin = '111'
+    elif field == 'MDA':
+        bin = '111'
+
     else:
         print("No d match found. Given field:" + field)
         quit()
@@ -149,13 +178,18 @@ def cInstruction(line):
     instruction = '111' + cBin + dBin + jBin
     return(instruction)
 
-with open("projects/06/rect/RectL.asm", "r") as asmFile:
+with open("projects/06/max/Max.asm", "r") as asmFile:
     lines = asmFile.readlines()
 
 lines = list(filter(emptyLine,lines))
 lines = list(filter(commentLine,lines))
 
+lines = [line.replace(' ','') for line in lines]
 lines = [line.strip('\n') for line in lines]
+
+lines = [inlineComment(line) for line in lines]
+
+print(lines)
 
 machineCode = []
 for line in lines:
@@ -168,7 +202,7 @@ for line in lines:
 
 print(machineCode)
 
-with open("projects/06/rect/RectL.hack", "w") as macFile:
+with open("projects/06/pong/PongL.hack", "w") as macFile:
     macFile.write('\n'.join(machineCode))
 
 print("I'm done :)")
