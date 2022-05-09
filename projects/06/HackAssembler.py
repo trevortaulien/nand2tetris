@@ -21,65 +21,53 @@ def inlineComment(line):
     else:
         return line
 
-def memoryManage(address):
-
-    def checkPredefined(address):
-        if address == 'R0':
-            return '0'
-        elif address == 'R1':
-            return '1'
-        elif address == 'R2':
-            return '2'
-        elif address == 'R3':
-            return '3'
-        elif address == 'R4':
-            return '4'
-        elif address == 'R5':
-            return '5'
-        elif address == 'R6':
-            return '6'
-        elif address == 'R7':
-            return '7'
-        elif address == 'R8':
-            return '8'
-        elif address == 'R9':
-            return '9'
-        elif address == 'R10':
-            return '10'
-        elif address == 'R11':
-            return '11'
-        elif address == 'R12':
-            return '12'
-        elif address == 'R13':
-            return '13'
-        elif address == 'R14':
-            return '14'
-        elif address == 'R15':
-            return '15'
-        elif address == 'SCREEN':
-            return '16384'
-        elif address == 'KBD':
-            return '24575'
-        elif address == 'SP':
-            return '0'
-        elif address == 'LCL':
-            return '1'
-        elif address == 'ARG':
-            return '2'
-        elif address == 'THIS':
-            return '3'
-        elif address == 'THAT':
-            return '4'
+def documentInstructionNumber(lines):
+    l = 0
+    numbered_lines = []
+    for line in lines:
+        if(line[0] == ('(')):
+            numbered_lines.append(line)
         else:
-            return -1
+            numbered_lines.append([l,line])
+            l = l + 1
 
-    if(checkPredefined(address) != -1):
-        address = checkPredefined(address)
-        return address
+    return numbered_lines
+
+def documentLabelSymbols(lines, symbolTable):
+    for location, line in enumerate(lines):
+        if(line[0] == ('(')):
+            symbol = line.strip('()')
+            symbolTable[symbol] = str(lines[location + 1][0])
+               
+    return symbolTable
+
+def popLabelDeclarations(lines):
+    for location, line in enumerate(lines):
+        if(line[0] == '('):
+            lines.pop(location)
+
+    return lines
+
+def stripInstructionNumber(lines):
+    strippedLines = []
+    for line in lines:
+        strippedLines.append(line[1])
+
+    return strippedLines
+
+def swapLabelSymbols4address(lines, symbolTable):
+    swappedLines = []
+    for line in lines:
+        if((line[0] == '@') & (symbolTable.get(line.strip('@')) != None)):
+            value = symbolTable[line.strip('@')]
+            swappedLines.append('@' + str(value))
+        else:
+            swappedLines.append(line)
+
+    return swappedLines
 
 def aInstruction(line):
     address = line.strip('@')
-    address = memoryManage(address)
     instruction = f'{int(address):016b}'
     return instruction
 
@@ -243,25 +231,36 @@ lines = list(filter(commentLine,lines))
 
 lines = [line.replace(' ','') for line in lines]
 lines = [line.strip('\n') for line in lines]
-
 lines = [inlineComment(line) for line in lines]
 
+symbolTable = {'R0' : '0', 'R1' : '1', 'R2' : '2', 'R3' : '3', 'R4' : '4', 'R5' : '5', 'R6' : '6', 'R7' : '7',
+               'R8' : '8', 'R9' : '9', 'R10' : '10', 'R11' : '11', 'R12' : '12', 'R13' : '13', 'R14' : '14', 'R15' : '15',
+               'SCREEN' : '16384', 'KBD' : '24576', 'SP' : '0', 'LCL' : '1', 'ARG' : '2', 'THIS' : '3', 'THAT' : '4'}
+
+lines = documentInstructionNumber(lines)
+symbolTable = documentLabelSymbols(lines, symbolTable)
+lines = popLabelDeclarations(lines)
+
+
+lines = stripInstructionNumber(lines)
 print(lines)
+print(symbolTable)
+lines = swapLabelSymbols4address(lines, symbolTable)
 
 machineCode = []
 for line in lines:
     if(line[0] == '@'):
         instruction = aInstruction(line)
-        print(instruction)
+        #print(instruction)
         machineCode.append(instruction)
     else:
         instruction = cInstruction(line)
-        print(instruction)
+        #print(instruction)
         machineCode.append(instruction)
 
 print(machineCode)
 
-with open("projects/06/pong/PongL.hack", "w") as macFile:
+with open("projects/06/max/Max.hack", "w") as macFile:
     macFile.write('\n'.join(machineCode))
 
 print("I'm done :)")
