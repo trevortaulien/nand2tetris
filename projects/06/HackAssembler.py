@@ -66,6 +66,40 @@ def swapLabelSymbols4address(lines, symbolTable):
 
     return swappedLines
 
+def documentVariableSymbols(lines,symbolTable):
+    
+    def numCheck(unit):
+        try: 
+            unit.strip('@')
+            int(unit)
+            return True
+        except:
+            return False
+    
+    offset = 0
+    for line in lines:
+        if(line[0] == '@'):
+            address = line.strip('@')
+            if((numCheck(address) == False) & ((symbolTable.get(address)) == None)):
+                symbolTable[address] = 16 + offset
+                offset = offset + 1
+
+    return symbolTable
+
+def swapVariableSymbols4address(lines, symbolTable):
+    instructions = []
+    for line in lines:
+        if(line[0] == '@'):
+            address = line.strip('@')
+            if(symbolTable.get(address) != None):
+                instructions.append('@'+ str(symbolTable[address]))
+            else:
+                instructions.append(line)
+        else:
+            instructions.append(line)
+    
+    return instructions
+
 def aInstruction(line):
     address = line.strip('@')
     instruction = f'{int(address):016b}'
@@ -223,7 +257,7 @@ def cInstruction(line):
     instruction = '111' + cBin + dBin + jBin
     return(instruction)
 
-with open("projects/06/max/Max.asm", "r") as asmFile:
+with open("projects/06/rect/Rect.asm", "r") as asmFile:
     lines = asmFile.readlines()
 
 lines = list(filter(emptyLine,lines))
@@ -240,12 +274,10 @@ symbolTable = {'R0' : '0', 'R1' : '1', 'R2' : '2', 'R3' : '3', 'R4' : '4', 'R5' 
 lines = documentInstructionNumber(lines)
 symbolTable = documentLabelSymbols(lines, symbolTable)
 lines = popLabelDeclarations(lines)
-
-
 lines = stripInstructionNumber(lines)
-print(lines)
-print(symbolTable)
 lines = swapLabelSymbols4address(lines, symbolTable)
+symbolTable = documentVariableSymbols(lines,symbolTable)
+lines = swapVariableSymbols4address(lines, symbolTable)
 
 machineCode = []
 for line in lines:
@@ -260,7 +292,7 @@ for line in lines:
 
 print(machineCode)
 
-with open("projects/06/max/Max.hack", "w") as macFile:
+with open("projects/06/rect/Rect.hack", "w") as macFile:
     macFile.write('\n'.join(machineCode))
 
 print("I'm done :)")
