@@ -37,6 +37,8 @@ def documentLabelSymbols(lines, symbolTable):
     for location, line in enumerate(lines):
         if(line[0] == ('(')):
             symbol = line.strip('()')
+            while(lines[location + 1][0] == '('):           # Covers condition when multiple label symbols are back to back
+                location = location + 1
             symbolTable[symbol] = str(lines[location + 1][0])
                
     return symbolTable
@@ -258,7 +260,7 @@ def cInstruction(line):
     instruction = '111' + cBin + dBin + jBin
     return(instruction)
 
-with open("projects/06/pong/Pong.asm", "r") as asmFile:
+with open("projects/06/pong/PongL.asm", "r") as asmFile:
     lines = asmFile.readlines()
 
 lines = list(filter(emptyLine,lines))
@@ -284,16 +286,12 @@ machineCode = []
 for line in lines:
     if(line[0] == '@'):
         instruction = aInstruction(line)
-        #print(instruction)
         machineCode.append(instruction)
     else:
         instruction = cInstruction(line)
-        #print(line)
         machineCode.append(instruction)
 
-# print(machineCode)
-
-with open("projects/06/pong/Pong.hack", "w") as macFile:
+with open("projects/06/pong/PongL.hack", "w") as macFile:
     macFile.write('\n'.join(machineCode))
 
 print("I'm done :)")
