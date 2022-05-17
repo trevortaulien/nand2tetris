@@ -7,7 +7,7 @@ import commandTypes as cmdTyp
 class VMTranslator:
 
     lineIndex = 0
-    vmMaster = []       # List of lists with each list at given index containing [commandType, arg1, arg2]
+    vmMaster = []       # List of lists with each list at given index containing [commandType, arg1, arg2, rawLine]
 
     def __init__(self):
         with open(sys.argv[1], 'r') as fileIn:
@@ -19,7 +19,8 @@ class VMTranslator:
         self.parser = Parser()
         self.necessaryVM = self.parser.stripUnnecessary(self.rawVM)
         for vmLine in self.necessaryVM:
-            subList = []
+            subList = [None, None, None, None]
+
             subList[0] = self.parser.commandType(vmLine)
             
             if(subList[0] != cmdTyp.C_RETURN):
@@ -30,7 +31,7 @@ class VMTranslator:
                 subList[2] = FALSE
             else:
                 subList[2] = self.parser.arg2(vmLine)
-            
+            subList[3] = vmLine            
             self.vmMaster.append(subList)
             self.incrementIndex()
 
@@ -56,13 +57,27 @@ class Parser(VMTranslator):
         pass
 
     def commandType(self, vmLine):
-        pass
+        command = vmLine.split(' ')[0]
+        if((command == 'add') or (command == 'sub') or (command == 'neg') or (command == 'eq') or (command == 'gt') or (command == 'lt') or (command == 'and') or (command == 'or') or (command == 'not')):
+            return cmdTyp.C_ARITHMETIC
+        elif(command == 'pop'):
+            return cmdTyp.C_POP
+        elif(command == 'push'):
+            return cmdTyp.C_PUSH
+        else:
+            print("ERROR COMMAND TYPE CANNONT BE DETERMNIED!!!")
+            print("METHOD: commandType")
+            print("vmLine: " + vmLine)
+            print("command: " + command)
+            quit()
 
     def arg1(self, vmLine):
-        pass
+        argOne = vmLine.split(' ')[1]
+        return argOne
 
     def arg2(self, vmLine):
-        pass
+        argTwo = vmLine.split(' ')[2]
+        return argTwo
 
     def splitVMcommand(self):
         pass
@@ -71,6 +86,7 @@ class Parser(VMTranslator):
         necessaryVM = self._removeComments(rawVM)
         necessaryVM = self._removeWhitespace(necessaryVM)
         necessaryVM = self._removeInlineComments(necessaryVM)
+        necessaryVM = self._removeEOL(necessaryVM)
         return necessaryVM
 
     def _removeComments(self, lines):
@@ -101,14 +117,22 @@ class Parser(VMTranslator):
                 noInlineCommentsVM.append(line)
         return noInlineCommentsVM
 
+    def _removeEOL(self, lines):
+        noEOL = []
+        for line in lines:
+            line = line.replace('\r\n', '')
+            noEOL.append(line)
+
+        return noEOL
 
 class CodeWriter(VMTranslator):
     pass
 
 translation0 = VMTranslator()
 p = Parser()
-print(len(translation0.rawVM))
-necessaryVM = p.stripUnnecessary(translation0.rawVM)
-print(len(necessaryVM))
-
+necessary = p.stripUnnecessary(translation0.rawVM)
+print(necessary)
+cmd = p.commandType(necessary[1])
+print(necessary[1])
+print(cmd)
 print("I'm done :)")
