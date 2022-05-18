@@ -7,6 +7,7 @@ class VMTranslator:
 
     lineIndex = 0
     vmMaster = []       # List of lists with each list at given index containing [commandType, arg1, arg2, rawLine]
+    asmLines = []
 
     def __init__(self):
         with open(sys.argv[1], 'r') as fileIn:
@@ -34,11 +35,17 @@ class VMTranslator:
                 subList[2] = False    
             subList[3] = vmLine            
             self.vmMaster.append(subList)
-            print(subList)
             self.incrementIndex()
 
     def codeWrite(self):
-        pass
+        self.writer = CodeWriter()
+        for subList in self.vmMaster:
+            if(subList[0] == cmdTyp.C_ARITHMETIC):
+                asm = self.writer.writeArithmetic(subList)
+                self.asmLines.append(asm)
+            elif((subList[0] == cmdTyp.C_PUSH) or (subList[0] == cmdTyp.C_POP)):
+                asm = self.writer.writePushPop(subList)
+                self.asmLines.append(asm)
 
     def outputAsm(self):
         pass
@@ -80,9 +87,6 @@ class Parser(VMTranslator):
     def arg2(self, vmLine):
         argTwo = vmLine.split(' ')[2]
         return int(argTwo)
-
-    def splitVMcommand(self):
-        pass
 
     def stripUnnecessary(self, rawVM):
         necessaryVM = self._removeComments(rawVM)
@@ -129,8 +133,6 @@ class Parser(VMTranslator):
 
 class CodeWriter(VMTranslator):
     
-    asmLines = []
-
     def __init__(self):
         pass
 
@@ -140,15 +142,16 @@ class CodeWriter(VMTranslator):
     def writePushPop(self,subList):
         pass
 
-    def appendEmptyLine(self):
-        self.asmLines.append('\n')
+    def _emptyLine(self):
+        return ('')
 
-    def appendVMlineAsComment(self,subList):
-        self.asmLines.append('//' + subList[3])
+    def _VMlineAsComment(self,subList):
+        return ('//' + subList[3])
 
 translation0 = VMTranslator()
-
+cw = CodeWriter()
 translation0.parse()
 print(translation0.vmMaster)
 print(len((translation0.vmMaster)))
+
 print("I'm done :)")
