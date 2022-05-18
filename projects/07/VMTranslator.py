@@ -27,11 +27,6 @@ class VMTranslator:
                 subList[1] = False
             else:
                 subList[1] = self.parser.arg1(vmLine)
-
-            # if(subList[0] != cmdTyp.C_RETURN):
-            #     subList[1] = self.parser.arg1(vmLine)
-            # else:
-            #     return False
                 
             if((subList[0] == cmdTyp.C_PUSH) or (subList[0] == cmdTyp.C_POP) or (subList[0] == cmdTyp.C_FUNCTION) or (subList[0] == cmdTyp.C_CALL)):
                 subList[2] = self.parser.arg2(vmLine)
@@ -133,7 +128,23 @@ class Parser(VMTranslator):
         return noEOL
 
 class CodeWriter(VMTranslator):
-    pass
+    
+    asmLines = []
+
+    def __init__(self):
+        pass
+
+    def writeArithmetic(self, subList):
+        pass
+
+    def writePushPop(self,subList):
+        pass
+
+    def appendEmptyLine(self):
+        self.asmLines.append('\n')
+
+    def appendVMlineAsComment(self,subList):
+        self.asmLines.append('//' + subList[3])
 
 translation0 = VMTranslator()
 
