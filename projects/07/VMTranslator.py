@@ -1,6 +1,5 @@
 print("I'm running :)")
 
-from pickle import FALSE
 import sys
 import commandTypes as cmdTyp
 
@@ -20,19 +19,27 @@ class VMTranslator:
         self.necessaryVM = self.parser.stripUnnecessary(self.rawVM)
         for vmLine in self.necessaryVM:
             subList = [None, None, None, None]
-
             subList[0] = self.parser.commandType(vmLine)
             
-            if(subList[0] != cmdTyp.C_RETURN):
+            if(subList[0] == cmdTyp.C_ARITHMETIC):
+                subList[1] = vmLine
+            elif(subList[0] == cmdTyp.C_RETURN):
+                subList[1] = False
+            else:
                 subList[1] = self.parser.arg1(vmLine)
-            else:
-                return FALSE
+
+            # if(subList[0] != cmdTyp.C_RETURN):
+            #     subList[1] = self.parser.arg1(vmLine)
+            # else:
+            #     return False
+                
             if((subList[0] == cmdTyp.C_PUSH) or (subList[0] == cmdTyp.C_POP) or (subList[0] == cmdTyp.C_FUNCTION) or (subList[0] == cmdTyp.C_CALL)):
-                subList[2] = FALSE
-            else:
                 subList[2] = self.parser.arg2(vmLine)
+            else:
+                subList[2] = False    
             subList[3] = vmLine            
             self.vmMaster.append(subList)
+            print(subList)
             self.incrementIndex()
 
     def codeWrite(self):
@@ -77,7 +84,7 @@ class Parser(VMTranslator):
 
     def arg2(self, vmLine):
         argTwo = vmLine.split(' ')[2]
-        return argTwo
+        return int(argTwo)
 
     def splitVMcommand(self):
         pass
@@ -129,10 +136,8 @@ class CodeWriter(VMTranslator):
     pass
 
 translation0 = VMTranslator()
-p = Parser()
-necessary = p.stripUnnecessary(translation0.rawVM)
-print(necessary)
-cmd = p.commandType(necessary[1])
-print(necessary[1])
-print(cmd)
+
+translation0.parse()
+print(translation0.vmMaster)
+print(len((translation0.vmMaster)))
 print("I'm done :)")
