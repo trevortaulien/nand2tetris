@@ -42,10 +42,14 @@ class VMTranslator:
         for subList in self.vmMaster:
             if(subList[0] == cmdTyp.C_ARITHMETIC):
                 asm = self.writer.writeArithmetic(subList)
-                self.asmLines.append(asm)
+                self.asmLines.append('// ' + subList[3])
+                self._flattenAndAppend(asm,self.asmLines)
+                self.asmLines.append('\n')
             elif((subList[0] == cmdTyp.C_PUSH) or (subList[0] == cmdTyp.C_POP)):
                 asm = self.writer.writePushPop(subList)
-                self.asmLines.append(asm)
+                self.asmLines.append('// ' + subList[3])
+                self._flattenAndAppend(asm,self.asmLines)
+                self.asmLines.append('\n')
 
     def outputAsm(self):
         pass
@@ -59,6 +63,10 @@ class VMTranslator:
 
     def incrementIndex(self):
         self.lineIndex = self.lineIndex + 1
+
+    def _flattenAndAppend(self, items, appendee):
+        for item in items:
+            appendee.append(item)
 
 class Parser(VMTranslator):
     
@@ -137,10 +145,69 @@ class CodeWriter(VMTranslator):
         pass
 
     def writeArithmetic(self, subList):
-        pass
+        return 'aX'
 
-    def writePushPop(self,subList):
-        pass
+    def writePushPop(self, subList):
+        segment = subList[1]
+        if((segment == 'local') or (segment == 'argument') or (segment == 'this') or (segment == 'that')):
+            return self._lattPushPop(subList)
+        elif(segment == 'constant'):
+            return self._constPush(subList)
+        elif(segment == 'static'):
+            return self._staticPushPop(subList)
+        elif(segment == 'temp'):
+            return self._tempPushPop(subList)
+        elif(segment == 'pointer'):
+            return self._pointPushPop(subList)
+
+    def _lattPushPop(self, subList):
+        return 'bX'
+
+    def _constPush(self, subList):
+        asm = [
+            '@' + str(subList[2]),
+            'D=A',
+            '@SP',
+            'A=M',
+            'M=D',
+            '@SP',
+            'M=M+1'
+        ]
+        return asm
+
+    def _staticPushPop(self, subList):
+        variableName = str(sys.argv[1])
+        variableName = variableName.strip('.vm')
+        variableName = variableName.split('/')
+        variableName = variableName[-1]
+        variableName = variableName + '.' + str(subList[2])
+        if(subList[0] == cmdTyp.C_PUSH):
+            asm = [
+                '@' + variableName,
+                'D=M',
+                '@SP',
+                'A=M',
+                'M=D',
+                '@SP',
+                'M=M+1'
+            ]
+        elif(subList[0] == cmdTyp.C_POP):
+            asm = [
+                '@SP',
+                'M=M-1',
+                'A=M',
+                'D=M',
+                '@' + variableName,
+                'M=D'
+            ]
+
+        return asm
+
+    def _tempPushPop(self, subList):
+        return 'dX'
+
+    def _pointPushPop(self, subList):
+        return 'eX'
 
     def _emptyLine(self):
         return ('')
@@ -149,9 +216,11 @@ class CodeWriter(VMTranslator):
         return ('//' + subList[3])
 
 translation0 = VMTranslator()
-cw = CodeWriter()
 translation0.parse()
 print(translation0.vmMaster)
-print(len((translation0.vmMaster)))
+translation0.codeWrite()
+print(translation0.asmLines)
+
+
 
 print("I'm done :)")
