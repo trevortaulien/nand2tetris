@@ -275,7 +275,7 @@ class CodeWriter(VMTranslator):
                 'M=M-1',
                 'A=M',
                 'D=M',
-                '@' + variableName,
+                '@' + variableName + '.' + str(subList[2]),
                 'M=D'
             ]
 
