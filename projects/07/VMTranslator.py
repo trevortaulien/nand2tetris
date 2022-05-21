@@ -13,7 +13,7 @@ class VMTranslator:
         with open(sys.argv[1], 'r') as fileIn:
             self.rawVM = fileIn.readlines()
 
-        self.fileInName = sys.argv[0].strip('.py')
+        self.vmFileName = self._getVMFileName()
 
     def parse(self):
         self.parser = Parser()
@@ -38,7 +38,7 @@ class VMTranslator:
             self.incrementIndex()
 
     def codeWrite(self):
-        self.writer = CodeWriter()
+        self.writer = CodeWriter(self.vmFileName)
         for subList in self.vmMaster:
             if(subList[0] == cmdTyp.C_ARITHMETIC):
                 asm = self.writer.writeArithmetic(subList)
@@ -67,6 +67,13 @@ class VMTranslator:
     def _flattenAndAppend(self, items, appendee):
         for item in items:
             appendee.append(item)
+
+    def _getVMFileName(self):
+        vmFileName = str(sys.argv[1])
+        vmFileName = vmFileName.strip('.vm')
+        vmFileName = vmFileName.split('/')
+        vmFileName = vmFileName[-1]
+        return vmFileName
 
 class Parser(VMTranslator):
     
@@ -141,11 +148,82 @@ class Parser(VMTranslator):
 
 class CodeWriter(VMTranslator):
     
-    def __init__(self):
-        pass
+    def __init__(self, vmFileName):
+        self.vmFileName = vmFileName
 
     def writeArithmetic(self, subList):
-        return 'aX'
+        operation = subList[1]
+        if(operation == 'add'):
+            return self._writeAdd()
+        elif(operation == 'sub'):
+            return self._writeSub()
+        elif(operation == 'neg'):
+            return self._writeNeg()
+        elif(operation == 'eq'):
+            return self._writeEq()
+        elif(operation == 'gt'):
+            return self._writeGt()
+        elif(operation == 'lt'):
+            return self._writeLt()
+        elif(operation == 'and'):
+            return self._writeAnd()
+        elif(operation == 'or'):
+            return self._writeOr()
+        elif(operation == 'not'):
+            return self._writeNot()
+
+    def _writeAdd(self):
+        asm = [
+            '@SP',
+            'AM=M-1',
+            'D=M',
+            '@SP',
+            'AM=M-1',
+            'D=M+D',
+            '@SP',
+            'A=M',
+            'M=D',
+            '@SP',
+            'M=M+1'
+        ]
+        return asm
+
+    def _writeSub(self):
+        asm = [
+            '@SP',
+            'AM=M-1',
+            'D=M',
+            '@SP',
+            'AM=M-1',
+            'D=M-D',
+            '@SP',
+            'A=M',
+            'M=D',
+            '@SP',
+            'M=M+1'
+        ]
+        return asm
+
+    def _writeNeg(self):
+        return 'a2'
+
+    def _writeEq(self):
+        return 'a3'
+
+    def _writeGt(self):
+        return 'a4'
+
+    def _writeLt(self):
+        return 'a5'
+
+    def _writeAnd(self):
+        return 'a6'
+
+    def _writeOr(self):
+        return 'a7'
+
+    def _writeNot(self):
+        return 'a8'
 
     def writePushPop(self, subList):
         segment = subList[1]
@@ -176,14 +254,10 @@ class CodeWriter(VMTranslator):
         return asm
 
     def _staticPushPop(self, subList):
-        variableName = str(sys.argv[1])
-        variableName = variableName.strip('.vm')
-        variableName = variableName.split('/')
-        variableName = variableName[-1]
-        variableName = variableName + '.' + str(subList[2])
+        variableName = self.vmFileName
         if(subList[0] == cmdTyp.C_PUSH):
             asm = [
-                '@' + variableName,
+                '@' + variableName + '.' + str(subList[2]),
                 'D=M',
                 '@SP',
                 'A=M',
@@ -220,7 +294,7 @@ translation0.parse()
 print(translation0.vmMaster)
 translation0.codeWrite()
 print(translation0.asmLines)
-
+translation0.outputAsm()
 
 
 print("I'm done :)")
