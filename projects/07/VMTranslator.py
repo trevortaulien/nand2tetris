@@ -52,7 +52,11 @@ class VMTranslator:
                 self.asmLines.append('\n')
 
     def outputAsm(self):
-        pass
+        outputPath = sys.argv[1].replace('.vm', '.asm')
+        with open(outputPath, 'w') as fileOut:
+            for line in self.asmLines:
+                fileOut.write(line)
+                fileOut.write('\n')
 
     def hasMoreCommands(self):
         try:
