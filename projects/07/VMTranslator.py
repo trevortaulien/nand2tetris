@@ -151,9 +151,12 @@ class Parser(VMTranslator):
         return noEOL
 
 class CodeWriter(VMTranslator):
-    
+
     def __init__(self, vmFileName):
         self.vmFileName = vmFileName
+        self.eqCount = 0
+        self.gtCount = 0
+        self.ltCount = 0
 
     def writeArithmetic(self, subList):
         operation = subList[1]
@@ -209,25 +212,146 @@ class CodeWriter(VMTranslator):
         return asm
 
     def _writeNeg(self):
-        return 'a2'
+        asm = [
+            '@SP',
+            'AM=M-1',
+            'D=-M',
+            '@SP',
+            'A=M',
+            'M=D',
+            '@SP',
+            'M=M+1'
+        ]
+        return asm
 
     def _writeEq(self):
-        return 'a3'
+        asm = [
+            '@SP',
+            'AM=M-1',
+            'D=M',
+            '@SP',
+            'AM=M-1',
+            'D=D-M',
+            '@SUCCESS_EQ_' + str(self.eqCount),
+            'D;JEQ',
+            '@SP',
+            'A=M',
+            'M=0',
+            '@SP',
+            'M=M+1',
+            '@END_EQ_' + str(self.eqCount),
+            '0;JMP',
+            '(SUCCESS_EQ_' + str(self.eqCount) + ')',
+            '@SP',
+            'A=M',
+            'M=-1',
+            '@SP',
+            'M=M+1',
+            '(END_EQ_' + str(self.eqCount) + ')'
+        ]
+        self.eqCount += 1
+        return asm
 
     def _writeGt(self):
-        return 'a4'
+        asm = [
+            '@SP',
+            'AM=M-1',
+            'D=M',
+            '@SP',
+            'AM=M-1',
+            'D=D-M',
+            '@SUCCESS_GT_' + str(self.gtCount),
+            'D;JLT',
+            '@SP',
+            'A=M',
+            'M=0',
+            '@SP',
+            'M=M+1',
+            '@END_GT_' + str(self.gtCount),
+            '0;JMP',
+            '(SUCCESS_GT_' + str(self.gtCount) + ')',
+            '@SP',
+            'A=M',
+            'M=-1',
+            '@SP',
+            'M=M+1',
+            '(END_GT_' + str(self.gtCount) + ')'
+        ]
+        self.gtCount += 1
+        return asm
 
     def _writeLt(self):
-        return 'a5'
+        asm = [
+            '@SP',
+            'AM=M-1',
+            'D=M',
+            '@SP',
+            'AM=M-1',
+            'D=D-M',
+            '@SUCCESS_LT_' + str(self.ltCount),
+            'D;JGT',
+            '@SP',
+            'A=M',
+            'M=0',
+            '@SP',
+            'M=M+1',
+            '@END_LT_' + str(self.ltCount),
+            '0;JMP',
+            '(SUCCESS_LT_' + str(self.ltCount) + ')',
+            '@SP',
+            'A=M',
+            'M=-1',
+            '@SP',
+            'M=M+1',
+            '(END_LT_' + str(self.ltCount) + ')'
+        ]
+        self.ltCount += 1
+        return asm
 
     def _writeAnd(self):
-        return 'a6'
+        asm = [
+            '@SP',
+            'AM=M-1',
+            'D=M',
+            '@SP',
+            'AM=M-1',
+            'D=M&D',
+            '@SP',
+            'A=M',
+            'M=D',
+            '@SP',
+            'M=M+1'
+        ]
+        return asm
 
     def _writeOr(self):
-        return 'a7'
+        asm = [
+            '@SP',
+            'AM=M-1',
+            'D=M',
+            '@SP',
+            'AM=M-1',
+            'D=M|D',
+            '@SP',
+            'A=M',
+            'M=D',
+            '@SP',
+            'M=M+1'
+        ]
+        return asm
 
     def _writeNot(self):
-        return 'a8'
+        asm = [
+            '@SP',
+            'AM=M-1',
+            'D=!M',
+            '@SP',
+            'A=M',
+            'M=D',
+            '@SP',
+            'M=M+1'
+        ]
+        return asm
 
     def writePushPop(self, subList):
         segment = subList[1]
