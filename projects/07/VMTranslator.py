@@ -367,7 +367,48 @@ class CodeWriter(VMTranslator):
             return self._pointPushPop(subList)
 
     def _lattPushPop(self, subList):
-        return 'bX'
+        if(subList[1] == 'local'):
+            segment = 'LCL'
+        elif(subList[1] == 'argument'):
+            segment = 'ARG'
+        elif(subList[1] == 'this'):
+            segment = 'THIS'
+        elif(subList[1] == 'that'):
+            segment = 'THAT'
+
+        i = subList[2]
+        if(subList[0] == cmdTyp.C_PUSH):
+            asm = [
+                '@' + str(i),
+                'D=A',
+                '@' + segment,
+                'A=D+M',
+                'D=M',
+                '@SP',
+                'A=M',
+                'M=D',
+                '@SP',
+                'M=M+1'
+            ]
+            return asm
+
+        elif(subList[0] == cmdTyp.C_POP):
+            asm = [
+                '@' + str(i),
+                'D=A',
+                '@' + segment,
+                'D=D+M',
+                '@R13',
+                'M=D',
+                '@SP',
+                'M=M-1',
+                'A=M',
+                'D=M',
+                '@R13',
+                'A=M',
+                'M=D'
+            ]
+            return asm
 
     def _constPush(self, subList):
         asm = [
@@ -406,7 +447,38 @@ class CodeWriter(VMTranslator):
         return asm
 
     def _tempPushPop(self, subList):
-        return 'dX'
+        i = subList[2]
+        if(subList[0] == cmdTyp.C_PUSH):
+            asm = [
+                '@5',
+                'D=A',
+                '@' + str(i),
+                'A=D+A',
+                'D=M',
+                '@SP',
+                'A=M',
+                'M=D',
+                '@SP',
+                'M=M+1'
+            ]
+            return asm
+        elif(subList[0] == cmdTyp.C_POP):
+            asm = [
+                '@5',
+                'D=A',
+                '@' + str(i),
+                'D=D+A',
+                '@R13',
+                'M=D',
+                '@SP',
+                'M=M-1',
+                'A=M',
+                'D=M',
+                '@R13',
+                'A=M',
+                'M=D'
+            ]
+            return asm
 
     def _pointPushPop(self, subList):
         return 'eX'
