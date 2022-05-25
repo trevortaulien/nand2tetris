@@ -1,7 +1,7 @@
 print("I'm running :)")
 
 import sys
-import commandTypes as cmdTyp
+from commandTypes import *
 
 class VMTranslator:
 
@@ -22,14 +22,14 @@ class VMTranslator:
             subList = [None, None, None, None]
             subList[0] = self.parser.commandType(vmLine)
             
-            if(subList[0] == cmdTyp.C_ARITHMETIC):
+            if(subList[0] == C_ARITHMETIC):
                 subList[1] = vmLine
-            elif(subList[0] == cmdTyp.C_RETURN):
+            elif(subList[0] == C_RETURN):
                 subList[1] = False
             else:
                 subList[1] = self.parser.arg1(vmLine)
                 
-            if((subList[0] == cmdTyp.C_PUSH) or (subList[0] == cmdTyp.C_POP) or (subList[0] == cmdTyp.C_FUNCTION) or (subList[0] == cmdTyp.C_CALL)):
+            if((subList[0] == C_PUSH) or (subList[0] == C_POP) or (subList[0] == C_FUNCTION) or (subList[0] == C_CALL)):
                 subList[2] = self.parser.arg2(vmLine)
             else:
                 subList[2] = False    
@@ -40,12 +40,12 @@ class VMTranslator:
     def codeWrite(self):
         self.writer = CodeWriter(self.vmFileName)
         for subList in self.vmMaster:
-            if(subList[0] == cmdTyp.C_ARITHMETIC):
+            if(subList[0] == C_ARITHMETIC):
                 asm = self.writer.writeArithmetic(subList)
                 self.asmLines.append('// ' + subList[3])
                 self._flattenAndAppend(asm,self.asmLines)
                 self.asmLines.append('\n')
-            elif((subList[0] == cmdTyp.C_PUSH) or (subList[0] == cmdTyp.C_POP)):
+            elif((subList[0] == C_PUSH) or (subList[0] == C_POP)):
                 asm = self.writer.writePushPop(subList)
                 self.asmLines.append('// ' + subList[3])
                 self._flattenAndAppend(asm,self.asmLines)
@@ -87,11 +87,11 @@ class Parser(VMTranslator):
     def commandType(self, vmLine):
         command = vmLine.split(' ')[0]
         if((command == 'add') or (command == 'sub') or (command == 'neg') or (command == 'eq') or (command == 'gt') or (command == 'lt') or (command == 'and') or (command == 'or') or (command == 'not')):
-            return cmdTyp.C_ARITHMETIC
+            return C_ARITHMETIC
         elif(command == 'pop'):
-            return cmdTyp.C_POP
+            return C_POP
         elif(command == 'push'):
-            return cmdTyp.C_PUSH
+            return C_PUSH
         else:
             print("ERROR COMMAND TYPE CANNONT BE DETERMNIED!!!")
             print("METHOD: commandType")
@@ -377,7 +377,7 @@ class CodeWriter(VMTranslator):
             segment = 'THAT'
 
         i = subList[2]
-        if(subList[0] == cmdTyp.C_PUSH):
+        if(subList[0] == C_PUSH):
             asm = [
                 '@' + str(i),
                 'D=A',
@@ -392,7 +392,7 @@ class CodeWriter(VMTranslator):
             ]
             return asm
 
-        elif(subList[0] == cmdTyp.C_POP):
+        elif(subList[0] == C_POP):
             asm = [
                 '@' + str(i),
                 'D=A',
@@ -424,7 +424,7 @@ class CodeWriter(VMTranslator):
 
     def _staticPushPop(self, subList):
         variableName = self.vmFileName
-        if(subList[0] == cmdTyp.C_PUSH):
+        if(subList[0] == C_PUSH):
             asm = [
                 '@' + variableName + '.' + str(subList[2]),
                 'D=M',
@@ -434,7 +434,7 @@ class CodeWriter(VMTranslator):
                 '@SP',
                 'M=M+1'
             ]
-        elif(subList[0] == cmdTyp.C_POP):
+        elif(subList[0] == C_POP):
             asm = [
                 '@SP',
                 'M=M-1',
@@ -448,7 +448,7 @@ class CodeWriter(VMTranslator):
 
     def _tempPushPop(self, subList):
         i = subList[2]
-        if(subList[0] == cmdTyp.C_PUSH):
+        if(subList[0] == C_PUSH):
             asm = [
                 '@5',
                 'D=A',
@@ -462,7 +462,7 @@ class CodeWriter(VMTranslator):
                 'M=M+1'
             ]
             return asm
-        elif(subList[0] == cmdTyp.C_POP):
+        elif(subList[0] == C_POP):
             asm = [
                 '@5',
                 'D=A',
@@ -481,7 +481,37 @@ class CodeWriter(VMTranslator):
             return asm
 
     def _pointPushPop(self, subList):
-        return 'eX'
+        i = subList[2]
+        if(subList[0] == C_PUSH):
+            asm = [
+                '@3',
+                'D=A',
+                '@' + str(i),
+                'A=D+A',
+                'D=M',
+                '@SP',
+                'A=M',
+                'M=D',
+                '@SP',
+                'M=M+1'
+            ]
+            return asm
+        elif(subList[0] == C_POP):
+            asm = [
+                '@' + str(i),
+                'D=A',
+                '@3',
+                'D=D+A',
+                '@R13',
+                'M=D',
+                '@SP',
+                'AM=M-1',
+                'D=M',
+                '@R13',
+                'A=M',
+                'M=D'
+            ]
+            return asm
 
     def _emptyLine(self):
         return ('')
@@ -495,6 +525,5 @@ print(translation0.vmMaster)
 translation0.codeWrite()
 print(translation0.asmLines)
 translation0.outputAsm()
-
 
 print("I'm done :)")
