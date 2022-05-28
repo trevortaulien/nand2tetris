@@ -50,6 +50,16 @@ class VMTranslator:
                 self.asmLines.append('// ' + subList[3])
                 self._flattenAndAppend(asm,self.asmLines)
                 self.asmLines.append('\n')
+            elif((subList[0] == C_LABEL) or (subList[0] == C_GOTO) or (subList[0] == C_IF)):
+                asm = self.writer.writeBranch(subList)
+                self.asmLines.append('// ' + subList[3])
+                self._flattenAndAppend(asm,self.asmLines)
+                self.asmLines.append('\n')
+            elif((subList[0] == C_FUNCTION) or (subList[0] == C_RETURN) or (subList[0] == C_CALL)):
+                asm = self.writer.writeFunction(subList)
+                self.asmLines.append('// ' + subList[3])
+                self._flattenAndAppend(asm,self.asmLines)
+                self.asmLines.append('\n')
 
     def outputAsm(self):
         outputPath = sys.argv[1].replace('.vm', '.asm')
@@ -92,6 +102,18 @@ class Parser(VMTranslator):
             return C_POP
         elif(command == 'push'):
             return C_PUSH
+        elif(command == 'label'):
+            return C_LABEL
+        elif(command == 'goto'):
+            return C_GOTO
+        elif(command == 'if-goto'):
+            return C_IF
+        elif(command == 'function'):
+            return C_FUNCTION
+        elif(command == 'call'):
+            return C_CALL
+        elif(command == 'return'):
+            return C_RETURN
         else:
             print("ERROR COMMAND TYPE CANNONT BE DETERMNIED!!!")
             print("METHOD: commandType")
@@ -513,6 +535,53 @@ class CodeWriter(VMTranslator):
             ]
             return asm
 
+    def writeBranch(self, subList):
+        branchType = subList[0]
+        if(branchType == C_LABEL):
+            return self._labelBranch(subList)
+        elif(branchType == C_GOTO):
+            return self._gotoBranch(subList)
+        elif(branchType == C_IF):
+            return self._ifgotoBranch(subList)
+
+    def _labelBranch(self, subList):
+        label = subList[1]
+        asm = [
+            '(' + label + ')'
+        ]
+        return asm
+
+    def _gotoBranch(self, subList):
+        label = subList[1]
+        asm = [
+            '@' + label,
+            '0;JMP'
+        ]
+        return asm
+
+    def _ifgotoBranch(self, subList):
+        label = subList[1]
+        asm = [
+            '@SP',
+            'AM=M-1',
+            'D=M',
+            '@' + label,
+            'D;JNE'
+        ]
+        return asm
+
+    def writeFunction(self, subList):       # the name function in this context is a type of vm command
+        return ('writeFunction not complete')
+
+    def _functionFunction(self, subList):
+        pass
+
+    def _callFunction(self, subList):
+        pass
+
+    def _returnFunction(self, subList):
+        pass
+
     def _emptyLine(self):
         return ('')
 
@@ -521,6 +590,7 @@ class CodeWriter(VMTranslator):
 
 translator = VMTranslator()
 translator.parse()
+print(translator.vmMaster)
 translator.codeWrite()
 translator.outputAsm()
 
