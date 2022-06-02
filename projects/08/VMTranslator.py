@@ -64,7 +64,9 @@ class VMTranslator:
     def outputAsm(self):
         outputPath = sys.argv[1].replace('.vm', '.asm')
         with open(outputPath, 'w') as fileOut:
+            print(self.asmLines)
             for line in self.asmLines:
+                print(line)
                 fileOut.write(line)
                 fileOut.write('\n')
 
@@ -571,16 +573,85 @@ class CodeWriter(VMTranslator):
         return asm
 
     def writeFunction(self, subList):       # the name function in this context is a type of vm command
-        return ('writeFunction not complete')
+        functionType  = subList[0]
+        if(functionType == C_FUNCTION):
+            return self._functionFunction(subList)
+        elif(functionType == C_CALL):
+            return self._callFunction(subList)
+        elif(functionType == C_RETURN):
+            return self._returnFunction(subList)
 
     def _functionFunction(self, subList):
-        pass
+        functionName = subList[1]
+        nVars = subList[2]
+        asm = [
+            '(' + str(functionName) + ')'
+        ]
+        for i in range(nVars):
+            nthPush = self.writePushPop([1, 'constant', 0, 'Allocating locals for ' + str(functionName)])
+            for item in nthPush:
+                asm.append(item)
+
+        return asm
 
     def _callFunction(self, subList):
-        pass
+        return('_callFunction not complete!')
 
     def _returnFunction(self, subList):
-        pass
+        asm = [
+            '@LCL',
+            'D=M',
+            '@R13',
+            'M=D',
+            '@5',
+            'D=A',
+            '@R13',
+            'D=M-D',
+            '@R14',
+            'M=D',
+            '@0',
+            'D=A',
+            '@ARG',
+            'D=D+M',
+            '@R15',
+            'M=D',
+            '@SP',
+            'M=M-1',
+            'A=M',
+            'D=M',
+            '@R15',
+            'A=M',
+            'M=D',
+            '@ARG',
+            'D=M+1',
+            '@SP',
+            'M=D',
+            '@R13',
+            'AM=M-1',
+            'D=M',
+            '@THAT',
+            'M=D',
+            '@R13',
+            'AM=M-1',
+            'D=M',
+            '@THIS',
+            'M=D',
+            '@R13',
+            'AM=M-1',
+            'D=M',
+            '@ARG',
+            'M=D',
+            '@R13',
+            'AM=M-1',
+            'D=M',
+            '@LCL',
+            'M=D',
+            '@R14',
+            'A=M',
+            '0;JMP'
+        ]
+        
+        return asm
 
     def _emptyLine(self):
         return ('')
