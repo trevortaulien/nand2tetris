@@ -1,6 +1,7 @@
 print("I'm running :)")
 
 import sys
+import os
 from commandTypes import *
 
 class VMTranslator:
@@ -8,11 +9,10 @@ class VMTranslator:
     lineIndex = 0
     vmMaster = []       # List of lists with each list at given index containing [commandType, arg1, arg2, rawLine]
     asmLines = []
+    rawVM = []
 
     def __init__(self):
-        with open(sys.argv[1], 'r') as fileIn:
-            self.rawVM = fileIn.readlines()
-
+        
         self.vmFileName = self._getVMFileName()
 
     def parse(self):
@@ -91,7 +91,8 @@ class VMTranslator:
             appendee.append(item)
 
     def _getVMFileName(self):
-        vmFileName = str(sys.argv[1])
+        # vmFileName = str(sys.argv[1]) 
+        vmFileName = str('TemporaryFileNameWhileTestingMultiFileTranslation') 
         vmFileName = vmFileName.strip('.vm')
         vmFileName = vmFileName.split('/')
         vmFileName = vmFileName[-1]
@@ -744,10 +745,30 @@ class CodeWriter(VMTranslator):
     def _VMlineAsComment(self,subList):
         return ('//' + subList[3])
 
+
+# translator = VMTranslator()
+# translator.parse()
+# print(translator.vmMaster)
+# translator.codeWrite()
+# translator.outputAsm()
+
+with open('FunctionCalls/FibonacciElement/Sys.vm', 'r') as fileIn:
+    sysVM = fileIn.readlines()
+
+with open('FunctionCalls/FibonacciElement/Main.vm', 'r') as fileIn:
+    mainVM = fileIn.readlines()
+
+# print(sysVM)
+# print(mainVM)
+
 translator = VMTranslator()
+translator.rawVM = sysVM
 translator.parse()
-print(translator.vmMaster)
 translator.codeWrite()
-translator.outputAsm()
+translator.rawVM = mainVM
+translator.parse()
+translator.codeWrite()
+
+print(translator.vmMaster)
 
 print("I'm done :)")
