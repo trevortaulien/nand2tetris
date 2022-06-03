@@ -39,6 +39,12 @@ class VMTranslator:
 
     def codeWrite(self):
         self.writer = CodeWriter(self.vmFileName)
+
+        asm = self.writer.bootstrap()
+        self.asmLines.append('// Bootstrap')
+        self._flattenAndAppend(asm, self.asmLines)
+        self.asmLines.append('\n')
+
         for subList in self.vmMaster:
             if(subList[0] == C_ARITHMETIC):
                 asm = self.writer.writeArithmetic(subList)
@@ -181,6 +187,21 @@ class CodeWriter(VMTranslator):
         self.eqCount = 0
         self.gtCount = 0
         self.ltCount = 0
+        self.callCount = 0
+
+    def bootstrap(self):
+        asm = [
+            '@256',
+            'D=A',
+            '@SP',
+            'M=D',
+        ]
+        
+        sysCall = self._callFunction([8, 'Sys.init', 0, 'Sys init bootstrap call'])
+        for command in sysCall:
+            asm.append(command)
+
+        return asm
 
     def writeArithmetic(self, subList):
         operation = subList[1]
@@ -595,7 +616,71 @@ class CodeWriter(VMTranslator):
         return asm
 
     def _callFunction(self, subList):
-        return('_callFunction not complete!')
+        functionName = subList[1]
+        fileName = self._getVMFileName()
+        nArgs = subList[2]
+        asm = [
+            '@' + str(fileName) + '.' + str(functionName) + '$ret.' + str(self.callCount),
+            'D=A',
+            '@SP',
+            'A=M',
+            'M=D',
+            '@SP',
+            'M=M+1',
+            '// push LCL //',
+            '@LCL',
+            'D=M',
+            '@SP',
+            'A=M',
+            'M=D',
+            '@SP',
+            'M=M+1',
+            '// end push LCL //',
+            '// push ARG //',
+            '@ARG',
+            'D=M',
+            '@SP',
+            'A=M',
+            'M=D',
+            '@SP',
+            'M=M+1',
+            '// end push ARG //',
+            '// push THIS //',
+            '@THIS',
+            'D=M',
+            '@SP',
+            'A=M',
+            'M=D',
+            '@SP',
+            'M=M+1',
+            '// end push THIS //',
+            '// push THAT //',
+            '@THAT',
+            'D=M',
+            '@SP',
+            'A=M',
+            'M=D',
+            '@SP',
+            'M=M+1',
+            '// end push THAT //',
+            '@SP',
+            'D=M',
+            '@5',
+            'D=D-A',
+            '@' + str(nArgs),
+            'D=D-A',
+            '@ARG',
+            'M=D',
+            '@SP',
+            'D=M',
+            '@LCL',
+            'M=D',
+            '@' + str(functionName),
+            '0;JMP',
+            '(' + str(fileName) + '.' + str(functionName) + '$ret.' + str(self.callCount) + ')'
+        ]
+        self.callCount += 1
+        return asm
 
     def _returnFunction(self, subList):
         asm = [
