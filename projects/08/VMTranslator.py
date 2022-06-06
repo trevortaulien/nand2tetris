@@ -139,8 +139,8 @@ class Parser(VMTranslator):
         return int(argTwo)
 
     def stripUnnecessary(self, rawVM):
-        necessaryVM = self._removeComments(rawVM)
-        necessaryVM = self._removeWhitespace(necessaryVM)
+        necessaryVM = self._removeWhitespace(rawVM)
+        necessaryVM = self._removeComments(necessaryVM)
         necessaryVM = self._removeInlineComments(necessaryVM)
         necessaryVM = self._removeEOL(necessaryVM)
         return necessaryVM
@@ -177,6 +177,8 @@ class Parser(VMTranslator):
         noEOL = []
         for line in lines:
             line = line.replace('\r\n', '')
+            line = line.replace('\n', '')
+            line = line.strip()
             noEOL.append(line)
 
         return noEOL
@@ -224,6 +226,9 @@ class CodeWriter(VMTranslator):
             return self._writeOr()
         elif(operation == 'not'):
             return self._writeNot()
+        else:
+            print('Operation not found. operation = ' + operation)
+            quit()
 
     def _writeAdd(self):
         asm = [
@@ -763,12 +768,15 @@ with open('FunctionCalls/FibonacciElement/Main.vm', 'r') as fileIn:
 
 translator = VMTranslator()
 translator.rawVM = sysVM
+print(translator.rawVM)
 translator.parse()
 translator.codeWrite()
 translator.rawVM = mainVM
+print(translator.rawVM)
 translator.parse()
 translator.codeWrite()
 
 print(translator.vmMaster)
+print(translator.asmLines)
 
 print("I'm done :)")
