@@ -10,20 +10,26 @@ class VMTranslator:
     vmMaster = []       # List of lists with each list at given index containing [commandType, arg1, arg2, rawLine]
     asmLines = []
     rawVM = []
+    inputArgumentFileNames = []
+    outputPath = 'Replace Me'
+    asmOutFileName = 'Replace Me'
 
     def __init__(self):
-        
-        self.vmFileName = self._getVMFileName()
+        self._stageVM()
 
     def parse(self):
         self.parser = Parser()
         self.necessaryVM = self.parser.stripUnnecessary(self.rawVM)
+        print(self.necessaryVM)
+        self.fileBeingParsed = ''
         for vmLine in self.necessaryVM:
-            subList = [None, None, None, None]
+            subList = [None, None, None, None, None]    # [commandType, segment, address, vmLine, fileName]
             subList[0] = self.parser.commandType(vmLine)
             
             if(subList[0] == C_ARITHMETIC):
                 subList[1] = vmLine
+            elif(subList[0] == C_FILESTART):
+                self.fileBeingParsed = vmLine.split('.')[1]
             elif(subList[0] == C_RETURN):
                 subList[1] = False
             else:
@@ -33,12 +39,13 @@ class VMTranslator:
                 subList[2] = self.parser.arg2(vmLine)
             else:
                 subList[2] = False    
-            subList[3] = vmLine            
+            subList[3] = vmLine
+            subList[4] = self.fileBeingParsed            
             self.vmMaster.append(subList)
             self.incrementIndex()
 
     def codeWrite(self):
-        self.writer = CodeWriter(self.vmFileName)
+        self.writer = CodeWriter()
 
         asm = self.writer.bootstrap()
         self.asmLines.append('// Bootstrap')
@@ -66,13 +73,12 @@ class VMTranslator:
                 self.asmLines.append('// ' + subList[3])
                 self._flattenAndAppend(asm,self.asmLines)
                 self.asmLines.append('\n')
+            elif((subList[0] == C_FILESTART)):
+                pass
 
     def outputAsm(self):
-        outputPath = sys.argv[1].replace('.vm', '.asm')
-        with open(outputPath, 'w') as fileOut:
-            print(self.asmLines)
+        with open(self.outputPath + '.asm', 'w') as fileOut:
             for line in self.asmLines:
-                print(line)
                 fileOut.write(line)
                 fileOut.write('\n')
 
@@ -91,12 +97,56 @@ class VMTranslator:
             appendee.append(item)
 
     def _getVMFileName(self):
-        # vmFileName = str(sys.argv[1]) 
-        vmFileName = str('TemporaryFileNameWhileTestingMultiFileTranslation') 
+        vmFileName = str(sys.argv[1]) 
         vmFileName = vmFileName.strip('.vm')
         vmFileName = vmFileName.split('/')
         vmFileName = vmFileName[-1]
         return vmFileName
+
+    def _checkVMFile(self, fileName):
+        if(fileName.find('.vm') == -1):
+            return False
+
+        return True
+
+    def _stageVM(self):
+        inArg = sys.argv[1]
+        if(os.path.isfile(inArg) == True):
+            self._singleInArg()
+        else:
+            self._multiInArg()
+
+    def _singleInArg(self):
+        self.rawVM.append('FILESTART.' + self._getVMFileName())
+        with open(sys.argv[1], 'r') as f:
+            vm = f.readlines()
+        self._flattenAndAppend(vm, self.rawVM)
+
+        self.inputArgumentFileNames = self._getVMFileName()
+        self.outputPath = str(sys.argv[1].replace('.vm', '.asm'))
+
+    def _multiInArg(self):
+        dirContents = os.listdir(sys.argv[1])
+        vmFileNames = list(filter(self._checkVMFile, dirContents))
+        for vmFile in vmFileNames:
+            fileName = vmFile.strip('.vm')
+            self.inputArgumentFileNames.append(fileName)
+        vmFileNames.remove('Sys.vm') 
+        
+        self.rawVM.append('FILESTART.Sys')
+        with open(sys.argv[1] + '/Sys.vm', 'r') as s:
+            vm = s.readlines()
+            self._flattenAndAppend(vm, self.rawVM)
+        
+        for vmFile in vmFileNames:
+            self.rawVM.append('FILESTART.' + vmFile.strip('.vm'))
+            with open(sys.argv[1] + '/' + vmFile, 'r') as f:
+                vm = f.readlines()
+                self._flattenAndAppend(vm, self.rawVM)
+
+        self.asmOutFileName = os.path.basename(sys.argv[1])
+        self.outputPath = str(sys.argv[1] + '/' + self.asmOutFileName)
+
 
 class Parser(VMTranslator):
     
@@ -104,6 +154,10 @@ class Parser(VMTranslator):
         pass
 
     def commandType(self, vmLine):
+        if(vmLine.split('.')[0] == 'FILESTART'):
+            self.fileBeingParsed = vmLine.split('.')[1]
+            return C_FILESTART
+
         command = vmLine.split(' ')[0]
         if((command == 'add') or (command == 'sub') or (command == 'neg') or (command == 'eq') or (command == 'gt') or (command == 'lt') or (command == 'and') or (command == 'or') or (command == 'not')):
             return C_ARITHMETIC
@@ -185,12 +239,12 @@ class Parser(VMTranslator):
 
 class CodeWriter(VMTranslator):
 
-    def __init__(self, vmFileName):
-        self.vmFileName = vmFileName
+    def __init__(self):
         self.eqCount = 0
         self.gtCount = 0
         self.ltCount = 0
         self.callCount = 0
+        self.apparentFunction = 'Replace Me'
 
     def bootstrap(self):
         asm = [
@@ -200,7 +254,7 @@ class CodeWriter(VMTranslator):
             'M=D',
         ]
         
-        sysCall = self._callFunction([8, 'Sys.init', 0, 'Sys init bootstrap call'])
+        sysCall = self._callFunction([8, 'Sys.init', 0, 'Sys init bootstrap call', None])
         for command in sysCall:
             asm.append(command)
 
@@ -474,7 +528,8 @@ class CodeWriter(VMTranslator):
         return asm
 
     def _staticPushPop(self, subList):
-        variableName = self.vmFileName
+        variableName = subList[4] 
+
         if(subList[0] == C_PUSH):
             asm = [
                 '@' + variableName + '.' + str(subList[2]),
@@ -494,7 +549,6 @@ class CodeWriter(VMTranslator):
                 '@' + variableName + '.' + str(subList[2]),
                 'M=D'
             ]
-
         return asm
 
     def _tempPushPop(self, subList):
@@ -576,14 +630,14 @@ class CodeWriter(VMTranslator):
     def _labelBranch(self, subList):
         label = subList[1]
         asm = [
-            '(' + label + ')'
+            '(' + subList[4] + '.' + self.apparentFunction + '$' + label + ')'
         ]
         return asm
 
     def _gotoBranch(self, subList):
         label = subList[1]
         asm = [
-            '@' + label,
+            '@' + subList[4] + '.' + self.apparentFunction + '$' + label,
             '0;JMP'
         ]
         return asm
@@ -594,7 +648,7 @@ class CodeWriter(VMTranslator):
             '@SP',
             'AM=M-1',
             'D=M',
-            '@' + label,
+            '@' + subList[4] + '.' + self.apparentFunction + '$' + label,
             'D;JNE'
         ]
         return asm
@@ -609,10 +663,12 @@ class CodeWriter(VMTranslator):
             return self._returnFunction(subList)
 
     def _functionFunction(self, subList):
+        self.apparentFunction = subList[1]
+        self.callCount = 0
         functionName = subList[1]
         nVars = subList[2]
         asm = [
-            '(' + str(functionName) + ')'
+            '(' + subList[4] + '.' + str(functionName) + ')'
         ]
         for i in range(nVars):
             nthPush = self.writePushPop([1, 'constant', 0, 'Allocating locals for ' + str(functionName)])
@@ -622,11 +678,11 @@ class CodeWriter(VMTranslator):
         return asm
 
     def _callFunction(self, subList):
-        functionName = subList[1]
-        fileName = self._getVMFileName()
-        nArgs = subList[2]
+        functionName = str(subList[1])
+        fileName = str(subList[4])
+        nArgs = str(subList[2])
         asm = [
-            '@' + str(fileName) + '.' + str(functionName) + '$ret.' + str(self.callCount),
+            '@' + fileName + '.' + functionName + '$ret.' + str(self.callCount),
             'D=A',
             '@SP',
             'A=M',
@@ -673,7 +729,7 @@ class CodeWriter(VMTranslator):
             'D=M',
             '@5',
             'D=D-A',
-            '@' + str(nArgs),
+            '@' + nArgs,
             'D=D-A',
             '@ARG',
             'M=D',
@@ -681,9 +737,9 @@ class CodeWriter(VMTranslator):
             'D=M',
             '@LCL',
             'M=D',
-            '@' + str(functionName),
+            '@' + functionName,
             '0;JMP',
-            '(' + str(fileName) + '.' + str(functionName) + '$ret.' + str(self.callCount) + ')'
+            '(' + fileName + '.' + functionName + '$ret.' + str(self.callCount) + ')'
         ]
         self.callCount += 1
         return asm
@@ -757,26 +813,13 @@ class CodeWriter(VMTranslator):
 # translator.codeWrite()
 # translator.outputAsm()
 
-with open('FunctionCalls/FibonacciElement/Sys.vm', 'r') as fileIn:
-    sysVM = fileIn.readlines()
-
-with open('FunctionCalls/FibonacciElement/Main.vm', 'r') as fileIn:
-    mainVM = fileIn.readlines()
-
-# print(sysVM)
-# print(mainVM)
-
 translator = VMTranslator()
-translator.rawVM = sysVM
-print(translator.rawVM)
+# print(translator.rawVM)
 translator.parse()
-translator.codeWrite()
-translator.rawVM = mainVM
-print(translator.rawVM)
-translator.parse()
-translator.codeWrite()
-
 print(translator.vmMaster)
-print(translator.asmLines)
+translator.codeWrite()
+translator.outputAsm()
+#print(translator.vmMaster)
+#print(translator.asmLines)
 
 print("I'm done :)")
