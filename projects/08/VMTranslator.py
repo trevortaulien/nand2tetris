@@ -11,8 +11,9 @@ class VMTranslator:
     asmLines = []
     rawVM = []
     inputArgumentFileNames = []
-    outputPath = 'Replace Me'
-    asmOutFileName = 'Replace Me'
+    outputPath = 'Replace+Me'
+    asmOutFileName = 'Replace-Me'
+    bootstrap = False
 
     def __init__(self):
         self._stageVM()
@@ -47,10 +48,11 @@ class VMTranslator:
     def codeWrite(self):
         self.writer = CodeWriter()
 
-        asm = self.writer.bootstrap()
-        self.asmLines.append('// Bootstrap')
-        self._flattenAndAppend(asm, self.asmLines)
-        self.asmLines.append('\n')
+        if(self.bootstrap == True):
+            asm = self.writer.bootstrap()
+            self.asmLines.append('// Bootstrap')
+            self._flattenAndAppend(asm, self.asmLines)
+            self.asmLines.append('\n')
 
         for subList in self.vmMaster:
             if(subList[0] == C_ARITHMETIC):
@@ -123,9 +125,11 @@ class VMTranslator:
         self._flattenAndAppend(vm, self.rawVM)
 
         self.inputArgumentFileNames = self._getVMFileName()
-        self.outputPath = str(sys.argv[1].replace('.vm', '.asm'))
+        self.outputPath = str(sys.argv[1].strip('.vm'))
 
     def _multiInArg(self):
+        self.bootstrap = True
+
         dirContents = os.listdir(sys.argv[1])
         vmFileNames = list(filter(self._checkVMFile, dirContents))
         for vmFile in vmFileNames:
@@ -146,7 +150,6 @@ class VMTranslator:
 
         self.asmOutFileName = os.path.basename(sys.argv[1])
         self.outputPath = str(sys.argv[1] + '/' + self.asmOutFileName)
-
 
 class Parser(VMTranslator):
     
@@ -244,7 +247,7 @@ class CodeWriter(VMTranslator):
         self.gtCount = 0
         self.ltCount = 0
         self.callCount = 0
-        self.apparentFunction = 'Replace Me'
+        self.apparentFunction = 'Default'
 
     def bootstrap(self):
         asm = [

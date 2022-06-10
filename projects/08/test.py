@@ -2,13 +2,13 @@ print("I'm running :)")
 
 import os
 import sys
-from pathlib import Path
 
 location = sys.argv[1]
 
 stuff = os.listdir(location)
 
 print(stuff)
+print('^STUFF^')
 
 def vmFile(file):
     if(file.find('.vm') == -1):
@@ -21,21 +21,16 @@ importantStuff = filter(vmFile, stuff)
 print(importantStuff)
 
 for file in importantStuff:
-    with open(location + file, 'r') as f:
+    with open(location + '/' + file, 'r') as f:
         goods = f.readlines()
         print(goods)
 
-location = sys.argv[1]
+outputPath = sys.argv[1] + '/' + os.path.basename(sys.argv[1]) + '.asm'
+lines = ['asasdda','adasdasdasd','adasdadsa']
 
-dir = Path(location)
+with open(outputPath, 'w') as w:
+    w.writelines(lines)
 
-print(dir.iterdir)
-
-
-# importantStuff = filter(vmFile, stuff)
-
-# print(importantStuff)
-
-
+print(sys.argv[1].replace('.vm', '.asm'))
 
 print("I'm done :)")

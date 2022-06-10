@@ -1,4 +1,4 @@
-// push constant 0    
+// push constant 0
 @0
 D=A
 @SP
@@ -8,7 +8,7 @@ M=D
 M=M+1
 
 
-// pop local 0         
+// pop local 0
 @0
 D=A
 @LCL
@@ -25,10 +25,10 @@ M=D
 
 
 // label LOOP_START
-(LOOP_START)
+(BasicLoop.Default$LOOP_START)
 
 
-// push argument 0    
+// push argument 0
 @0
 D=A
 @ARG
@@ -68,7 +68,7 @@ M=D
 M=M+1
 
 
-// pop local 0	        
+// pop local 0
 @0
 D=A
 @LCL
@@ -121,7 +121,7 @@ M=D
 M=M+1
 
 
-// pop argument 0      
+// pop argument 0
 @0
 D=A
 @ARG
@@ -150,11 +150,11 @@ M=D
 M=M+1
 
 
-// if-goto LOOP_START  
+// if-goto LOOP_START
 @SP
 AM=M-1
 D=M
-@LOOP_START
+@BasicLoop.Default$LOOP_START
 D;JNE
 
 
