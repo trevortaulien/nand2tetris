@@ -256,7 +256,7 @@ class CodeWriter(VMTranslator):
             'M=D',
         ]
         
-        sysCall = self._callFunction([8, 'Sys.init', 0, 'Sys init bootstrap call', None])
+        sysCall = self._callFunction([8, 'Sys.init', 0, 'Sys init bootstrap call', 'Sys'])
         for command in sysCall:
             asm.append(command)
 

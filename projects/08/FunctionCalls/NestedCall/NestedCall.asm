@@ -58,16 +58,16 @@ M=D
 D=M
 @LCL
 M=D
-@Sys.init
+@Sys.Sys.init
 0;JMP
 (Sys.Sys.init$ret.0)
 
 
 // function Sys.init 0
-(Sys.init)
+(Sys.Sys.init)
 
 
-// push constant 4000	
+// push constant 4000
 @4000
 D=A
 @SP
@@ -118,7 +118,7 @@ M=D
 
 
 // call Sys.main 0
-@Sys.Sys.main$ret.1
+@Sys.Sys.main$ret.0
 D=A
 @SP
 A=M
@@ -173,9 +173,9 @@ M=D
 D=M
 @LCL
 M=D
-@Sys.main
+@Sys.Sys.main
 0;JMP
-(Sys.Sys.main$ret.1)
+(Sys.Sys.main$ret.0)
 
 
 // pop temp 1
@@ -195,16 +195,16 @@ M=D
 
 
 // label LOOP
-(LOOP)
+(Sys.Sys.init$LOOP)
 
 
 // goto LOOP
-@LOOP
+@Sys.Sys.init$LOOP
 0;JMP
 
 
 // function Sys.main 5
-(Sys.main)
+(Sys.Sys.main)
 @0
 D=A
 @SP
@@ -381,7 +381,7 @@ M=M+1
 
 
 // call Sys.add12 1
-@Sys.Sys.add12$ret.2
+@Sys.Sys.add12$ret.0
 D=A
 @SP
 A=M
@@ -436,9 +436,9 @@ M=D
 D=M
 @LCL
 M=D
-@Sys.add12
+@Sys.Sys.add12
 0;JMP
-(Sys.Sys.add12$ret.2)
+(Sys.Sys.add12$ret.0)
 
 
 // pop temp 0
@@ -579,60 +579,64 @@ M=M+1
 
 
 // return
+// frame = LCL
 @LCL
 D=M
 @R13
 M=D
+// retAddr = *(frame - 5)
 @5
 D=A
 @R13
-D=M-D
+A=M-D
+D=M
 @R14
 M=D
-@0
-D=A
-@ARG
-D=D+M
-@R15
-M=D
+// *ARG = pop()
 @SP
 M=M-1
 A=M
 D=M
-@R15
+@ARG
 A=M
 M=D
+// SP = ARG + 1
 @ARG
-D=M+1
+D=M
 @SP
-M=D
+M=D+1
+// THAT = *(frame - 1)
 @R13
 AM=M-1
 D=M
 @THAT
 M=D
+// THIS = *(frame - 2)
 @R13
 AM=M-1
 D=M
 @THIS
 M=D
+// ARG = *(frame - 3)
 @R13
 AM=M-1
 D=M
 @ARG
 M=D
+// LCL = *(frame - 4)
 @R13
 AM=M-1
 D=M
 @LCL
 M=D
+// goto retAddr
 @R14
 A=M
 0;JMP
 
 
 // function Sys.add12 0
-(Sys.add12)
+(Sys.Sys.add12)
 
 
 // push constant 4002
@@ -723,53 +727,57 @@ M=M+1
 
 
 // return
+// frame = LCL
 @LCL
 D=M
 @R13
 M=D
+// retAddr = *(frame - 5)
 @5
 D=A
 @R13
-D=M-D
+A=M-D
+D=M
 @R14
 M=D
-@0
-D=A
-@ARG
-D=D+M
-@R15
-M=D
+// *ARG = pop()
 @SP
 M=M-1
 A=M
 D=M
-@R15
+@ARG
 A=M
 M=D
+// SP = ARG + 1
 @ARG
-D=M+1
+D=M
 @SP
-M=D
+M=D+1
+// THAT = *(frame - 1)
 @R13
 AM=M-1
 D=M
 @THAT
 M=D
+// THIS = *(frame - 2)
 @R13
 AM=M-1
 D=M
 @THIS
 M=D
+// ARG = *(frame - 3)
 @R13
 AM=M-1
 D=M
 @ARG
 M=D
+// LCL = *(frame - 4)
 @R13
 AM=M-1
 D=M
 @LCL
 M=D
+// goto retAddr
 @R14
 A=M
 0;JMP
