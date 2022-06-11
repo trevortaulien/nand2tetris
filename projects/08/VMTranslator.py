@@ -21,7 +21,6 @@ class VMTranslator:
     def parse(self):
         self.parser = Parser()
         self.necessaryVM = self.parser.stripUnnecessary(self.rawVM)
-        print(self.necessaryVM)
         self.fileBeingParsed = ''
         for vmLine in self.necessaryVM:
             subList = [None, None, None, None, None]    # [commandType, segment, address, vmLine, fileName]
@@ -740,7 +739,7 @@ class CodeWriter(VMTranslator):
             'D=M',
             '@LCL',
             'M=D',
-            '@' + functionName,
+            '@' + fileName + '.' + functionName,
             '0;JMP',
             '(' + fileName + '.' + functionName + '$ret.' + str(self.callCount) + ')'
         ]
@@ -749,16 +748,23 @@ class CodeWriter(VMTranslator):
 
     def _returnFunction(self, subList):
         asm = [
+            '// START frame = LCL',
             '@LCL',
             'D=M',
             '@R13',
             'M=D',
+            '// END frame = LCL',
+            '// START retAddr = *(frame - 5)',
             '@5',
             'D=A',
             '@R13',
             'D=M-D',
+            # 'A=D',
+            # 'D=M',
             '@R14',
             'M=D',
+            '// END retAddr = *(frame - 5)',
+            '// *ARG = pop()',
             '@0',
             'D=A',
             '@ARG',
@@ -796,7 +802,9 @@ class CodeWriter(VMTranslator):
             'D=M',
             '@LCL',
             'M=D',
+            '// done poping',
             '@R14',
+            'A=M',
             'A=M',
             '0;JMP'
         ]
