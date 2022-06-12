@@ -3,7 +3,7 @@
 D=A
 @SP
 M=D
-@None.Sys.init$ret.0
+@Sys.init$ret.0
 D=A
 @SP
 A=M
@@ -60,11 +60,11 @@ D=M
 M=D
 @Sys.init
 0;JMP
-(None.Sys.init$ret.0)
+(Sys.init$ret.0)
 
 
 // function Sys.init 0
-(Sys.Sys.init)
+(Sys.init)
 
 
 // push constant 6
@@ -88,7 +88,7 @@ M=M+1
 
 
 // call Class1.set 2
-@Sys.Class1.set$ret.0
+@Class1.set$ret.0
 D=A
 @SP
 A=M
@@ -145,7 +145,7 @@ D=M
 M=D
 @Class1.set
 0;JMP
-(Sys.Class1.set$ret.0)
+(Class1.set$ret.0)
 
 
 // pop temp 0
@@ -185,7 +185,7 @@ M=M+1
 
 
 // call Class2.set 2
-@Sys.Class2.set$ret.1
+@Class2.set$ret.1
 D=A
 @SP
 A=M
@@ -242,7 +242,7 @@ D=M
 M=D
 @Class2.set
 0;JMP
-(Sys.Class2.set$ret.1)
+(Class2.set$ret.1)
 
 
 // pop temp 0
@@ -262,7 +262,7 @@ M=D
 
 
 // call Class1.get 0
-@Sys.Class1.get$ret.2
+@Class1.get$ret.2
 D=A
 @SP
 A=M
@@ -319,11 +319,11 @@ D=M
 M=D
 @Class1.get
 0;JMP
-(Sys.Class1.get$ret.2)
+(Class1.get$ret.2)
 
 
 // call Class2.get 0
-@Sys.Class2.get$ret.3
+@Class2.get$ret.3
 D=A
 @SP
 A=M
@@ -380,20 +380,20 @@ D=M
 M=D
 @Class2.get
 0;JMP
-(Sys.Class2.get$ret.3)
+(Class2.get$ret.3)
 
 
 // label WHILE
-(Sys.Sys.init$WHILE)
+(Sys.init$WHILE)
 
 
 // goto WHILE
-@Sys.Sys.init$WHILE
+@Sys.init$WHILE
 0;JMP
 
 
 // function Class2.set 0
-(Class2.Class2.set)
+(Class2.set)
 
 
 // push argument 0
@@ -451,60 +451,64 @@ M=M+1
 
 
 // return
+// frame = LCL
 @LCL
 D=M
 @R13
 M=D
+// retAddr = *(frame - 5)
 @5
 D=A
 @R13
-D=M-D
+A=M-D
+D=M
 @R14
 M=D
-@0
-D=A
-@ARG
-D=D+M
-@R15
-M=D
+// *ARG = pop()
 @SP
 M=M-1
 A=M
 D=M
-@R15
+@ARG
 A=M
 M=D
+// SP = ARG + 1
 @ARG
-D=M+1
+D=M
 @SP
-M=D
+M=D+1
+// THAT = *(frame - 1)
 @R13
 AM=M-1
 D=M
 @THAT
 M=D
+// THIS = *(frame - 2)
 @R13
 AM=M-1
 D=M
 @THIS
 M=D
+// ARG = *(frame - 3)
 @R13
 AM=M-1
 D=M
 @ARG
 M=D
+// LCL = *(frame - 4)
 @R13
 AM=M-1
 D=M
 @LCL
 M=D
+// goto retAddr
 @R14
 A=M
 0;JMP
 
 
 // function Class2.get 0
-(Class2.Class2.get)
+(Class2.get)
 
 
 // push static 0
@@ -542,60 +546,64 @@ M=M+1
 
 
 // return
+// frame = LCL
 @LCL
 D=M
 @R13
 M=D
+// retAddr = *(frame - 5)
 @5
 D=A
 @R13
-D=M-D
+A=M-D
+D=M
 @R14
 M=D
-@0
-D=A
-@ARG
-D=D+M
-@R15
-M=D
+// *ARG = pop()
 @SP
 M=M-1
 A=M
 D=M
-@R15
+@ARG
 A=M
 M=D
+// SP = ARG + 1
 @ARG
-D=M+1
+D=M
 @SP
-M=D
+M=D+1
+// THAT = *(frame - 1)
 @R13
 AM=M-1
 D=M
 @THAT
 M=D
+// THIS = *(frame - 2)
 @R13
 AM=M-1
 D=M
 @THIS
 M=D
+// ARG = *(frame - 3)
 @R13
 AM=M-1
 D=M
 @ARG
 M=D
+// LCL = *(frame - 4)
 @R13
 AM=M-1
 D=M
 @LCL
 M=D
+// goto retAddr
 @R14
 A=M
 0;JMP
 
 
 // function Class1.set 0
-(Class1.Class1.set)
+(Class1.set)
 
 
 // push argument 0
@@ -653,60 +661,64 @@ M=M+1
 
 
 // return
+// frame = LCL
 @LCL
 D=M
 @R13
 M=D
+// retAddr = *(frame - 5)
 @5
 D=A
 @R13
-D=M-D
+A=M-D
+D=M
 @R14
 M=D
-@0
-D=A
-@ARG
-D=D+M
-@R15
-M=D
+// *ARG = pop()
 @SP
 M=M-1
 A=M
 D=M
-@R15
+@ARG
 A=M
 M=D
+// SP = ARG + 1
 @ARG
-D=M+1
+D=M
 @SP
-M=D
+M=D+1
+// THAT = *(frame - 1)
 @R13
 AM=M-1
 D=M
 @THAT
 M=D
+// THIS = *(frame - 2)
 @R13
 AM=M-1
 D=M
 @THIS
 M=D
+// ARG = *(frame - 3)
 @R13
 AM=M-1
 D=M
 @ARG
 M=D
+// LCL = *(frame - 4)
 @R13
 AM=M-1
 D=M
 @LCL
 M=D
+// goto retAddr
 @R14
 A=M
 0;JMP
 
 
 // function Class1.get 0
-(Class1.Class1.get)
+(Class1.get)
 
 
 // push static 0
@@ -744,53 +756,57 @@ M=M+1
 
 
 // return
+// frame = LCL
 @LCL
 D=M
 @R13
 M=D
+// retAddr = *(frame - 5)
 @5
 D=A
 @R13
-D=M-D
+A=M-D
+D=M
 @R14
 M=D
-@0
-D=A
-@ARG
-D=D+M
-@R15
-M=D
+// *ARG = pop()
 @SP
 M=M-1
 A=M
 D=M
-@R15
+@ARG
 A=M
 M=D
+// SP = ARG + 1
 @ARG
-D=M+1
+D=M
 @SP
-M=D
+M=D+1
+// THAT = *(frame - 1)
 @R13
 AM=M-1
 D=M
 @THAT
 M=D
+// THIS = *(frame - 2)
 @R13
 AM=M-1
 D=M
 @THIS
 M=D
+// ARG = *(frame - 3)
 @R13
 AM=M-1
 D=M
 @ARG
 M=D
+// LCL = *(frame - 4)
 @R13
 AM=M-1
 D=M
 @LCL
 M=D
+// goto retAddr
 @R14
 A=M
 0;JMP

@@ -632,14 +632,16 @@ class CodeWriter(VMTranslator):
     def _labelBranch(self, subList):
         label = subList[1]
         asm = [
-            '(' + subList[4] + '.' + self.apparentFunction + '$' + label + ')'
+            # '(' + subList[4] + '.' + self.apparentFunction + '$' + label + ')'
+            '(' + self.apparentFunction + '$' + label + ')'
         ]
         return asm
 
     def _gotoBranch(self, subList):
         label = subList[1]
         asm = [
-            '@' + subList[4] + '.' + self.apparentFunction + '$' + label,
+            # '@' + subList[4] + '.' + self.apparentFunction + '$' + label,
+            '@' + self.apparentFunction + '$' + label,
             '0;JMP'
         ]
         return asm
@@ -650,7 +652,8 @@ class CodeWriter(VMTranslator):
             '@SP',
             'AM=M-1',
             'D=M',
-            '@' + subList[4] + '.' + self.apparentFunction + '$' + label,
+            # '@' + subList[4] + '.' + self.apparentFunction + '$' + label,
+            '@' + self.apparentFunction + '$' + label,
             'D;JNE'
         ]
         return asm
@@ -670,7 +673,8 @@ class CodeWriter(VMTranslator):
         functionName = subList[1]
         nVars = subList[2]
         asm = [
-            '(' + subList[4] + '.' + str(functionName) + ')'
+            # '(' + subList[4] + '.' + str(functionName) + ')'
+            '(' + str(functionName) + ')'
         ]
         for i in range(nVars):
             nthPush = self.writePushPop([1, 'constant', 0, 'Allocating locals for ' + str(functionName)])
@@ -684,7 +688,8 @@ class CodeWriter(VMTranslator):
         fileName = str(subList[4])
         nArgs = str(subList[2])
         asm = [
-            '@' + fileName + '.' + functionName + '$ret.' + str(self.callCount),
+            # '@' + fileName + '.' + functionName + '$ret.' + str(self.callCount),
+            '@' + functionName + '$ret.' + str(self.callCount),
             'D=A',
             '@SP',
             'A=M',
@@ -739,9 +744,11 @@ class CodeWriter(VMTranslator):
             'D=M',
             '@LCL',
             'M=D',
-            '@' + fileName + '.' + functionName,
+            # '@' + fileName + '.' + functionName,
+            '@' + functionName,
             '0;JMP',
-            '(' + fileName + '.' + functionName + '$ret.' + str(self.callCount) + ')'
+            # '(' + fileName + '.' + functionName + '$ret.' + str(self.callCount) + ')'
+            '(' + functionName + '$ret.' + str(self.callCount) + ')'
         ]
         self.callCount += 1
         return asm

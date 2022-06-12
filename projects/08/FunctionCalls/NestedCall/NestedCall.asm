@@ -3,7 +3,7 @@
 D=A
 @SP
 M=D
-@Sys.Sys.init$ret.0
+@Sys.init$ret.0
 D=A
 @SP
 A=M
@@ -58,13 +58,13 @@ M=D
 D=M
 @LCL
 M=D
-@Sys.Sys.init
+@Sys.init
 0;JMP
-(Sys.Sys.init$ret.0)
+(Sys.init$ret.0)
 
 
 // function Sys.init 0
-(Sys.Sys.init)
+(Sys.init)
 
 
 // push constant 4000
@@ -118,7 +118,7 @@ M=D
 
 
 // call Sys.main 0
-@Sys.Sys.main$ret.0
+@Sys.main$ret.0
 D=A
 @SP
 A=M
@@ -173,9 +173,9 @@ M=D
 D=M
 @LCL
 M=D
-@Sys.Sys.main
+@Sys.main
 0;JMP
-(Sys.Sys.main$ret.0)
+(Sys.main$ret.0)
 
 
 // pop temp 1
@@ -195,16 +195,16 @@ M=D
 
 
 // label LOOP
-(Sys.Sys.init$LOOP)
+(Sys.init$LOOP)
 
 
 // goto LOOP
-@Sys.Sys.init$LOOP
+@Sys.init$LOOP
 0;JMP
 
 
 // function Sys.main 5
-(Sys.Sys.main)
+(Sys.main)
 @0
 D=A
 @SP
@@ -381,7 +381,7 @@ M=M+1
 
 
 // call Sys.add12 1
-@Sys.Sys.add12$ret.0
+@Sys.add12$ret.0
 D=A
 @SP
 A=M
@@ -436,9 +436,9 @@ M=D
 D=M
 @LCL
 M=D
-@Sys.Sys.add12
+@Sys.add12
 0;JMP
-(Sys.Sys.add12$ret.0)
+(Sys.add12$ret.0)
 
 
 // pop temp 0
@@ -636,7 +636,7 @@ A=M
 
 
 // function Sys.add12 0
-(Sys.Sys.add12)
+(Sys.add12)
 
 
 // push constant 4002
