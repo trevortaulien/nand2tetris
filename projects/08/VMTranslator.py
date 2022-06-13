@@ -821,7 +821,6 @@ class CodeWriter(VMTranslator):
 
 translator = VMTranslator()
 translator.parse()
-print(translator.vmMaster)
 translator.codeWrite()
 translator.outputAsm()
 
