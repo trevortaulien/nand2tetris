@@ -669,7 +669,7 @@ class CodeWriter(VMTranslator):
 
     def _functionFunction(self, subList):
         self.apparentFunction = subList[1]
-        self.callCount = 0
+        # self.callCount = 0
         functionName = subList[1]
         nVars = subList[2]
         asm = [
