@@ -118,7 +118,7 @@ M=D
 
 
 // call Sys.main 0
-@Sys.main$ret.0
+@Sys.main$ret.1
 D=A
 @SP
 A=M
@@ -175,7 +175,7 @@ D=M
 M=D
 @Sys.main
 0;JMP
-(Sys.main$ret.0)
+(Sys.main$ret.1)
 
 
 // pop temp 1
@@ -381,7 +381,7 @@ M=M+1
 
 
 // call Sys.add12 1
-@Sys.add12$ret.0
+@Sys.add12$ret.2
 D=A
 @SP
 A=M
@@ -438,7 +438,7 @@ D=M
 M=D
 @Sys.add12
 0;JMP
-(Sys.add12$ret.0)
+(Sys.add12$ret.2)
 
 
 // pop temp 0

@@ -25,7 +25,7 @@ M=D
 
 
 // label LOOP_START
-(BasicLoop.Default$LOOP_START)
+(Default$LOOP_START)
 
 
 // push argument 0
@@ -154,7 +154,7 @@ M=M+1
 @SP
 AM=M-1
 D=M
-@BasicLoop.Default$LOOP_START
+@Default$LOOP_START
 D;JNE
 
 

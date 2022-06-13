@@ -819,20 +819,10 @@ class CodeWriter(VMTranslator):
     def _VMlineAsComment(self,subList):
         return ('//' + subList[3])
 
-
-# translator = VMTranslator()
-# translator.parse()
-# print(translator.vmMaster)
-# translator.codeWrite()
-# translator.outputAsm()
-
 translator = VMTranslator()
-# print(translator.rawVM)
 translator.parse()
 print(translator.vmMaster)
 translator.codeWrite()
 translator.outputAsm()
-#print(translator.vmMaster)
-#print(translator.asmLines)
 
 print("I'm done :)")
