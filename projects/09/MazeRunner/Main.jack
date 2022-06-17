@@ -1,0 +1,10 @@
+class Main {
+    function void main() {
+        var Maze myMaze;
+        let myMaze = Maze.new();
+        do myMaze.drawMaze();
+        do Sys.wait(10000);
+        do myMaze.dispose();
+        return;
+    }
+}

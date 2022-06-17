@@ -1,0 +1,14 @@
+function Main.main 1
+call Maze.new 0
+pop local 0
+push local 0
+call Maze.drawMaze 1
+pop temp 0
+push constant 10000
+call Sys.wait 1
+pop temp 0
+push local 0
+call Maze.dispose 1
+pop temp 0
+push constant 0
+return
