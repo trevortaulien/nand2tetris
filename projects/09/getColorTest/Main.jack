@@ -1,0 +1,67 @@
+class Main {
+    function void main() {
+        var int x;
+        var int y;
+        var boolean result;
+        var int r;
+        let x = 15;
+        let y = 0;
+        do Screen.setColor(true);
+        do Screen.drawRectangle(50,50,75,75);
+        let result = Main.getColor(60,63);
+        if(result){
+            do Output.printString("returned true");
+        }
+        else{
+            do Output.printString("returned false");
+        }
+        do Sys.wait(10000);
+        return;
+    }
+
+    function boolean getColor(int x, int y){
+        var boolean color;
+        var int base;
+        var int offset;
+        var int address;
+        var int n;
+        var int place;
+        var int currently_displayed;
+        var int result;
+
+        let base = 16384;
+        let offset = (32 * y) + (x / 16);
+        let address = base + offset;
+        let currently_displayed = Memory.peek(address);
+
+        // x % 16
+        let place = x - ((x/16) * 16);
+
+        if(place = 0)  { let n = 1; }
+        if(place = 1)  { let n = 2; }
+        if(place = 2)  { let n = 4; }
+        if(place = 3)  { let n = 8; }
+        if(place = 4)  { let n = 16; }
+        if(place = 5)  { let n = 32; }
+        if(place = 6)  { let n = 64; }
+        if(place = 7)  { let n = 128; }
+        if(place = 8)  { let n = 256; }
+        if(place = 9)  { let n = 512; }
+        if(place = 10) { let n = 1024; }
+        if(place = 11) { let n = 2048; }
+        if(place = 12) { let n = 4096; }
+        if(place = 13) { let n = 8192; }
+        if(place = 14) { let n = 16384; }
+        if(place = 15) { let n = ~32767; }
+        
+        let result = n & currently_displayed;
+        if(result = n){
+            let color = true;
+        }
+        else{
+            let color = false;
+        }
+
+        return color;
+    }
+}
