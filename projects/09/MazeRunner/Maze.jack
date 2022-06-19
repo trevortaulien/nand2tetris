@@ -23,8 +23,11 @@ class Maze{
 
     method void draw_level1() {
         do Screen.clearScreen();
-        do Screen.drawRectangle(0,50,40,60);
+        do Screen.drawRectangle(0,51,40,60);
         do Screen.drawRectangle(30,0,40,30);
+
+        do Output.moveCursor(22,61);
+        do Output.printString("END");
         
         return;
     }

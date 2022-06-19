@@ -39,12 +39,29 @@ class MazeRunner{
     }
 
     method void moveSquare() {
-      if (direction = 1) { do square.moveUp(); }
-      if (direction = 2) { do square.moveDown(); }
-      if (direction = 3) { do square.moveLeft(); }
-      if (direction = 4) { do square.moveRight(); }
-      do Sys.wait(10);  // delays the next movement
-      return;
+        if (checkWinner()) { do winner(); }
+        if (direction = 1) { do square.moveUp(); }
+        if (direction = 2) { do square.moveDown(); }
+        if (direction = 3) { do square.moveLeft(); }
+        if (direction = 4) { do square.moveRight(); }
+        do Sys.wait(10);  // delays the next movement
+        return;
+   }
+
+   method boolean checkWinner() {
+        if( ((square.x_location() + square.size()) > 480) & 
+            ((square.y_location() + square.size()) > 231) ) {
+               return true;
+           }
+
+        return false;
+   }
+
+   method void winner(){
+        do Output.moveCursor(0,0);
+        do Screen.clearScreen();
+        do Output.printString("WINNER!");
+        return;
    }
 
     method void dispose(){

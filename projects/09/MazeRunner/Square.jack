@@ -111,6 +111,18 @@ class Square {
       return 0;
    }
 
+   method int x_location() {
+      return x;
+   }
+
+   method int y_location() {
+      return y;
+   }
+
+   method int size() {
+      return size;
+   }
+
    method boolean getColor(int x, int y) {
       var boolean color;
       var int base;
