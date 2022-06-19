@@ -6,7 +6,7 @@ push constant 0
 pop this 0
 push constant 0
 push constant 0
-push constant 5
+push constant 10
 call Square.new 3
 pop this 1
 call Maze.new 0

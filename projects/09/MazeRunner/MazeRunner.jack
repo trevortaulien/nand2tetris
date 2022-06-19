@@ -5,7 +5,7 @@ class MazeRunner{
 
     constructor MazeRunner new(){
         let direction = 0;
-        let square = Square.new(0,0,5);
+        let square = Square.new(0,0,10);
         let maze = Maze.new();
         return this;
     }

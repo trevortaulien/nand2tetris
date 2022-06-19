@@ -61,12 +61,22 @@ return
 function Square.moveUp 0
 push argument 0
 pop pointer 0
-push this 1
-push constant 1
-gt
+push pointer 0
+call Square.fourCorners 1
+push constant 3
+eq
 if-goto IF_TRUE0
 goto IF_FALSE0
 label IF_TRUE0
+push constant 0
+return
+label IF_FALSE0
+push this 1
+push constant 1
+gt
+if-goto IF_TRUE1
+goto IF_FALSE1
+label IF_TRUE1
 push constant 0
 call Screen.setColor 1
 pop temp 0
@@ -85,7 +95,7 @@ add
 call Screen.drawRectangle 4
 pop temp 0
 push this 1
-push constant 2
+push constant 1
 sub
 pop this 1
 push constant 0
@@ -102,22 +112,15 @@ push constant 1
 add
 call Screen.drawRectangle 4
 pop temp 0
-label IF_FALSE0
+label IF_FALSE1
 push constant 0
 return
 function Square.moveDown 0
 push argument 0
 pop pointer 0
 push pointer 0
-push this 0
-push this 1
-push this 2
-add
-push constant 1
-add
-call Square.getColor 3
-push constant 0
-not
+call Square.fourCorners 1
+push constant 4
 eq
 if-goto IF_TRUE0
 goto IF_FALSE0
@@ -147,7 +150,7 @@ add
 call Screen.drawRectangle 4
 pop temp 0
 push this 1
-push constant 2
+push constant 1
 add
 pop this 1
 push constant 0
@@ -174,12 +177,22 @@ return
 function Square.moveLeft 0
 push argument 0
 pop pointer 0
-push this 0
+push pointer 0
+call Square.fourCorners 1
 push constant 1
-gt
+eq
 if-goto IF_TRUE0
 goto IF_FALSE0
 label IF_TRUE0
+push constant 0
+return
+label IF_FALSE0
+push this 0
+push constant 1
+gt
+if-goto IF_TRUE1
+goto IF_FALSE1
+label IF_TRUE1
 push constant 0
 call Screen.setColor 1
 pop temp 0
@@ -198,7 +211,7 @@ add
 call Screen.drawRectangle 4
 pop temp 0
 push this 0
-push constant 2
+push constant 1
 sub
 pop this 0
 push constant 0
@@ -215,20 +228,30 @@ push this 2
 add
 call Screen.drawRectangle 4
 pop temp 0
-label IF_FALSE0
+label IF_FALSE1
 push constant 0
 return
 function Square.moveRight 0
 push argument 0
 pop pointer 0
+push pointer 0
+call Square.fourCorners 1
+push constant 2
+eq
+if-goto IF_TRUE0
+goto IF_FALSE0
+label IF_TRUE0
+push constant 0
+return
+label IF_FALSE0
 push this 0
 push this 2
 add
 push constant 510
 lt
-if-goto IF_TRUE0
-goto IF_FALSE0
-label IF_TRUE0
+if-goto IF_TRUE1
+goto IF_FALSE1
+label IF_TRUE1
 push constant 0
 call Screen.setColor 1
 pop temp 0
@@ -243,7 +266,7 @@ add
 call Screen.drawRectangle 4
 pop temp 0
 push this 0
-push constant 2
+push constant 1
 add
 pop this 0
 push constant 0
@@ -264,7 +287,148 @@ push this 2
 add
 call Screen.drawRectangle 4
 pop temp 0
+label IF_FALSE1
+push constant 0
+return
+function Square.fourCorners 0
+push argument 0
+pop pointer 0
+push pointer 0
+push this 0
+push constant 1
+sub
+push this 1
+call Square.getColor 3
+push constant 0
+not
+eq
+if-goto IF_TRUE0
+goto IF_FALSE0
+label IF_TRUE0
+push constant 1
+return
 label IF_FALSE0
+push pointer 0
+push this 0
+push constant 1
+sub
+push this 1
+push this 2
+add
+call Square.getColor 3
+push constant 0
+not
+eq
+if-goto IF_TRUE1
+goto IF_FALSE1
+label IF_TRUE1
+push constant 1
+return
+label IF_FALSE1
+push pointer 0
+push this 0
+push this 2
+add
+push constant 1
+add
+push this 1
+call Square.getColor 3
+push constant 0
+not
+eq
+if-goto IF_TRUE2
+goto IF_FALSE2
+label IF_TRUE2
+push constant 2
+return
+label IF_FALSE2
+push pointer 0
+push this 0
+push this 2
+add
+push constant 1
+add
+push this 1
+push this 2
+add
+call Square.getColor 3
+push constant 0
+not
+eq
+if-goto IF_TRUE3
+goto IF_FALSE3
+label IF_TRUE3
+push constant 2
+return
+label IF_FALSE3
+push pointer 0
+push this 0
+push this 1
+push constant 1
+sub
+call Square.getColor 3
+push constant 0
+not
+eq
+if-goto IF_TRUE4
+goto IF_FALSE4
+label IF_TRUE4
+push constant 3
+return
+label IF_FALSE4
+push pointer 0
+push this 0
+push this 2
+add
+push this 1
+push constant 1
+sub
+call Square.getColor 3
+push constant 0
+not
+eq
+if-goto IF_TRUE5
+goto IF_FALSE5
+label IF_TRUE5
+push constant 3
+return
+label IF_FALSE5
+push pointer 0
+push this 0
+push this 1
+push this 2
+add
+push constant 1
+add
+call Square.getColor 3
+push constant 0
+not
+eq
+if-goto IF_TRUE6
+goto IF_FALSE6
+label IF_TRUE6
+push constant 4
+return
+label IF_FALSE6
+push pointer 0
+push this 0
+push this 2
+add
+push this 1
+push this 2
+add
+push constant 1
+add
+call Square.getColor 3
+push constant 0
+not
+eq
+if-goto IF_TRUE7
+goto IF_FALSE7
+label IF_TRUE7
+push constant 4
+return
+label IF_FALSE7
 push constant 0
 return
 function Square.getColor 8
