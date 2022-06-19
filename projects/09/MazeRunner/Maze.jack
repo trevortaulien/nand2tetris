@@ -7,12 +7,12 @@ class Maze{
         return this;
     }
 
-    method void drawMaze() {
-        if(level = 49) { do drawMaze_level1(); return; }
-        if(level = 50) { do drawMaze_level2(); return; }
-        if(level = 51) { do drawMaze_level3(); return; }
-        if(level = 52) { do drawMaze_level4(); return; }
-        if(level = 53) { do drawMaze_level5(); return; }
+    method void draw() {
+        if(level = 49) { do draw_level1(); return; }
+        if(level = 50) { do draw_level2(); return; }
+        if(level = 51) { do draw_level3(); return; }
+        if(level = 52) { do draw_level4(); return; }
+        if(level = 53) { do draw_level5(); return; }
         
         // If entry is not valid
         do Output.moveCursor(0,0);
@@ -21,35 +21,36 @@ class Maze{
         return;
     }
 
-    method void drawMaze_level1() {
+    method void draw_level1() {
         do Screen.clearScreen();
-        do Screen.drawLine(10,10,50,40);
-        do Screen.drawLine(50,20,10,10);
+        do Screen.drawRectangle(0,50,40,60);
+        do Screen.drawRectangle(30,0,40,30);
+        
         return;
     }
 
-    method void drawMaze_level2() {
+    method void draw_level2() {
         do Output.moveCursor(0,0);
         do Screen.clearScreen();
         do Output.printString("Level 2 still in development.");
         return;
     }
 
-    method void drawMaze_level3() {
+    method void draw_level3() {
         do Output.moveCursor(0,0);
         do Screen.clearScreen();
         do Output.printString("Level 3 still in development.");
         return;
     }
 
-    method void drawMaze_level4() {
+    method void draw_level4() {
         do Output.moveCursor(0,0);
         do Screen.clearScreen();
         do Output.printString("Level 4 still in development.");
         return;
     }
 
-    method void drawMaze_level5() {
+    method void draw_level5() {
         do Output.moveCursor(0,0);
         do Screen.clearScreen();
         do Output.printString("Level 5 still in development.");

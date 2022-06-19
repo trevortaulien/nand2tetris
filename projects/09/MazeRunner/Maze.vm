@@ -60,7 +60,7 @@ call Keyboard.readChar 0
 pop this 0
 push pointer 0
 return
-function Maze.drawMaze 0
+function Maze.draw 0
 push argument 0
 pop pointer 0
 push this 0
@@ -70,7 +70,7 @@ if-goto IF_TRUE0
 goto IF_FALSE0
 label IF_TRUE0
 push pointer 0
-call Maze.drawMaze_level1 1
+call Maze.draw_level1 1
 pop temp 0
 push constant 0
 return
@@ -82,7 +82,7 @@ if-goto IF_TRUE1
 goto IF_FALSE1
 label IF_TRUE1
 push pointer 0
-call Maze.drawMaze_level2 1
+call Maze.draw_level2 1
 pop temp 0
 push constant 0
 return
@@ -94,7 +94,7 @@ if-goto IF_TRUE2
 goto IF_FALSE2
 label IF_TRUE2
 push pointer 0
-call Maze.drawMaze_level3 1
+call Maze.draw_level3 1
 pop temp 0
 push constant 0
 return
@@ -106,7 +106,7 @@ if-goto IF_TRUE3
 goto IF_FALSE3
 label IF_TRUE3
 push pointer 0
-call Maze.drawMaze_level4 1
+call Maze.draw_level4 1
 pop temp 0
 push constant 0
 return
@@ -118,7 +118,7 @@ if-goto IF_TRUE4
 goto IF_FALSE4
 label IF_TRUE4
 push pointer 0
-call Maze.drawMaze_level5 1
+call Maze.draw_level5 1
 pop temp 0
 push constant 0
 return
@@ -187,26 +187,26 @@ call Output.printString 1
 pop temp 0
 push constant 0
 return
-function Maze.drawMaze_level1 0
+function Maze.draw_level1 0
 push argument 0
 pop pointer 0
 call Screen.clearScreen 0
 pop temp 0
-push constant 10
-push constant 10
+push constant 0
 push constant 50
 push constant 40
-call Screen.drawLine 4
+push constant 60
+call Screen.drawRectangle 4
 pop temp 0
-push constant 50
-push constant 20
-push constant 10
-push constant 10
-call Screen.drawLine 4
+push constant 30
+push constant 0
+push constant 40
+push constant 30
+call Screen.drawRectangle 4
 pop temp 0
 push constant 0
 return
-function Maze.drawMaze_level2 0
+function Maze.draw_level2 0
 push argument 0
 pop pointer 0
 push constant 0
@@ -279,7 +279,7 @@ call Output.printString 1
 pop temp 0
 push constant 0
 return
-function Maze.drawMaze_level3 0
+function Maze.draw_level3 0
 push argument 0
 pop pointer 0
 push constant 0
@@ -352,7 +352,7 @@ call Output.printString 1
 pop temp 0
 push constant 0
 return
-function Maze.drawMaze_level4 0
+function Maze.draw_level4 0
 push argument 0
 pop pointer 0
 push constant 0
@@ -425,7 +425,7 @@ call Output.printString 1
 pop temp 0
 push constant 0
 return
-function Maze.drawMaze_level5 0
+function Maze.draw_level5 0
 push argument 0
 pop pointer 0
 push constant 0

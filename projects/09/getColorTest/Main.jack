@@ -7,8 +7,8 @@ class Main {
         let x = 15;
         let y = 0;
         do Screen.setColor(true);
-        do Screen.drawRectangle(50,50,75,75);
-        let result = Main.getColor(60,63);
+        do Screen.drawRectangle(100,100,511,255);
+        let result = Main.getColor(511,255);
         if(result){
             do Output.printString("returned true");
         }

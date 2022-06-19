@@ -1,10 +1,9 @@
 class Main {
     function void main() {
-        var Maze myMaze;
-        let myMaze = Maze.new();
-        do myMaze.drawMaze();
+        var MazeRunner game;
+        let game = MazeRunner.new();
+        do game.run(); 
         do Sys.wait(10000);
-        do myMaze.dispose();
         return;
     }
 }

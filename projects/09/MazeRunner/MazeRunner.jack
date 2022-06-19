@@ -1,0 +1,55 @@
+class MazeRunner{
+    field int direction;
+    field Square square;
+    field Maze maze;
+
+    constructor MazeRunner new(){
+        let direction = 0;
+        let square = Square.new(0,0,5);
+        let maze = Maze.new();
+        return this;
+    }
+
+    method void run(){
+        var int key;
+        var boolean exit;
+        let exit = false;
+        
+        
+        do maze.draw();
+        do square.draw();
+
+        while(~exit){
+            while(key = 0){
+                let key = Keyboard.keyPressed();
+                do moveSquare();
+            }  
+            if(key = 81)  {let exit = true;}    // q
+            if(key = 131) {let direction = 1;}  // up 
+            if(key = 133) {let direction = 2;}  // down
+            if(key = 130) {let direction = 3;}  // left
+            if(key = 132) {let direction = 4;}  // right
+
+            while(~(key = 0)){
+                let key = Keyboard.keyPressed();
+                do moveSquare();
+            }
+        }
+        return;
+    }
+
+    method void moveSquare() {
+      if (direction = 1) { do square.moveUp(); }
+      if (direction = 2) { do square.moveDown(); }
+      if (direction = 3) { do square.moveLeft(); }
+      if (direction = 4) { do square.moveRight(); }
+      do Sys.wait(10);  // delays the next movement
+      return;
+   }
+
+    method void dispose(){
+        do square.dispose();
+        do Memory.deAlloc(this);
+        return;
+    }
+}
