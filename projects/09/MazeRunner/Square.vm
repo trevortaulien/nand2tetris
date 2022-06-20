@@ -1,0 +1,737 @@
+function Square.new 0
+push constant 3
+call Memory.alloc 1
+pop pointer 0
+push argument 0
+pop this 0
+push argument 1
+pop this 1
+push argument 2
+pop this 2
+push pointer 0
+call Square.draw 1
+pop temp 0
+push pointer 0
+return
+function Square.dispose 0
+push argument 0
+pop pointer 0
+push pointer 0
+call Memory.deAlloc 1
+pop temp 0
+push constant 0
+return
+function Square.draw 0
+push argument 0
+pop pointer 0
+push constant 0
+not
+call Screen.setColor 1
+pop temp 0
+push this 0
+push this 1
+push this 0
+push this 2
+add
+push this 1
+push this 2
+add
+call Screen.drawRectangle 4
+pop temp 0
+push constant 0
+return
+function Square.erase 0
+push argument 0
+pop pointer 0
+push constant 0
+call Screen.setColor 1
+pop temp 0
+push this 0
+push this 1
+push this 0
+push this 2
+add
+push this 1
+push this 2
+add
+call Screen.drawRectangle 4
+pop temp 0
+push constant 0
+return
+function Square.moveUp 0
+push argument 0
+pop pointer 0
+push pointer 0
+push this 0
+push this 1
+push constant 1
+sub
+call Square.getColor 3
+push constant 0
+not
+eq
+if-goto IF_TRUE0
+goto IF_FALSE0
+label IF_TRUE0
+push constant 0
+return
+label IF_FALSE0
+push pointer 0
+push this 0
+push this 2
+add
+push this 1
+push constant 1
+sub
+call Square.getColor 3
+push constant 0
+not
+eq
+if-goto IF_TRUE1
+goto IF_FALSE1
+label IF_TRUE1
+push constant 0
+return
+label IF_FALSE1
+push this 1
+push constant 1
+gt
+if-goto IF_TRUE2
+goto IF_FALSE2
+label IF_TRUE2
+push constant 0
+call Screen.setColor 1
+pop temp 0
+push this 0
+push this 1
+push this 2
+add
+push constant 1
+sub
+push this 0
+push this 2
+add
+push this 1
+push this 2
+add
+call Screen.drawRectangle 4
+pop temp 0
+push this 1
+push constant 1
+sub
+pop this 1
+push constant 0
+not
+call Screen.setColor 1
+pop temp 0
+push this 0
+push this 1
+push this 0
+push this 2
+add
+push this 1
+push constant 1
+add
+call Screen.drawRectangle 4
+pop temp 0
+label IF_FALSE2
+push constant 0
+return
+function Square.moveDown 0
+push argument 0
+pop pointer 0
+push pointer 0
+push this 0
+push this 1
+push this 2
+add
+push constant 1
+add
+call Square.getColor 3
+push constant 0
+not
+eq
+if-goto IF_TRUE0
+goto IF_FALSE0
+label IF_TRUE0
+push constant 0
+return
+label IF_FALSE0
+push pointer 0
+push this 0
+push this 2
+add
+push this 1
+push this 2
+add
+push constant 1
+add
+call Square.getColor 3
+push constant 0
+not
+eq
+if-goto IF_TRUE1
+goto IF_FALSE1
+label IF_TRUE1
+push constant 0
+return
+label IF_FALSE1
+push this 1
+push this 2
+add
+push constant 254
+lt
+if-goto IF_TRUE2
+goto IF_FALSE2
+label IF_TRUE2
+push constant 0
+call Screen.setColor 1
+pop temp 0
+push this 0
+push this 1
+push this 0
+push this 2
+add
+push this 1
+push constant 1
+add
+call Screen.drawRectangle 4
+pop temp 0
+push this 1
+push constant 1
+add
+pop this 1
+push constant 0
+not
+call Screen.setColor 1
+pop temp 0
+push this 0
+push this 1
+push this 2
+add
+push constant 1
+sub
+push this 0
+push this 2
+add
+push this 1
+push this 2
+add
+call Screen.drawRectangle 4
+pop temp 0
+label IF_FALSE2
+push constant 0
+return
+function Square.moveLeft 0
+push argument 0
+pop pointer 0
+push pointer 0
+push this 0
+push constant 1
+sub
+push this 1
+call Square.getColor 3
+push constant 0
+not
+eq
+if-goto IF_TRUE0
+goto IF_FALSE0
+label IF_TRUE0
+push constant 0
+return
+label IF_FALSE0
+push pointer 0
+push this 0
+push constant 1
+sub
+push this 1
+push this 2
+add
+call Square.getColor 3
+push constant 0
+not
+eq
+if-goto IF_TRUE1
+goto IF_FALSE1
+label IF_TRUE1
+push constant 0
+return
+label IF_FALSE1
+push this 0
+push constant 1
+gt
+if-goto IF_TRUE2
+goto IF_FALSE2
+label IF_TRUE2
+push constant 0
+call Screen.setColor 1
+pop temp 0
+push this 0
+push this 2
+add
+push constant 1
+sub
+push this 1
+push this 0
+push this 2
+add
+push this 1
+push this 2
+add
+call Screen.drawRectangle 4
+pop temp 0
+push this 0
+push constant 1
+sub
+pop this 0
+push constant 0
+not
+call Screen.setColor 1
+pop temp 0
+push this 0
+push this 1
+push this 0
+push constant 1
+add
+push this 1
+push this 2
+add
+call Screen.drawRectangle 4
+pop temp 0
+label IF_FALSE2
+push constant 0
+return
+function Square.moveRight 0
+push argument 0
+pop pointer 0
+push pointer 0
+push this 0
+push this 2
+add
+push constant 1
+add
+push this 1
+call Square.getColor 3
+push constant 0
+not
+eq
+if-goto IF_TRUE0
+goto IF_FALSE0
+label IF_TRUE0
+push constant 0
+return
+label IF_FALSE0
+push pointer 0
+push this 0
+push this 2
+add
+push constant 1
+add
+push this 1
+push this 2
+add
+call Square.getColor 3
+push constant 0
+not
+eq
+if-goto IF_TRUE1
+goto IF_FALSE1
+label IF_TRUE1
+push constant 0
+return
+label IF_FALSE1
+push this 0
+push this 2
+add
+push constant 510
+lt
+if-goto IF_TRUE2
+goto IF_FALSE2
+label IF_TRUE2
+push constant 0
+call Screen.setColor 1
+pop temp 0
+push this 0
+push this 1
+push this 0
+push constant 1
+add
+push this 1
+push this 2
+add
+call Screen.drawRectangle 4
+pop temp 0
+push this 0
+push constant 1
+add
+pop this 0
+push constant 0
+not
+call Screen.setColor 1
+pop temp 0
+push this 0
+push this 2
+add
+push constant 1
+sub
+push this 1
+push this 0
+push this 2
+add
+push this 1
+push this 2
+add
+call Screen.drawRectangle 4
+pop temp 0
+label IF_FALSE2
+push constant 0
+return
+function Square.fourCorners 0
+push argument 0
+pop pointer 0
+push pointer 0
+push this 0
+push constant 1
+sub
+push this 1
+call Square.getColor 3
+push constant 0
+not
+eq
+if-goto IF_TRUE0
+goto IF_FALSE0
+label IF_TRUE0
+push constant 1
+return
+label IF_FALSE0
+push pointer 0
+push this 0
+push constant 1
+sub
+push this 1
+push this 2
+add
+call Square.getColor 3
+push constant 0
+not
+eq
+if-goto IF_TRUE1
+goto IF_FALSE1
+label IF_TRUE1
+push constant 1
+return
+label IF_FALSE1
+push pointer 0
+push this 0
+push this 2
+add
+push constant 1
+add
+push this 1
+call Square.getColor 3
+push constant 0
+not
+eq
+if-goto IF_TRUE2
+goto IF_FALSE2
+label IF_TRUE2
+push constant 2
+return
+label IF_FALSE2
+push pointer 0
+push this 0
+push this 2
+add
+push constant 1
+add
+push this 1
+push this 2
+add
+call Square.getColor 3
+push constant 0
+not
+eq
+if-goto IF_TRUE3
+goto IF_FALSE3
+label IF_TRUE3
+push constant 2
+return
+label IF_FALSE3
+push pointer 0
+push this 0
+push this 1
+push constant 1
+sub
+call Square.getColor 3
+push constant 0
+not
+eq
+if-goto IF_TRUE4
+goto IF_FALSE4
+label IF_TRUE4
+push constant 3
+return
+label IF_FALSE4
+push pointer 0
+push this 0
+push this 2
+add
+push this 1
+push constant 1
+sub
+call Square.getColor 3
+push constant 0
+not
+eq
+if-goto IF_TRUE5
+goto IF_FALSE5
+label IF_TRUE5
+push constant 3
+return
+label IF_FALSE5
+push pointer 0
+push this 0
+push this 1
+push this 2
+add
+push constant 1
+add
+call Square.getColor 3
+push constant 0
+not
+eq
+if-goto IF_TRUE6
+goto IF_FALSE6
+label IF_TRUE6
+push constant 4
+return
+label IF_FALSE6
+push pointer 0
+push this 0
+push this 2
+add
+push this 1
+push this 2
+add
+push constant 1
+add
+call Square.getColor 3
+push constant 0
+not
+eq
+if-goto IF_TRUE7
+goto IF_FALSE7
+label IF_TRUE7
+push constant 4
+return
+label IF_FALSE7
+push constant 0
+return
+function Square.x_location 0
+push argument 0
+pop pointer 0
+push this 0
+return
+function Square.y_location 0
+push argument 0
+pop pointer 0
+push this 1
+return
+function Square.size 0
+push argument 0
+pop pointer 0
+push this 2
+return
+function Square.getColor 8
+push argument 0
+pop pointer 0
+push constant 16384
+pop local 1
+push constant 32
+push argument 2
+call Math.multiply 2
+push argument 1
+push constant 16
+call Math.divide 2
+add
+pop local 2
+push local 1
+push local 2
+add
+pop local 3
+push local 3
+call Memory.peek 1
+pop local 6
+push argument 1
+push argument 1
+push constant 16
+call Math.divide 2
+push constant 16
+call Math.multiply 2
+sub
+pop local 5
+push local 5
+push constant 0
+eq
+if-goto IF_TRUE0
+goto IF_FALSE0
+label IF_TRUE0
+push constant 1
+pop local 4
+label IF_FALSE0
+push local 5
+push constant 1
+eq
+if-goto IF_TRUE1
+goto IF_FALSE1
+label IF_TRUE1
+push constant 2
+pop local 4
+label IF_FALSE1
+push local 5
+push constant 2
+eq
+if-goto IF_TRUE2
+goto IF_FALSE2
+label IF_TRUE2
+push constant 4
+pop local 4
+label IF_FALSE2
+push local 5
+push constant 3
+eq
+if-goto IF_TRUE3
+goto IF_FALSE3
+label IF_TRUE3
+push constant 8
+pop local 4
+label IF_FALSE3
+push local 5
+push constant 4
+eq
+if-goto IF_TRUE4
+goto IF_FALSE4
+label IF_TRUE4
+push constant 16
+pop local 4
+label IF_FALSE4
+push local 5
+push constant 5
+eq
+if-goto IF_TRUE5
+goto IF_FALSE5
+label IF_TRUE5
+push constant 32
+pop local 4
+label IF_FALSE5
+push local 5
+push constant 6
+eq
+if-goto IF_TRUE6
+goto IF_FALSE6
+label IF_TRUE6
+push constant 64
+pop local 4
+label IF_FALSE6
+push local 5
+push constant 7
+eq
+if-goto IF_TRUE7
+goto IF_FALSE7
+label IF_TRUE7
+push constant 128
+pop local 4
+label IF_FALSE7
+push local 5
+push constant 8
+eq
+if-goto IF_TRUE8
+goto IF_FALSE8
+label IF_TRUE8
+push constant 256
+pop local 4
+label IF_FALSE8
+push local 5
+push constant 9
+eq
+if-goto IF_TRUE9
+goto IF_FALSE9
+label IF_TRUE9
+push constant 512
+pop local 4
+label IF_FALSE9
+push local 5
+push constant 10
+eq
+if-goto IF_TRUE10
+goto IF_FALSE10
+label IF_TRUE10
+push constant 1024
+pop local 4
+label IF_FALSE10
+push local 5
+push constant 11
+eq
+if-goto IF_TRUE11
+goto IF_FALSE11
+label IF_TRUE11
+push constant 2048
+pop local 4
+label IF_FALSE11
+push local 5
+push constant 12
+eq
+if-goto IF_TRUE12
+goto IF_FALSE12
+label IF_TRUE12
+push constant 4096
+pop local 4
+label IF_FALSE12
+push local 5
+push constant 13
+eq
+if-goto IF_TRUE13
+goto IF_FALSE13
+label IF_TRUE13
+push constant 8192
+pop local 4
+label IF_FALSE13
+push local 5
+push constant 14
+eq
+if-goto IF_TRUE14
+goto IF_FALSE14
+label IF_TRUE14
+push constant 16384
+pop local 4
+label IF_FALSE14
+push local 5
+push constant 15
+eq
+if-goto IF_TRUE15
+goto IF_FALSE15
+label IF_TRUE15
+push constant 32767
+not
+pop local 4
+label IF_FALSE15
+push local 4
+push local 6
+and
+pop local 7
+push local 7
+push local 4
+eq
+if-goto IF_TRUE16
+goto IF_FALSE16
+label IF_TRUE16
+push constant 0
+not
+pop local 0
+goto IF_END16
+label IF_FALSE16
+push constant 0
+pop local 0
+label IF_END16
+push local 0
+return

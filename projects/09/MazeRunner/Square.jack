@@ -1,0 +1,171 @@
+// This file is part of www.nand2tetris.org
+// and the book "The Elements of Computing Systems"
+// by Nisan and Schocken, MIT Press.
+// File name: projects/09/Square/Square.jack
+
+/** Implements a graphical square. */
+class Square {
+
+   field int x, y; // screen location of the square's top-left corner
+   field int size; // length of this square, in pixels
+
+   /** Constructs a new square with a given location and size. */
+   constructor Square new(int Ax, int Ay, int Asize) {
+      let x = Ax;
+      let y = Ay;
+      let size = Asize;
+      do draw();
+      return this;
+   }
+
+   /** Disposes this square. */
+   method void dispose() {
+      do Memory.deAlloc(this);
+      return;
+   }
+
+   /** Draws the square on the screen. */
+   method void draw() {
+      do Screen.setColor(true);
+      do Screen.drawRectangle(x, y, x + size, y + size);
+      return;
+   }
+
+   /** Erases the square from the screen. */
+   method void erase() {
+      do Screen.setColor(false);
+      do Screen.drawRectangle(x, y, x + size, y + size);
+      return;
+   }
+
+   /** Moves the square up by 2 pixels. */
+   method void moveUp() {
+      if(getColor(x, y - 1) = true) { return; } // top left
+      if(getColor(x + size, y - 1) = true) { return; } // top right
+
+      if (y > 1) {
+         do Screen.setColor(false);
+         do Screen.drawRectangle(x, (y + size) - 1, x + size, y + size);
+         let y = y - 1;
+         do Screen.setColor(true);
+         do Screen.drawRectangle(x, y, x + size, y + 1);
+      }
+      return;
+   }
+
+   /** Moves the square down by 2 pixels. */
+   method void moveDown() {
+      if(getColor(x, y + size + 1) = true) { return; } // bottom left
+      if(getColor(x + size, y + size + 1) = true) { return; } // bottom right
+
+      if ((y + size) < 254) {
+         do Screen.setColor(false);
+         do Screen.drawRectangle(x, y, x + size, y + 1);
+         let y = y + 1;
+         do Screen.setColor(true);
+         do Screen.drawRectangle(x, (y + size) - 1, x + size, y + size);
+      }
+      return;
+   }
+
+   /** Moves the square left by 2 pixels. */
+   method void moveLeft() {
+      if(getColor(x - 1, y) = true) { return; } // left upper
+      if(getColor(x - 1, y + size) = true) { return; } // left lower
+
+      if (x > 1) {
+         do Screen.setColor(false);
+         do Screen.drawRectangle((x + size) - 1, y, x + size, y + size);
+         let x = x - 1;
+         do Screen.setColor(true);
+         do Screen.drawRectangle(x, y, x + 1, y + size);
+      }
+      return;
+   }
+
+   /** Moves the square right by 2 pixels. */
+   method void moveRight() {
+      if(getColor(x + size + 1, y) = true) { return; } // right upper
+      if(getColor(x + size + 1, y + size) = true) { return; } // right lower
+
+      if ((x + size) < 510) {
+         do Screen.setColor(false);
+         do Screen.drawRectangle(x, y, x + 1, y + size);
+         let x = x + 1;
+         do Screen.setColor(true);
+         do Screen.drawRectangle((x + size) - 1, y, x + size, y + size);
+      }
+      return;
+   }
+
+   method int fourCorners() {
+      if(getColor(x - 1, y) = true) { return 1; } // left upper
+      if(getColor(x - 1, y + size) = true) { return 1; } // left lower
+      if(getColor(x + size + 1, y) = true) { return 2; } // right upper
+      if(getColor(x + size + 1, y + size) = true) { return 2; } // right lower
+      if(getColor(x, y - 1) = true) { return 3; } // top left
+      if(getColor(x + size, y - 1) = true) { return 3; } // top right
+      if(getColor(x, y + size + 1) = true) { return 4; } // bottom left
+      if(getColor(x + size, y + size + 1) = true) { return 4; } // bottom right
+
+      return 0;
+   }
+
+   method int x_location() {
+      return x;
+   }
+
+   method int y_location() {
+      return y;
+   }
+
+   method int size() {
+      return size;
+   }
+
+   method boolean getColor(int x, int y) {
+      var boolean color;
+      var int base;
+      var int offset;
+      var int address;
+      var int n;
+      var int place;
+      var int currently_displayed;
+      var int result;
+
+      let base = 16384;
+      let offset = (32 * y) + (x / 16);
+      let address = base + offset;
+      let currently_displayed = Memory.peek(address);
+
+      // x % 16
+      let place = x - ((x/16) * 16);
+
+      if(place = 0)  { let n = 1; }
+      if(place = 1)  { let n = 2; }
+      if(place = 2)  { let n = 4; }
+      if(place = 3)  { let n = 8; }
+      if(place = 4)  { let n = 16; }
+      if(place = 5)  { let n = 32; }
+      if(place = 6)  { let n = 64; }
+      if(place = 7)  { let n = 128; }
+      if(place = 8)  { let n = 256; }
+      if(place = 9)  { let n = 512; }
+      if(place = 10) { let n = 1024; }
+      if(place = 11) { let n = 2048; }
+      if(place = 12) { let n = 4096; }
+      if(place = 13) { let n = 8192; }
+      if(place = 14) { let n = 16384; }
+      if(place = 15) { let n = ~32767; }
+      
+      let result = n & currently_displayed;
+      if(result = n){
+         let color = true;
+      }
+      else{
+         let color = false;
+      }
+
+      return color;
+   }
+}

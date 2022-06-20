@@ -1,0 +1,9 @@
+class Main {
+    function void main() {
+        var MazeRunner game;
+        let game = MazeRunner.new();
+        do game.run(); 
+        do Sys.wait(10000);
+        return;
+    }
+}

@@ -1,0 +1,155 @@
+class Maze{
+    field int level;
+
+    constructor Maze new() {
+        do Output.printString("Enter level number (1-5):");
+        let level = Keyboard.readChar();
+        return this;
+    }
+
+    method void draw() {
+        if(level = 49) { do draw_level1(); return; }
+        if(level = 50) { do draw_level2(); return; }
+        if(level = 51) { do draw_level3(); return; }
+        if(level = 52) { do draw_level4(); return; }
+        if(level = 53) { do draw_level5(); return; }
+        
+        // If entry is not valid
+        do Output.moveCursor(0,0);
+        do Screen.clearScreen();
+        do Output.printString("That is not a valid entry.");
+        return;
+    }
+
+    method void draw_level1() {
+        do Screen.clearScreen();
+        do Screen.drawRectangle(0,50,40,60);
+        do Screen.drawRectangle(30,0,40,30);
+        do Screen.drawRectangle(134,0,153,4);
+        do Screen.drawRectangle(84,15,93,19);
+        do Screen.drawRectangle(60,20,233,29);
+        do Screen.drawRectangle(175,13,199,19);
+        do Screen.drawRectangle(60,30,69,99);
+        do Screen.drawRectangle(15,74,59,83);
+        do Screen.drawRectangle(70,86,79,99);
+        do Screen.drawRectangle(85,55,99,68);
+        do Screen.drawRectangle(100,55,119,124);
+        do Screen.drawRectangle(120,68,184,82);
+        do Screen.drawRectangle(120,100,136,113);
+        do Screen.drawRectangle(0,115,99,124);
+        do Screen.drawRectangle(148,30,157,49);
+        do Screen.drawRectangle(201,30,210,62);
+        do Screen.drawRectangle(224,30,233,126);
+        do Screen.drawRectangle(246,0,261,26);
+        do Screen.drawRectangle(276,0,301,16);
+        do Screen.drawRectangle(326,0,365,9);
+        do Screen.drawRectangle(393,0,411,27);
+        do Screen.drawRectangle(436,0,455,25);
+        do Screen.drawRectangle(475,18,510,46);
+        do Screen.drawRectangle(234,97,238,126);
+        do Screen.drawRectangle(239,97,262,109);
+        do Screen.drawRectangle(234,46,295,60);
+        do Screen.drawRectangle(258,61,267,77);
+        do Screen.drawRectangle(280,30,295,45);
+        do Screen.drawRectangle(296,37,337,51);
+        do Screen.drawRectangle(316,24,327,36);
+        do Screen.drawRectangle(312,52,324,69);
+        do Screen.drawRectangle(354,23,373,77);
+        do Screen.drawRectangle(374,42,403,57);
+        do Screen.drawRectangle(394,58,403,77);
+        do Screen.drawRectangle(404,68,429,77);
+        do Screen.drawRectangle(422,42,429,67);
+        do Screen.drawRectangle(430,42,444,57);
+        do Screen.drawRectangle(461,72,510,90);
+        do Screen.drawRectangle(469,91,485,113);
+        do Screen.drawRectangle(326,95,441,111);
+        do Screen.drawRectangle(344,112,360,139);
+        do Screen.drawRectangle(294,84,309,127);
+        do Screen.drawRectangle(279,90,293,106);
+        do Screen.drawRectangle(289,128,320,153);
+        do Screen.drawRectangle(289,154,303,171);
+        do Screen.drawRectangle(14,141,102,153);
+        do Screen.drawRectangle(14,154,30,182);
+        do Screen.drawRectangle(31,170,91,182);
+        do Screen.drawRectangle(47,183,56,205);
+        do Screen.drawRectangle(71,183,77,220);
+        do Screen.drawRectangle(65,212,70,220);
+        do Screen.drawRectangle(18,206,29,236);
+        do Screen.drawRectangle(30,227,52,236);
+        do Screen.drawRectangle(41,237,52,254);
+        do Screen.drawRectangle(53,233,154,242);
+        do Screen.drawRectangle(99,199,166,214);
+        do Screen.drawRectangle(152,182,163,198);
+        do Screen.drawRectangle(121,141,154,153);
+        do Screen.drawRectangle(121,154,133,182);
+        do Screen.drawRectangle(155,130,165,168);
+        do Screen.drawRectangle(155,96,203,115);
+        do Screen.drawRectangle(182,116,203,187);
+        do Screen.drawRectangle(204,112,209,125);
+        do Screen.drawRectangle(204,142,269,154);
+        do Screen.drawRectangle(257,123,266,141);
+        do Screen.drawRectangle(204,168,240,187);
+        do Screen.drawRectangle(215,188,229,213);
+        do Screen.drawRectangle(180,212,195,254);
+        do Screen.drawRectangle(196,231,251,241);
+        do Screen.drawRectangle(255,170,271,216);
+        do Screen.drawRectangle(272,185,303,198);
+        do Screen.drawRectangle(301,214,333,227);
+        do Screen.drawRectangle(309,243,326,254);
+        do Screen.drawRectangle(271,233,284,254);
+        do Screen.drawRectangle(354,223,371,254);
+        do Screen.drawRectangle(427,227,438,254);
+        do Screen.drawRectangle(325,169,402,187);
+        do Screen.drawRectangle(355,156,366,168);
+        do Screen.drawRectangle(335,188,348,198);
+        do Screen.drawRectangle(382,129,396,168);
+        do Screen.drawRectangle(380,188,402,209);
+        do Screen.drawRectangle(403,195,428,209);
+        do Screen.drawRectangle(390,210,408,242);
+        do Screen.drawRectangle(455,190,471,237);
+        do Screen.drawRectangle(492,210,510,228);
+        do Screen.drawRectangle(423,129,442,174);
+        do Screen.drawRectangle(443,135,463,147);
+        do Screen.drawRectangle(443,162,478,174);
+        do Screen.drawRectangle(479,129,496,174);
+
+        do Output.moveCursor(22,61);
+        do Output.printString("END");
+        
+        return;
+    }
+
+    method void draw_level2() {
+        do Output.moveCursor(0,0);
+        do Screen.clearScreen();
+        do Output.printString("Level 2 still in development.");
+        return;
+    }
+
+    method void draw_level3() {
+        do Output.moveCursor(0,0);
+        do Screen.clearScreen();
+        do Output.printString("Level 3 still in development.");
+        return;
+    }
+
+    method void draw_level4() {
+        do Output.moveCursor(0,0);
+        do Screen.clearScreen();
+        do Output.printString("Level 4 still in development.");
+        return;
+    }
+
+    method void draw_level5() {
+        do Output.moveCursor(0,0);
+        do Screen.clearScreen();
+        do Output.printString("Level 5 still in development.");
+        return;
+    }
+
+    method void dispose() {
+        do Memory.deAlloc(this);
+        return;
+    }
+
+}
