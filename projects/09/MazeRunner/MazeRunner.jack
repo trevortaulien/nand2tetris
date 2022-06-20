@@ -58,7 +58,7 @@ class MazeRunner{
    }
 
    method void winner(){
-        do Output.moveCursor(0,0);
+        do Output.moveCursor(10,28);
         do Screen.clearScreen();
         do Output.printString("WINNER!");
         return;

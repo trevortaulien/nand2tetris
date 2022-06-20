@@ -193,8 +193,8 @@ return
 function MazeRunner.winner 0
 push argument 0
 pop pointer 0
-push constant 0
-push constant 0
+push constant 10
+push constant 28
 call Output.moveCursor 2
 pop temp 0
 call Screen.clearScreen 0
