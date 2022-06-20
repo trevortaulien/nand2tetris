@@ -25,6 +25,14 @@ class Maze{
         do Screen.clearScreen();
         do Screen.drawRectangle(0,50,40,60);
         do Screen.drawRectangle(30,0,40,30);
+        do Screen.drawRectangle(134,0,153,4);
+        do Screen.drawRectangle(84,15,93,19);
+        do Screen.drawRectangle(60,20,233,29);
+        do Screen.drawRectangle(175,13,199,19);
+        do Screen.drawRectangle(60,30,69,99);
+        do Screen.drawRectangle(15,74,59,83);
+        do Screen.drawRectangle(70,86,79,99);
+        
 
         do Output.moveCursor(22,61);
         do Output.printString("END");

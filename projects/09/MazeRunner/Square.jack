@@ -40,9 +40,9 @@ class Square {
 
    /** Moves the square up by 2 pixels. */
    method void moveUp() {
-      if(fourCorners() = 3){
-         return;
-      }
+      if(getColor(x, y - 1) = true) { return; } // top left
+      if(getColor(x + size, y - 1) = true) { return; } // top right
+
       if (y > 1) {
          do Screen.setColor(false);
          do Screen.drawRectangle(x, (y + size) - 1, x + size, y + size);
@@ -55,9 +55,9 @@ class Square {
 
    /** Moves the square down by 2 pixels. */
    method void moveDown() {
-      if(fourCorners() = 4){
-         return;
-      }
+      if(getColor(x, y + size + 1) = true) { return; } // bottom left
+      if(getColor(x + size, y + size + 1) = true) { return; } // bottom right
+
       if ((y + size) < 254) {
          do Screen.setColor(false);
          do Screen.drawRectangle(x, y, x + size, y + 1);
@@ -70,9 +70,9 @@ class Square {
 
    /** Moves the square left by 2 pixels. */
    method void moveLeft() {
-      if(fourCorners() = 1){
-         return;
-      }
+      if(getColor(x - 1, y) = true) { return; } // left upper
+      if(getColor(x - 1, y + size) = true) { return; } // left lower
+
       if (x > 1) {
          do Screen.setColor(false);
          do Screen.drawRectangle((x + size) - 1, y, x + size, y + size);
@@ -85,9 +85,9 @@ class Square {
 
    /** Moves the square right by 2 pixels. */
    method void moveRight() {
-      if(fourCorners() = 2){
-         return;
-      }
+      if(getColor(x + size + 1, y) = true) { return; } // right upper
+      if(getColor(x + size + 1, y + size) = true) { return; } // right lower
+
       if ((x + size) < 510) {
          do Screen.setColor(false);
          do Screen.drawRectangle(x, y, x + 1, y + size);
