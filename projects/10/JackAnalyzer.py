@@ -21,26 +21,44 @@ class Analyzer:
 
     def getJack(self):
 
-        def flattenSource():
+        def flattenFileLists():
             temp = []
-            for subList in self.sourceJack:
-                for item in subList:
+            for fileList in self.sourceJack:
+                for item in fileList:
                     temp.append(item)
 
             self.sourceJack = temp
 
-        def removeEmptyLines():
-            self.sourceJack = [item.strip() for item in self.sourceJack]
-            self.sourceJack = [item for item in self.sourceJack if item != '']
-
         def removeInLineComments():
-            pass
+            temp = []
+            for item in self.sourceJack:
+                if(item.find('//') != -1):
+                    splitItem = item.split('//')
+                    temp.append(splitItem[0])
+                else:
+                    temp.append(item)
 
-        def removeBlockComments():
-            pass
+            self.sourceJack = temp
 
         def removeEscapedCharacters():
-            pass
+            self.sourceJack = [item.strip() for item in self.sourceJack]
+
+        def removeEmptyLines():
+            self.sourceJack = [item for item in self.sourceJack if item != '']
+
+        def flattenToString():
+            temp = ''
+            for item in self.sourceJack:
+                temp = temp + item + ' '
+
+            self.sourceJack = temp
+
+        def removeBlockComments():
+            while(self.sourceJack.find('/*') != -1):
+                blockCommentStart = self.sourceJack.find('/*')
+                blockCommentEnd = self.sourceJack.find('*/')
+                temp = self.sourceJack[:blockCommentStart] + self.sourceJack[blockCommentEnd + 2:]
+                self.sourceJack = temp
 
         dirContents = os.listdir(sys.argv[1])
         
@@ -56,11 +74,12 @@ class Analyzer:
                     sourceFile = a.readlines()
                     self.sourceJack.append(sourceFile)
 
-        flattenSource()
-        removeEmptyLines()
+        flattenFileLists()
         removeInLineComments()
-        removeBlockComments()
         removeEscapedCharacters()
+        removeEmptyLines()
+        flattenToString()
+        removeBlockComments()
 
 class Tokenizer(Analyzer):
 
@@ -141,6 +160,6 @@ vmMaker.compile()
 vmMaker.outputVM()
 
 print(vmMaker.sourceJack)
-print(len(vmMaker.sourceJack))
+
 
 print("I'm done :)")
