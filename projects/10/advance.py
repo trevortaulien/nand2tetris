@@ -11,10 +11,12 @@ def advance():
 
     index = 0
     possibleToken = ''
-             
+
+    # need to add try statement in case that there are tailing spaces         
     while(tokenBag[index].isspace()):
         index += 1
     
+    # STRING CONSTANT
     if(tokenBag[index] == '"'):
         possibleToken = possibleToken + tokenBag[index]
         index += 1
@@ -26,6 +28,7 @@ def advance():
         tokenBag = tokenBag[index:]
         return possibleToken
 
+    # IDENTIFIER    ----- STILL NEEDS UNDERSCORE AND ALPHANUMERIC FUNCTIONALITY -----
     while(tokenBag[index].isalpha()):
         possibleToken = possibleToken + tokenBag[index]
         if(tokenBag[index + 1] in symbols):
@@ -34,6 +37,16 @@ def advance():
             return possibleToken
         index += 1
 
+    # INT_CONST
+    while(tokenBag[index].isdigit()):
+        possibleToken = possibleToken + tokenBag[index]
+        if(tokenBag[index + 1] in symbols):
+            index += 1
+            tokenBag = tokenBag[index:]
+            return possibleToken
+        index += 1
+
+    # SYMBOL
     while(tokenBag[index] in symbols):
         possibleToken = tokenBag[index]
         index += 1
@@ -44,7 +57,8 @@ def advance():
 
 tokenList = []
 
-for i in range(100):
+while(len(tokenBag) > 0):
+#for i in range(100):
     tokenList.append(advance())
     
 print(tokenBag)
