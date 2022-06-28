@@ -11,11 +11,21 @@ def advance():
 
     index = 0
     possibleToken = ''
-
-
+             
     while(tokenBag[index].isspace()):
         index += 1
     
+    if(tokenBag[index] == '"'):
+        possibleToken = possibleToken + tokenBag[index]
+        index += 1
+        while(tokenBag[index] != '"'):
+            possibleToken = possibleToken + tokenBag[index]
+            index += 1
+        possibleToken = possibleToken + tokenBag[index]
+        index += 1
+        tokenBag = tokenBag[index:]
+        return possibleToken
+
     while(tokenBag[index].isalpha()):
         possibleToken = possibleToken + tokenBag[index]
         if(tokenBag[index + 1] in symbols):
@@ -30,12 +40,11 @@ def advance():
         break
 
     tokenBag = tokenBag[index:]
-
     return possibleToken
 
 tokenList = []
 
-for i in range(50):
+for i in range(100):
     tokenList.append(advance())
     
 print(tokenBag)
