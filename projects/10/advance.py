@@ -1,4 +1,4 @@
-tokenBag = ' class Main { function void main() { var Array a; var int length; var int i, sum; let length = Keyboard.readInt("HOW MANY NUMBERS? "); let a = Array.new(length); let i = 0; while (i < length) { let a[i] = Keyboard.readInt("ENTER THE NEXT NUMBER: "); let i = i + 1; } let i = 0; let sum = 0; while (i < length) { let sum = sum + a[i]; let i = i + 1; } do Output.printString("THE AVERAGE IS: "); do Output.printInt(sum / length); do Output.println(); return; } }'
+tokenBag = 'class Main { function void main() { var Array a; var int length; var int i, sum; let length = Keyboard.readInt("HOW MANY NUMBERS? "); let a = Array.new(length); let i = 0; while (i < length) { let a[i] = Keyboard.readInt("ENTER THE NEXT NUMBER: "); let i = i + 1; } let i = 0; let sum = 0; while (i < length) { let sum = sum + a[i]; let i = i + 1; } do Output.printString("THE AVERAGE IS: "); do Output.printInt(sum / length); do Output.println(); return; } }'
 
 def advance():
 
@@ -11,8 +11,7 @@ def advance():
 
     index = 0
     possibleToken = ''
-
-    # need to add try statement in case that there are tailing spaces         
+        
     while(tokenBag[index].isspace()):
         index += 1
     
@@ -28,14 +27,17 @@ def advance():
         tokenBag = tokenBag[index:]
         return possibleToken
 
-    # IDENTIFIER    ----- STILL NEEDS UNDERSCORE AND ALPHANUMERIC FUNCTIONALITY -----
-    while(tokenBag[index].isalpha()):
+    # IDENTIFIER  
+    while(tokenBag[index].isalpha() or tokenBag[index] == '_'):
         possibleToken = possibleToken + tokenBag[index]
         if(tokenBag[index + 1] in symbols):
             index += 1
             tokenBag = tokenBag[index:]
             return possibleToken
         index += 1
+        while(tokenBag[index].isdigit()):
+            possibleToken = possibleToken + tokenBag[index]
+            index += 1
 
     # INT_CONST
     while(tokenBag[index].isdigit()):
