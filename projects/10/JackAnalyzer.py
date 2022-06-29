@@ -9,7 +9,7 @@ class Analyzer:
     tokenizedJack = []
 
     def __init__(self):
-        self.getJack()
+        self._getJack()
 
     def tokenize(self):
 
@@ -27,13 +27,15 @@ class Analyzer:
             else:
                 self.tokenizedJack.append([tokenType, token])
 
+        self._xmlFormatTokens()
+
     def compile(self):
         pass
 
     def outputVM(self):
         pass
 
-    def getJack(self):
+    def _getJack(self):
 
         def flattenFileLists():
             temp = []
@@ -98,6 +100,30 @@ class Analyzer:
         flattenToString()
         removeBlockComments()
         removeLeadingAndTrailingSpaces()
+
+    def _xmlFormatTokens(self):
+        
+        xmledTokens = []
+        
+        tokenType = {'KEYWORD' : 'keyword', 
+                     'SYMBOL' : 'symbol', 
+                     'IDENTIFIER' : 'identifier', 
+                     'INT_CONST' : 'integerConstant',
+                     'STRING_CONST' : 'stringConstant'
+                     }
+
+        xmledTokens.append('<tokens>')
+
+        for token in self.tokenizedJack:
+            xmledTokens.append('<' + tokenType[token[0]] + '> ' + token[1] + ' </' + tokenType[token[0]] + '>' )
+
+        xmledTokens.append('</tokens>')
+
+        with open('ArrayTest/tokenXMLtest.xml', 'w') as t:
+            for token in xmledTokens:
+                t.write(token)
+                t.write('\n')
+
 
 class Tokenizer(Analyzer):
 
@@ -243,8 +269,8 @@ vmMaker.tokenize()
 #vmMaker.compile()
 #vmMaker.outputVM()
 
-print(vmMaker.sourceJack)
-print(vmMaker.tokenizedJack)
-print(len(vmMaker.tokenizedJack))
+#print(vmMaker.sourceJack)
+#print(vmMaker.tokenizedJack)
+
 
 print("I'm done :)")
