@@ -79,21 +79,26 @@ class Analyzer:
         def removeLeadingAndTrailingSpaces():
             self.sourceJack = self.sourceJack.strip()
 
-        dirContents = os.listdir(sys.argv[1])
+        ### THIS BLOCK OPENS ALL FILES IN DIRECTORY AND APPENDS ALL OF THE JACK TO ONE BIG LIST ###
+        # dirContents = os.listdir(sys.argv[1])
         
-        with open(sys.argv[1] + "Main.jack", 'r') as m:
-            sourceMain = m.readlines()
+        # with open(sys.argv[1] + "Main.jack", 'r') as m:
+        #     sourceMain = m.readlines()
 
-        self.sourceJack.append(sourceMain)
-        dirContents.remove("Main.jack")
+        # self.sourceJack.append(sourceMain)
+        # dirContents.remove("Main.jack")
 
-        for file in dirContents:
-            if(file.find(".jack") != -1):
-                with open(sys.argv[1] + file, 'r') as a:
-                    sourceFile = a.readlines()
-                    self.sourceJack.append(sourceFile)
+        # for file in dirContents:
+        #     if(file.find(".jack") != -1):
+        #         with open(sys.argv[1] + file, 'r') as a:
+        #             sourceFile = a.readlines()
+        #             self.sourceJack.append(sourceFile)
+        ###########################################################################################
 
-        flattenFileLists()
+        with open(sys.argv[1], 'r') as j:
+            self.sourceJack = j.readlines()
+
+        # flattenFileLists()
         removeInLineComments()
         removeEscapedCharacters()
         removeEmptyLines()
@@ -123,7 +128,6 @@ class Analyzer:
             for token in xmledTokens:
                 t.write(token)
                 t.write('\n')
-
 
 class Tokenizer(Analyzer):
 
@@ -269,8 +273,8 @@ vmMaker.tokenize()
 #vmMaker.compile()
 #vmMaker.outputVM()
 
-#print(vmMaker.sourceJack)
-#print(vmMaker.tokenizedJack)
+
+print(vmMaker.tokenizedJack)
 
 
 print("I'm done :)")
