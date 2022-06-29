@@ -6,23 +6,26 @@ import sys
 class Analyzer:
 
     sourceJack = []
+    tokenizedJack = []
 
     def __init__(self):
         self.getJack()
 
     def tokenize(self):
-        
+
         tokenSleeve = []
 
         tokenizer = Tokenizer(self.sourceJack)
 
-        i = 0
-        while(len(tokenizer.tokenBag) != 0):
-            token = tokenizer.nextToken()
-            tokenSleeve.append(token)
-            i +=1
-            if(i > 100):
-                quit()
+        while(len(tokenizer.tokenBag) > 0):
+            tokenSleeve.append(tokenizer.advance())
+
+        for token in tokenSleeve:
+            tokenType = tokenizer.tokenType(token)
+            if(tokenType == 'STRING_CONST'):
+                self.tokenizedJack.append([tokenType, tokenizer._stringVal(token)])
+            else:
+                self.tokenizedJack.append([tokenType, token])
 
     def compile(self):
         pass
@@ -98,82 +101,98 @@ class Analyzer:
 
 class Tokenizer(Analyzer):
 
-    currentToken = ''
+    symbols = {'{' : 0 , '}' : 1 , '(' : 2 , ')' : 3 , '[' : 4 , 
+               ']' : 5 , '.' : 6 , ',' : 7 , ';' : 8 , '+' : 9 , 
+               '-' : 10, '*' : 11, '/' : 12, '&' : 13, '|' : 14, 
+               '<' : 15, '>' : 16, '=' : 17, '~' : 18
+              }
+
+    keywords = {'class'  : 0 , 'constructor': 1 , 'function': 2 , 'method': 3 , 'field'  : 4 ,
+                'static' : 5 , 'var'        : 6 , 'int'     : 7 , 'char'  : 8 , 'boolean': 9 ,
+                'void'   : 10, 'true'       : 11, 'false'   : 12, 'null'  : 13, 'this'   : 14,
+                'let'    : 15, 'do'         : 16, 'if'      : 17, 'else'  : 18, 'while'  : 19,
+                'return' : 20
+               }
 
     def __init__(self, sourceJack):
         self.tokenBag = sourceJack
         
+    def advance(self):
 
-    def nextToken(self):
-        token = ['Replace', 'Me'] # format of some token is [type, token]
-        possibleToken = ''
-        tokenStatus = '-1'
         index = 0
-
-        while(tokenStatus == '-1'):
-            possibleToken = possibleToken + self.tokenBag[index]
-            tokenStatus = self.ValidToken(possibleToken)
+        possibleToken = ''
+            
+        while(self.tokenBag[index].isspace()):
             index += 1
-            if(index > 100):
-                quit()
+        
+        # STRING CONSTANT
+        if(self.tokenBag[index] == '"'):
+            possibleToken = possibleToken + self.tokenBag[index]
+            index += 1
+            while(self.tokenBag[index] != '"'):
+                possibleToken = possibleToken + self.tokenBag[index]
+                index += 1
+            possibleToken = possibleToken + self.tokenBag[index]
+            index += 1
+            self.tokenBag = self.tokenBag[index:]
+            return possibleToken
 
-        self.tokenBag[index:]
-        token[0] = tokenStatus
-        token[1] = possibleToken
-        token[1].strip()
-        print(token)
+        # IDENTIFIER  
+        while(self.tokenBag[index].isalpha() or self.tokenBag[index] == '_'):
+            possibleToken = possibleToken + self.tokenBag[index]
+            if(self.tokenBag[index + 1] in self.symbols):
+                index += 1
+                self.tokenBag = self.tokenBag[index:]
+                return possibleToken
+            index += 1
+            while(self.tokenBag[index].isdigit()):
+                possibleToken = possibleToken + self.tokenBag[index]
+                index += 1
 
-        return token
+        # INT_CONST
+        while(self.tokenBag[index].isdigit()):
+            possibleToken = possibleToken + self.tokenBag[index]
+            if(self.tokenBag[index + 1] in self.symbols):
+                index += 1
+                self.tokenBag = self.tokenBag[index:]
+                return possibleToken
+            index += 1
 
-    def ValidToken(self, possibleToken):
-        valid = '-1'
-        valid = self.keyword(possibleToken)
-        valid = self.symbol(possibleToken)
-        valid = self.identifier(possibleToken)
-        valid = self.intVal(possibleToken)
-        valid = self.stringVal(possibleToken)
+        # SYMBOL
+        while(self.tokenBag[index] in self.symbols):
+            possibleToken = self.tokenBag[index]
+            index += 1
+            break
 
-        return valid
+        self.tokenBag = self.tokenBag[index:]
+        return possibleToken
 
-    def keyword(self, possibleToken):
-        keywords = {'class'  : 'KEYWORD', 'constructor': 'KEYWORD', 'function': 'KEYWORD', 'method': 'KEYWORD', 'field'  : 'KEYWORD',
-                    'static' : 'KEYWORD', 'var'        : 'KEYWORD', 'int'     : 'KEYWORD', 'char'  : 'KEYWORD', 'boolean': 'KEYWORD',
-                    'void'   : 'KEYWORD', 'true'       : 'KEYWORD', 'false'   : 'KEYWORD', 'null'  : 'KEYWORD', 'this'   : 'KEYWORD',
-                    'let'    : 'KEYWORD', 'do'         : 'KEYWORD', 'if'      : 'KEYWORD', 'else'  : 'KEYWORD', 'while'  : 'KEYWORD',
-                    'return' : 'KEYWORD'}
-
-        possibleToken.strip()
-
-        if(possibleToken == ' '):
-            return '-1'
-        elif(keywords[possibleToken]):
+    def tokenType(self, token):
+        if(token in self.keywords):
             return 'KEYWORD'
-        else:
-            return '-1'
-
-    def symbol(self, possibleToken):
-        symbols = {'{' : 'SYMBOL', '}' : 'SYMBOL', '(' : 'SYMBOL', ')' : 'SYMBOL', '[' : 'SYMBOL', 
-                    ']' : 'SYMBOL', '.' : 'SYMBOL', ',' : 'SYMBOL', ';' : 'SYMBOL', '+' : 'SYMBOL', 
-                    '-' : 'SYMBOL', '*' : 'SYMBOL', '/' : 'SYMBOL', '&' : 'SYMBOL', '|' : 'SYMBOL', 
-                    '<' : 'SYMBOL', '>' : 'SYMBOL', '=' : 'SYMBOL', '~' : 'SYMBOL'}
-
-        possibleToken.strip()
-
-        if(possibleToken == ' '):
-            return '-1'
-        elif(symbols[possibleToken]):
+        elif(token in self.symbols):
             return 'SYMBOL'
+        elif(token[0] == '"' and token[-1] == '"'):
+            return 'STRING_CONST'
+        elif(token.isdigit()):
+            return 'INT_CONST'
         else:
-            return '-1'
+            return 'IDENTIFIER'
 
-    def identifier(self, possibleToken):
+    def _keyWord(self):
         pass
 
-    def intVal(self, possibleToken):
+    def _symbol(self):
         pass
 
-    def stringVal(self, possibleToken):
+    def _identifier(self):
         pass
+
+    def _intVal(self, token):
+        return int(token)
+
+    def _stringVal(self, token):
+        return token[1:-1]
 
 class CompilationEngine(Analyzer):
 
@@ -220,11 +239,12 @@ class CompilationEngine(Analyzer):
         pass
 
 vmMaker = Analyzer()
-#vmMaker.tokenize()
+vmMaker.tokenize()
 #vmMaker.compile()
 #vmMaker.outputVM()
 
 print(vmMaker.sourceJack)
-
+print(vmMaker.tokenizedJack)
+print(len(vmMaker.tokenizedJack))
 
 print("I'm done :)")
