@@ -27,7 +27,7 @@ class Analyzer:
             else:
                 self.tokenizedJack.append([tokenType, token])
 
-        self._xmlFormatTokens()
+        self._outputTokensAsXML()
 
     def compile(self):
         pass
@@ -106,26 +106,27 @@ class Analyzer:
         removeBlockComments()
         removeLeadingAndTrailingSpaces()
 
-    def _xmlFormatTokens(self):
+    def _outputTokensAsXML(self):
         
-        xmledTokens = []
-        
-        tokenType = {'KEYWORD' : 'keyword', 
+        xmlTokens = []
+        outputPath = sys.argv[1].replace('.jack','T_.xml')
+
+        tokenTypeXML = {'KEYWORD' : 'keyword', 
                      'SYMBOL' : 'symbol', 
                      'IDENTIFIER' : 'identifier', 
                      'INT_CONST' : 'integerConstant',
                      'STRING_CONST' : 'stringConstant'
                      }
 
-        xmledTokens.append('<tokens>')
+        xmlTokens.append('<tokens>')
 
         for token in self.tokenizedJack:
-            xmledTokens.append('<' + tokenType[token[0]] + '> ' + token[1] + ' </' + tokenType[token[0]] + '>' )
+            xmlTokens.append('<' + tokenTypeXML[token[0]] + '> ' + token[1] + ' </' + tokenTypeXML[token[0]] + '>' )
 
-        xmledTokens.append('</tokens>')
+        xmlTokens.append('</tokens>')
 
-        with open('ArrayTest/tokenXMLtest.xml', 'w') as t:
-            for token in xmledTokens:
+        with open(outputPath, 'w') as t:
+            for token in xmlTokens:
                 t.write(token)
                 t.write('\n')
 
