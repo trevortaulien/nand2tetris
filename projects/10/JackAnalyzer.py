@@ -7,6 +7,9 @@ class Analyzer:
 
     sourceJack = []
     tokenizedJack = []
+    compiledJack = []
+    xmlTokens = []
+    xmlCompiled = []
 
     def __init__(self):
         self._getJack()
@@ -30,7 +33,14 @@ class Analyzer:
         self._outputTokensAsXML()
 
     def compile(self):
-        pass
+        
+        ce = CompilationEngine(self.tokenizedJack)
+
+        ce.startEngine()
+
+        self.compiledJack = ce.compiledJack
+
+        self._outputCompiledAsXML()
 
     def outputVM(self):
         pass
@@ -108,7 +118,6 @@ class Analyzer:
 
     def _outputTokensAsXML(self):
         
-        xmlTokens = []
         outputPath = sys.argv[1].replace('.jack','T_.xml')
 
         tokenTypeXML = {'KEYWORD' : 'keyword', 
@@ -118,17 +127,20 @@ class Analyzer:
                      'STRING_CONST' : 'stringConstant'
                      }
 
-        xmlTokens.append('<tokens>')
+        self.xmlTokens.append('<tokens>')
 
         for token in self.tokenizedJack:
-            xmlTokens.append('<' + tokenTypeXML[token[0]] + '> ' + token[1] + ' </' + tokenTypeXML[token[0]] + '>' )
+            self.xmlTokens.append('<' + tokenTypeXML[token[0]] + '> ' + token[1] + ' </' + tokenTypeXML[token[0]] + '>' )
 
-        xmlTokens.append('</tokens>')
+        self.xmlTokens.append('</tokens>')
 
         with open(outputPath, 'w') as t:
-            for token in xmlTokens:
+            for token in self.xmlTokens:
                 t.write(token)
                 t.write('\n')
+
+    def _outputCompiledAsXML(self):
+        pass
 
 class Tokenizer(Analyzer):
 
@@ -227,55 +239,102 @@ class Tokenizer(Analyzer):
 
 class CompilationEngine(Analyzer):
 
-    def __init__(self):
+    index = 0
+    compiledJack = []
+
+    def __init__(self, tokenizedJack):
+        self.tokens = tokenizedJack
+
+    def startEngine(self):
+        self._compileClass()
+
+    def _compileClass(self):
+        self.compiledJack.append('class')
+
+        self.compiledJack.append(self.tokens[self.index])
+        self.index += 1
+
+        self.compiledJack.append(self.tokens[self.index])
+        self.index += 1
+
+        self.compiledJack.append(self.tokens[self.index])
+        self.index += 1
+
+        while(self.tokens[self.index][1] == 'static' or self.tokens[self.index][1] == 'field'):
+            self._compileClassVarDec()
+
+        # while(something):
+        self._compileSubroutineDec()
+
+        self.compiledJack.append(self.tokens[self.index])
+        self.index += 1     # this increment may be unnecessary
+
+        self.compiledJack.append('/class')
+
+    def _compileClassVarDec(self):
+        self.compiledJack.append('classVarDec')
+
+        self.compiledJack.append(self.tokens[self.index])
+        self.index += 1
+
+        self.compiledJack.append(self.tokens[self.index])
+        self.index += 1
+
+        self.compiledJack.append(self.tokens[self.index])
+        self.index += 1
+        
+        while(self.tokens[self.index][1] == ','):
+            self.compiledJack.append(self.tokens[self.index])
+            self.index += 1
+            self.compiledJack.append(self.tokens[self.index])
+            self.index += 1
+
+        self.compiledJack.append(self.tokens[self.index])
+        self.index += 1
+
+        self.compiledJack.append('/classVarDec')
+
+    def _compileSubroutineDec(self):
         pass
 
-    def compileClass(self):
+    def _compileParameterList(self):
         pass
 
-    def compileClassVarDec(self):
+    def _compileSubroutineBody(self):
         pass
 
-    def compileSubroutine(self):
+    def _compileLet(self):
         pass
 
-    def compileParameterList(self):
+    def _compileIf(self):
         pass
 
-    def compileSubroutineBody(self):
+    def _compileWhile(self):
         pass
 
-    def compileLet(self):
+    def _compileDo(self):
         pass
 
-    def compileIf(self):
+    def _compileReturn(self):
         pass
 
-    def compileWhile(self):
+    def _compileExpression(self):
         pass
 
-    def compileDo(self):
+    def _compileTerm(self):
         pass
 
-    def compileReturn(self):
-        pass
-
-    def compileExpression(self):
-        pass
-
-    def compileTerm(self):
-        pass
-
-    def compuleExpressionList(self):
+    def _compuleExpressionList(self):
         pass
 
 vmMaker = Analyzer()
 vmMaker.tokenize()
-#vmMaker.compile()
+vmMaker.compile()
 #vmMaker.outputVM()
 
 
-print(vmMaker.tokenizedJack)
-
+# print(vmMaker.tokenizedJack)
+print('\n')
+print(vmMaker.compiledJack)
 
 print("I'm done :)")
