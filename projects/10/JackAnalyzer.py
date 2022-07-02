@@ -2,6 +2,7 @@ print("I'm working :)")
 
 import os
 import sys
+from lxml import etree
 
 class Analyzer:
 
@@ -130,17 +131,32 @@ class Analyzer:
         self.xmlTokens.append('<tokens>')
 
         for token in self.tokenizedJack:
-            self.xmlTokens.append('<' + tokenTypeXML[token[0]] + '> ' + token[1] + ' </' + tokenTypeXML[token[0]] + '>' )
+            self.xmlTokens.append('<' + tokenTypeXML[token[0]] + '> ' + token[1] + ' </' + tokenTypeXML[token[0]] + '>')
 
         self.xmlTokens.append('</tokens>')
 
         with open(outputPath, 'w') as t:
             for token in self.xmlTokens:
-                t.write(token)
-                t.write('\n')
+                t.write(token + '\n')
 
     def _outputCompiledAsXML(self):
-        pass
+        outputPath = sys.argv[1].replace('.jack', '_.xml')
+
+        for item in self.compiledJack:
+            if isinstance(item, str):
+                self.xmlCompiled.append('<' + item + '>')
+            else:
+                self.xmlCompiled.append('<' + item[0].lower() + '> ' + item[1] + ' </' + item[0].lower() + '>')
+
+        with open(outputPath, 'w') as c:
+            for item in self.xmlCompiled:
+                c.write(item + '\n')
+
+        tree = etree.parse(outputPath)
+        self.xmlCompiled = etree.tostring(tree, pretty_print = True, encoding = str)        
+
+        with open(outputPath, 'w') as s:
+            s.write(self.xmlCompiled)
 
 class Tokenizer(Analyzer):
 
@@ -260,11 +276,16 @@ class CompilationEngine(Analyzer):
         self.compiledJack.append(self.tokens[self.index])
         self.index += 1
 
-        while(self.tokens[self.index][1] == 'static' or self.tokens[self.index][1] == 'field'):
+        while(self.tokens[self.index][1] == 'static' or
+              self.tokens[self.index][1] == 'field'):
+            
             self._compileClassVarDec()
 
-        # while(something):
-        self._compileSubroutineDec()
+        while(self.tokens[self.index][1] == 'constructor' or
+              self.tokens[self.index][1] == 'function'    or
+              self.tokens[self.index][1] == 'method'):
+            
+            self._compileSubroutineDec()
 
         self.compiledJack.append(self.tokens[self.index])
         self.index += 1     # this increment may be unnecessary
@@ -295,10 +316,54 @@ class CompilationEngine(Analyzer):
         self.compiledJack.append('/classVarDec')
 
     def _compileSubroutineDec(self):
-        pass
+        self.compiledJack.append('subroutineDec')
+
+        self.compiledJack.append(self.tokens[self.index])
+        self.index += 1
+
+        self.compiledJack.append(self.tokens[self.index])
+        self.index += 1
+
+        self.compiledJack.append(self.tokens[self.index])
+        self.index += 1
+
+        self.compiledJack.append(self.tokens[self.index])
+        self.index += 1
+
+        self._compileParameterList()
+
+        self.compiledJack.append(self.tokens[self.index])
+        self.index += 1
+
+        self.compiledJack.append('/subroutineDec')
+
+        self._compileSubroutineBody()
 
     def _compileParameterList(self):
-        pass
+        self.compiledJack.append('parameterList')
+
+        if(self.tokens[self.index][1] == ')'):
+            self.compiledJack.append('/parameterList')
+            return
+        
+        self.compiledJack.append(self.tokens[self.index])
+        self.index += 1
+
+        self.compiledJack.append(self.tokens[self.index])
+        self.index += 1
+
+        while(self.tokens[self.index][1] == ','):
+            self.compiledJack.append(self.tokens[self.index])
+            self.index += 1
+
+            self.compiledJack.append(self.tokens[self.index])
+            self.index += 1
+
+            self.compiledJack.append(self.tokens[self.index])
+            self.index += 1
+            print(self.tokens[self.index])
+
+        self.compiledJack.append('/parameterList')
 
     def _compileSubroutineBody(self):
         pass
