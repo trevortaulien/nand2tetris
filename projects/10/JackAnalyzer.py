@@ -371,7 +371,19 @@ class CompilationEngine(Analyzer):
         self.compiledJack.append(self.tokens[self.index])
         self.index += 1
 
-        # varDec #
+        if(self.tokens[self.index][1] == 'var'):
+            self._compileVarDec()
+
+        if(self.tokens[self.index][1] == 'let' or
+           self.tokens[self.index][1] == 'if' or
+           self.tokens[self.index][1] == 'while' or
+           self.tokens[self.index][1] == 'do' or
+           self.tokens[self.index][1] == 'return'):
+            self._compileStatements()
+
+        self.compiledJack.append('/subroutineBody')
+
+    def _compileVarDec(self):
         while(self.tokens[self.index][1] == 'var'):
             self.compiledJack.append('varDec')
 
@@ -395,35 +407,268 @@ class CompilationEngine(Analyzer):
             self.index += 1
 
             self.compiledJack.append('/varDec')
-        #   #   #
 
-        # statements #
+    def _compileStatements(self):
+        self.compiledJack.append('statements')
 
-        self.compiledJack.append('/subroutineBody')
+        while(self.tokens[self.index][1] == 'let' or
+              self.tokens[self.index][1] == 'if' or
+              self.tokens[self.index][1] == 'while' or
+              self.tokens[self.index][1] == 'do' or
+              self.tokens[self.index][1] == 'return'):
+              
+            if(self.tokens[self.index][1] == 'let'):
+                self._compileLet()
+
+            elif(self.tokens[self.index][1] == 'if'):
+                self._compileIf()
+
+            elif(self.tokens[self.index][1] == 'while'):
+                self._compileWhile()
+
+            elif(self.tokens[self.index][1] == 'do'):
+                self._compileDo()
+
+            elif(self.tokens[self.index][1] == 'return'):
+                self._compileReturn()
+
+        self.compiledJack.append('/statements')
 
     def _compileLet(self):
-        pass
+        self.compiledJack.append('letStatement')
+
+        self.compiledJack.append(self.tokens[self.index])
+        self.index += 1
+
+        self.compiledJack.append(self.tokens[self.index])
+        self.index += 1
+
+        if(self.tokens[self.index][1] == '['):
+            self.compiledJack.append(self.tokens[self.index])
+            self.index += 1
+
+            self._compileExpression()
+
+            self.compiledJack.append(self.tokens[self.index])
+            self.index += 1
+
+        self.compiledJack.append(self.tokens[self.index])
+        self.index += 1
+
+        self._compileExpression()
+
+        self.compiledJack.append(self.tokens[self.index])
+        self.index += 1
+
+        self.compiledJack.append('/letStatement')
 
     def _compileIf(self):
-        pass
+        self.compiledJack.append('ifStatement')
+
+        self.compiledJack.append(self.tokens[self.index])
+        self.index += 1
+
+        self.compiledJack.append(self.tokens[self.index])
+        self.index += 1
+
+        self._compileExpression()
+
+        self.compiledJack.append(self.tokens[self.index])
+        self.index += 1
+
+        self.compiledJack.append(self.tokens[self.index])
+        self.index += 1
+
+        self._compileStatements()
+
+        self.compiledJack.append(self.tokens[self.index])
+        self.index += 1
+
+        if(self.tokens[self.index][1] == 'else'):
+            self.compiledJack.append(self.tokens[self.index])
+            self.index += 1
+
+            self.compiledJack.append(self.tokens[self.index])
+            self.index += 1
+
+            self._compileStatements()
+
+            self.compiledJack.append(self.tokens[self.index])
+            self.index += 1
+
+        self.compiledJack.append('/ifStatement')
 
     def _compileWhile(self):
-        pass
+        self.compiledJack.append('whileStatement')
+
+        self.compiledJack.append(self.tokens[self.index])
+        self.index += 1
+
+        self.compiledJack.append(self.tokens[self.index])
+        self.index += 1
+
+        self._compileExpression()
+
+        self.compiledJack.append(self.tokens[self.index])
+        self.index += 1
+
+        self.compiledJack.append(self.tokens[self.index])
+        self.index += 1
+
+        self._compileStatements()
+
+        self.compiledJack.append(self.tokens[self.index])
+        self.index += 1
+
+        self.compiledJack.append('/whileStatement')
 
     def _compileDo(self):
-        pass
+        self.compiledJack.append('doStatement')
+
+        self.compiledJack.append(self.tokens[self.index])
+        self.index += 1
+
+        self._compileExpression() # page 276 of the book
+
+        self.compiledJack.append(self.tokens[self.index])
+        self.index += 1
+
+        self.compiledJack.append('/doStatement')
 
     def _compileReturn(self):
-        pass
+        self.compiledJack.append('returnStatement')
+
+        self.compiledJack.append(self.tokens[self.index])
+        self.index += 1
+
+        if(self.tokens[self.index][1] != ';'):
+            self._compileExpression()
+
+        self.compiledJack.append(self.tokens[self.index])
+        self.index += 1
+
+        self.compiledJack.append('/returnStatement')
 
     def _compileExpression(self):
-        pass
+        self.compiledJack.append('expression')
+
+        self._compileTerm()
+
+        while(self.tokens[self.index][1] == '+' or
+              self.tokens[self.index][1] == '-' or
+              self.tokens[self.index][1] == '*' or
+              self.tokens[self.index][1] == '/' or
+              self.tokens[self.index][1] == '&' or
+              self.tokens[self.index][1] == '|' or
+              self.tokens[self.index][1] == '<' or
+              self.tokens[self.index][1] == '>' or
+              self.tokens[self.index][1] == '='):
+            self._compileTerm()
+
+        self.compiledJack.append('/expression')
 
     def _compileTerm(self):
-        pass
+        self.compiledJack.append('term')
 
-    def _compuleExpressionList(self):
-        pass
+        # '(' expression ')' #
+        if(self.tokens[self.index][1] == '('):
+            self.compiledJack.append(self.tokens[self.index])
+            self.index += 1
+
+            self._compileExpression()
+
+            self.compiledJack.append(self.tokens[self.index])
+            self.index += 1
+
+            self.compiledJack.append('/term')
+            return
+        #         #          #
+
+        # (unaryOp term) #
+        elif(self.tokens[self.index][1] == '-' or
+           self.tokens[self.index][1] == '~'):
+           self.compiledJack.append(self.tokens[self.index])
+           self.index += 1
+
+           self._compileTerm()
+
+           self.compiledJack.append('/term')
+           return
+        #       #        #
+
+        # varName '[' expression ']' #
+        elif(self.tokens[self.index + 1][1] == '['):
+            self.compiledJack.append(self.tokens[self.index])
+            self.index += 1
+
+            self.compiledJack.append(self.tokens[self.index])
+            self.index += 1
+
+            self._compileExpression()
+
+            self.compiledJack.append(self.tokens[self.index])
+            self.index += 1
+
+            self.compiledJack.append('/term')
+            return
+        #            #               #
+
+        # subroutineName '(' expressionList ')' #
+        elif(self.tokens[self.index + 1][1] == '('):
+            self.compiledJack.append(self.tokens[self.index])
+            self.index += 1
+
+            self.compiledJack.append(self.tokens[self.index])
+            self.index += 1
+
+            self._compileExpressionList()
+
+            self.compiledJack.append(self.tokens[self.index])
+            self.index += 1
+
+            self.compiledJack.append('/term')
+            return
+        #                 #                     #
+
+        # (className | varName) '.' subroutineName '(' expressionList ')' #
+        elif(self.tokens[self.index + 1][1] == '.'):
+            self.compiledJack.append(self.tokens[self.index])
+            self.index += 1
+
+            self.compiledJack.append(self.tokens[self.index])
+            self.index += 1
+
+            self.compiledJack.append(self.tokens[self.index])
+            self.index += 1
+
+            self.compiledJack.append(self.tokens[self.index])
+            self.index += 1
+
+            self._compileExpressionList()
+
+            self.compiledJack.append(self.tokens[self.index])
+            self.index += 1
+
+            self.compiledJack.append('/term')
+            return
+        #                               #                                 #
+
+        else:
+            self.compiledJack.append(self.tokens[self.index])
+            self.index += 1
+
+            self.compiledJack.append('/term')
+        
+
+    def _compileExpressionList(self):
+        self.compiledJack.append('expressionList')
+
+        self._compileExpression()
+
+        while(self.tokens[self.index][1] == ','):
+            self._compileExpression()
+
+        self.compiledJack.append('/expressionList')
 
 vmMaker = Analyzer()
 vmMaker.tokenize()
