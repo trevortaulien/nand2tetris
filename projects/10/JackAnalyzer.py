@@ -335,9 +335,9 @@ class CompilationEngine(Analyzer):
         self.compiledJack.append(self.tokens[self.index])
         self.index += 1
 
-        self.compiledJack.append('/subroutineDec')
-
         self._compileSubroutineBody()
+
+        self.compiledJack.append('/subroutineDec')
 
     def _compileParameterList(self):
         self.compiledJack.append('parameterList')
@@ -366,7 +366,40 @@ class CompilationEngine(Analyzer):
         self.compiledJack.append('/parameterList')
 
     def _compileSubroutineBody(self):
-        pass
+        self.compiledJack.append('subroutineBody')
+        
+        self.compiledJack.append(self.tokens[self.index])
+        self.index += 1
+
+        # varDec #
+        while(self.tokens[self.index][1] == 'var'):
+            self.compiledJack.append('varDec')
+
+            self.compiledJack.append(self.tokens[self.index])
+            self.index += 1
+
+            self.compiledJack.append(self.tokens[self.index])
+            self.index += 1
+
+            self.compiledJack.append(self.tokens[self.index])
+            self.index += 1
+
+            while(self.tokens[self.index][1] == ','):
+                self.compiledJack.append(self.tokens[self.index])
+                self.index += 1
+
+                self.compiledJack.append(self.tokens[self.index])
+                self.index += 1
+
+            self.compiledJack.append(self.tokens[self.index])
+            self.index += 1
+
+            self.compiledJack.append('/varDec')
+        #   #   #
+
+        # statements #
+
+        self.compiledJack.append('/subroutineBody')
 
     def _compileLet(self):
         pass
