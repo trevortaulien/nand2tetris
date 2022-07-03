@@ -95,16 +95,14 @@
 <term>
 <identifier> i </identifier>
 </term>
-<term>
 <symbol> < </symbol>
+<term>
+<identifier> length </identifier>
 </term>
 </expression>
-<identifier> length </identifier>
 <symbol> ) </symbol>
-<statements>
-</statements>
 <symbol> { </symbol>
-</whileStatement>
+<statements>
 <letStatement>
 <keyword> let </keyword>
 <identifier> a </identifier>
@@ -142,12 +140,157 @@
 <term>
 <identifier> i </identifier>
 </term>
-<term>
 <symbol> + </symbol>
+<term>
+<int_const> 1 </int_const>
 </term>
 </expression>
-<int_const> 1 </int_const>
+<symbol> ; </symbol>
 </letStatement>
+</statements>
+<symbol> } </symbol>
+</whileStatement>
+<letStatement>
+<keyword> let </keyword>
+<identifier> i </identifier>
+<symbol> = </symbol>
+<expression>
+<term>
+<int_const> 0 </int_const>
+</term>
+</expression>
+<symbol> ; </symbol>
+</letStatement>
+<letStatement>
+<keyword> let </keyword>
+<identifier> sum </identifier>
+<symbol> = </symbol>
+<expression>
+<term>
+<int_const> 0 </int_const>
+</term>
+</expression>
+<symbol> ; </symbol>
+</letStatement>
+<whileStatement>
+<keyword> while </keyword>
+<symbol> ( </symbol>
+<expression>
+<term>
+<identifier> i </identifier>
+</term>
+<symbol> < </symbol>
+<term>
+<identifier> length </identifier>
+</term>
+</expression>
+<symbol> ) </symbol>
+<symbol> { </symbol>
+<statements>
+<letStatement>
+<keyword> let </keyword>
+<identifier> sum </identifier>
+<symbol> = </symbol>
+<expression>
+<term>
+<identifier> sum </identifier>
+</term>
+<symbol> + </symbol>
+<term>
+<identifier> a </identifier>
+<symbol> [ </symbol>
+<expression>
+<term>
+<identifier> i </identifier>
+</term>
+</expression>
+<symbol> ] </symbol>
+</term>
+</expression>
+<symbol> ; </symbol>
+</letStatement>
+<letStatement>
+<keyword> let </keyword>
+<identifier> i </identifier>
+<symbol> = </symbol>
+<expression>
+<term>
+<identifier> i </identifier>
+</term>
+<symbol> + </symbol>
+<term>
+<int_const> 1 </int_const>
+</term>
+</expression>
+<symbol> ; </symbol>
+</letStatement>
+</statements>
+<symbol> } </symbol>
+</whileStatement>
+<doStatement>
+<keyword> do </keyword>
+<expression>
+<term>
+<identifier> Output </identifier>
+<symbol> . </symbol>
+<identifier> printString </identifier>
+<symbol> ( </symbol>
+<expressionList>
+<expression>
+<term>
+<string_const> THE AVERAGE IS:  </string_const>
+</term>
+</expression>
+</expressionList>
+<symbol> ) </symbol>
+</term>
+</expression>
+<symbol> ; </symbol>
+</doStatement>
+<doStatement>
+<keyword> do </keyword>
+<expression>
+<term>
+<identifier> Output </identifier>
+<symbol> . </symbol>
+<identifier> printInt </identifier>
+<symbol> ( </symbol>
+<expressionList>
+<expression>
+<term>
+<identifier> sum </identifier>
+</term>
+<symbol> / </symbol>
+<term>
+<identifier> length </identifier>
+</term>
+</expression>
+</expressionList>
+<symbol> ) </symbol>
+</term>
+</expression>
+<symbol> ; </symbol>
+</doStatement>
+<doStatement>
+<keyword> do </keyword>
+<expression>
+<term>
+<identifier> Output </identifier>
+<symbol> . </symbol>
+<identifier> println </identifier>
+<symbol> ( </symbol>
+<expressionList>
+<expression>
+<term>
+<symbol> ) </symbol>
+</term>
+</expression>
+</expressionList>
+<symbol> ; </symbol>
+</term>
+</expression>
+<keyword> return </keyword>
+</doStatement>
 </statements>
 </subroutineBody>
 </subroutineDec>

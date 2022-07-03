@@ -3,6 +3,7 @@ print("I'm working :)")
 import os
 import sys
 from lxml import etree
+import xml.dom.minidom as md
 
 class Analyzer:
 
@@ -152,11 +153,11 @@ class Analyzer:
             for item in self.xmlCompiled:
                 c.write(item + '\n')
 
-        tree = etree.parse(outputPath)
-        self.xmlCompiled = etree.tostring(tree, pretty_print = True, encoding = str)        
+        # dom = md.parse(outputPath)
+        # self.xmlCompiled = dom.toprettyxml()
 
-        with open(outputPath, 'w') as s:
-            s.write(self.xmlCompiled)
+        # with open(outputPath, 'w') as s:
+        #    s.write(self.xmlCompiled)
 
 class Tokenizer(Analyzer):
 
@@ -563,6 +564,9 @@ class CompilationEngine(Analyzer):
               self.tokens[self.index][1] == '<' or
               self.tokens[self.index][1] == '>' or
               self.tokens[self.index][1] == '='):
+            self.compiledJack.append(self.tokens[self.index])
+            self.index += 1
+            
             self._compileTerm()
 
         self.compiledJack.append('/expression')

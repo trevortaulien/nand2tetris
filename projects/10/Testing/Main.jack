@@ -1,0 +1,19 @@
+class Main{
+    function void main(){
+        var int a;
+        
+
+        let a = 3;
+
+        var int b;
+
+        let b = 4;
+
+        do Output.printString("a =");
+        do Output.printInt(a);
+        do Output.printString("b =");
+        do Output.printInt(b);
+        
+        return;
+    }
+}
