@@ -362,7 +362,6 @@ class CompilationEngine(Analyzer):
 
             self.compiledJack.append(self.tokens[self.index])
             self.index += 1
-            print(self.tokens[self.index])
 
         self.compiledJack.append('/parameterList')
 
@@ -680,6 +679,9 @@ class CompilationEngine(Analyzer):
         self._compileExpression()
 
         while(self.tokens[self.index][1] == ','):
+            self.compiledJack.append(self.tokens[self.index])
+            self.index += 1
+
             self._compileExpression()
 
         self.compiledJack.append('/expressionList')
