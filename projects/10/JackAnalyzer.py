@@ -32,8 +32,6 @@ class Analyzer:
             else:
                 self.tokenizedJack.append([tokenType, token])
 
-        self._outputTokensAsXML()
-
     def compile(self):
         
         ce = CompilationEngine(self.tokenizedJack)
@@ -41,8 +39,6 @@ class Analyzer:
         ce.startEngine()
 
         self.compiledJack = ce.compiledJack
-
-        self._outputCompiledAsXML()
 
     def outputVM(self):
         pass
@@ -689,11 +685,7 @@ class CompilationEngine(Analyzer):
 vmMaker = Analyzer()
 vmMaker.tokenize()
 vmMaker.compile()
-#vmMaker.outputVM()
-
-
-# print(vmMaker.tokenizedJack)
-print('\n')
-print(vmMaker.compiledJack)
+vmMaker._outputTokensAsXML()
+vmMaker._outputCompiledAsXML()
 
 print("I'm done :)")
