@@ -382,6 +382,9 @@ class CompilationEngine(Analyzer):
            self.tokens[self.index][1] == 'return'):
             self._compileStatements()
 
+        self.compiledJack.append(self.tokens[self.index])
+        self.index += 1
+
         self.compiledJack.append('/subroutineBody')
 
     def _compileVarDec(self):
@@ -645,7 +648,6 @@ class CompilationEngine(Analyzer):
             self.index += 1
 
             return
-        #                 #                     #
 
         # (className | varName) '.' subroutineName '(' expressionList ')' #
         elif(self.tokens[self.index + 1][1] == '.'):
@@ -667,10 +669,13 @@ class CompilationEngine(Analyzer):
             self.index += 1
 
             return
-        #                               #                                 #
 
     def _compileExpressionList(self):
         self.compiledJack.append('expressionList')
+
+        if(self.tokens[self.index][1] == ')'):
+            self.compiledJack.append('/expressionList')
+            return
 
         self._compileExpression()
 
