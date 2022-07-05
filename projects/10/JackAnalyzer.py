@@ -529,7 +529,7 @@ class CompilationEngine(Analyzer):
         self.compiledJack.append(self.tokens[self.index])
         self.index += 1
 
-        self._compileExpression() # page 276 of the book
+        self._compileSubroutineCall()
 
         self.compiledJack.append(self.tokens[self.index])
         self.index += 1
@@ -573,7 +573,7 @@ class CompilationEngine(Analyzer):
 
     def _compileTerm(self):
         self.compiledJack.append('term')
-
+        
         # '(' expression ')' #
         if(self.tokens[self.index][1] == '('):
             self.compiledJack.append(self.tokens[self.index])
@@ -589,7 +589,7 @@ class CompilationEngine(Analyzer):
         #         #          #
 
         # (unaryOp term) #
-        elif(self.tokens[self.index][1] == '-' or
+        elif(self.tokens[self.index][1] == '-' or          
            self.tokens[self.index][1] == '~'):
            self.compiledJack.append(self.tokens[self.index])
            self.index += 1
@@ -617,8 +617,22 @@ class CompilationEngine(Analyzer):
             return
         #            #               #
 
+        elif(self.tokens[self.index + 1][1] == '(' or
+             self.tokens[self.index + 1][1] == '.'):
+             
+             self._compileSubroutineCall()
+
+             self.compiledJack.append('/term')
+
+        else:
+            self.compiledJack.append(self.tokens[self.index])
+            self.index += 1
+
+            self.compiledJack.append('/term')
+
+    def _compileSubroutineCall(self):
         # subroutineName '(' expressionList ')' #
-        elif(self.tokens[self.index + 1][1] == '('):
+        if(self.tokens[self.index + 1][1] == '('):
             self.compiledJack.append(self.tokens[self.index])
             self.index += 1
 
@@ -630,7 +644,6 @@ class CompilationEngine(Analyzer):
             self.compiledJack.append(self.tokens[self.index])
             self.index += 1
 
-            self.compiledJack.append('/term')
             return
         #                 #                     #
 
@@ -653,16 +666,8 @@ class CompilationEngine(Analyzer):
             self.compiledJack.append(self.tokens[self.index])
             self.index += 1
 
-            self.compiledJack.append('/term')
             return
         #                               #                                 #
-
-        else:
-            self.compiledJack.append(self.tokens[self.index])
-            self.index += 1
-
-            self.compiledJack.append('/term')
-        
 
     def _compileExpressionList(self):
         self.compiledJack.append('expressionList')
