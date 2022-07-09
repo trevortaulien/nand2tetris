@@ -250,6 +250,69 @@ class Tokenizer(Analyzer):
     def _stringVal(self, token):
         return token[1:-1]
 
+class SymbolTable(Analyzer):
+
+    def __init__(self):
+        pass
+
+    def startSubroutine(self):
+        pass
+
+    def define(self):
+        pass
+
+    def varCount(self):
+        pass
+
+    def kindOf(self):
+        pass
+
+    def typeOf(self):
+        pass
+
+    def indexOf(self):
+        pass
+
+class VMWriter(Analyzer):
+
+    compiledVM = []
+    segments = {'CONSTANT' : 'constant', 'ARGUMENT' : 'argument', 'LOCAL'   : 'local'  , 'STATIC' : 'static',
+                'THIS'     : 'this'    , 'THAT'     : 'that'    , 'POINTER' : 'pointer', 'TEMP'   : 'temp'  }
+    commands = {'ADD' : 'add', 'SUB' : 'sub', 'NEG' : 'neg',
+                'EQ'  : 'eq' , 'GT'  : 'gt' , 'LT'  : 'lt' ,
+                'AND' : 'and', 'OR'  : 'or' , 'NOT' : 'not'}
+
+
+    def __init__(self):
+        pass
+
+    def writePush(self, segment, index):
+        self.compiledVM.append('push' + self.segments[segment] + str(index))
+
+    def writePop(self, segment, index):
+        self.compiledVM.append('pop' + self.segments[segment] + str(index))
+
+    def writeArithmetic(self, command):
+        self.compiledVM.append(self.commands[command])
+
+    def writeLabel(self, label):
+        self.compiledVM.append('label ' + label)
+
+    def writeGoto(self, label):
+        self.compiledVM.append('goto ' + label)
+
+    def writeIf(self, label):
+        self.compiledVM.append('if-goto ' + label)
+
+    def writeCall(self, name, nVars):
+        self.compiledVM.append('call ' + name + ' ' + str(nVars))
+
+    def writeFunction(self, name, nVars):
+        self.compiledVM.append('function ' + name + ' ' + str(nVars))
+
+    def writeReturn(self):
+        self.compiledVM.append('return')
+
 class CompilationEngine(Analyzer):
 
     index = 0
