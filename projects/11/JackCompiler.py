@@ -751,4 +751,6 @@ vmMaker.compile()
 vmMaker._outputTokensAsXML()
 vmMaker._outputCompiledAsXML()
 
+print(vmMaker.tokenizedJack)
+
 print("I'm done :)")
