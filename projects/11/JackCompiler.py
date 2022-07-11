@@ -345,6 +345,8 @@ class CompilationEngine(Analyzer):
 
     def __init__(self, tokenizedJack):
         self.tokens = tokenizedJack
+        self.classST = SymbolTable()
+        self.subroutineST = SymbolTable()
 
     def startEngine(self):
         self._compileClass()
@@ -366,6 +368,9 @@ class CompilationEngine(Analyzer):
             
             self._compileClassVarDec()
 
+            print(self.classST.fieldOrArg)
+            print(self.classST.staticOrVar)
+
         while(self.tokens[self.index][1] == 'constructor' or
               self.tokens[self.index][1] == 'function'    or
               self.tokens[self.index][1] == 'method'):
@@ -380,20 +385,36 @@ class CompilationEngine(Analyzer):
     def _compileClassVarDec(self):
         self.compiledJack.append('classVarDec')
 
-        self.compiledJack.append(self.tokens[self.index])
-        self.index += 1
+        if(self.tokens[self.index][1] == 'static'):
+            symbolKind = 'STATIC'
+        if(self.tokens[self.index][1] == 'field'):
+            symbolKind = 'FIELD'
 
         self.compiledJack.append(self.tokens[self.index])
         self.index += 1
 
+        symbolType = self.tokens[self.index][1]
+
         self.compiledJack.append(self.tokens[self.index])
         self.index += 1
+
+        symbolName = self.tokens[self.index][1]
+
+        self.compiledJack.append(self.tokens[self.index])
+        self.index += 1
+
+        self.classST.define(symbolName, symbolType, symbolKind)
         
         while(self.tokens[self.index][1] == ','):
             self.compiledJack.append(self.tokens[self.index])
             self.index += 1
+
+            symbolName = self.tokens[self.index][1]
+
             self.compiledJack.append(self.tokens[self.index])
             self.index += 1
+
+            self.classST.define(symbolName, symbolType, symbolKind)
 
         self.compiledJack.append(self.tokens[self.index])
         self.index += 1
