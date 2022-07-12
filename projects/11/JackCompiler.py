@@ -263,7 +263,7 @@ class SymbolTable():
     def define(self, name, type, kind):
         if(kind == 'FIELD' or kind == 'ARG'):
             self.fieldOrArg.append([name,type,kind])
-        else:
+        elif(kind == 'STATIC' or kind == 'VAR'):
             self.staticOrVar.append([name,type,kind])
 
     def varCount(self, kind):
@@ -440,13 +440,14 @@ class CompilationEngine(Analyzer):
 
         print('\n' + 'self.subroutineST.fieldOrArg: ')
         print(self.subroutineST.fieldOrArg)
-        print('\n' + 'self.subroutineST.staticOrVar: ')
-        print(self.subroutineST.staticOrVar)
 
         self.compiledJack.append(self.tokens[self.index])
         self.index += 1
 
         self._compileSubroutineBody()
+
+        print('\n' + 'self.subroutineST.staticOrVar: ')
+        print(self.subroutineST.staticOrVar)
 
         self.subroutineST.reset()
 
@@ -459,17 +460,17 @@ class CompilationEngine(Analyzer):
             self.compiledJack.append('/parameterList')
             return
         
-        subroutineType = self.tokens[self.index][1]
+        subroutineArgType = self.tokens[self.index][1]
 
         self.compiledJack.append(self.tokens[self.index])
         self.index += 1
 
-        subroutineName = self.tokens[self.index][1]
+        subroutineArgName = self.tokens[self.index][1]
 
         self.compiledJack.append(self.tokens[self.index])
         self.index += 1
 
-        self.subroutineST.define(subroutineName, subroutineType, 'ARG')
+        self.subroutineST.define(subroutineArgName, subroutineArgType, 'ARG')
 
         while(self.tokens[self.index][1] == ','):
             self.compiledJack.append(self.tokens[self.index])
@@ -513,22 +514,32 @@ class CompilationEngine(Analyzer):
     def _compileVarDec(self):
         while(self.tokens[self.index][1] == 'var'):
             self.compiledJack.append('varDec')
+            
+            self.compiledJack.append(self.tokens[self.index])
+            self.index += 1
+
+            subroutineVarType = self.tokens[self.index][1]
 
             self.compiledJack.append(self.tokens[self.index])
             self.index += 1
 
-            self.compiledJack.append(self.tokens[self.index])
-            self.index += 1
+            subroutineVarName = self.tokens[self.index][1]
 
             self.compiledJack.append(self.tokens[self.index])
             self.index += 1
+
+            self.subroutineST.define(subroutineVarName, subroutineVarType, 'VAR')
 
             while(self.tokens[self.index][1] == ','):
                 self.compiledJack.append(self.tokens[self.index])
                 self.index += 1
 
+                subroutineVarName = self.tokens[self.index][1]
+
                 self.compiledJack.append(self.tokens[self.index])
                 self.index += 1
+
+                self.subroutineST.define(subroutineVarName, subroutineVarType, 'VAR')
 
             self.compiledJack.append(self.tokens[self.index])
             self.index += 1
