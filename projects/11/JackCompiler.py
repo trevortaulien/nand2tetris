@@ -252,11 +252,9 @@ class Tokenizer(Analyzer):
 
 class SymbolTable():
 
-    fieldOrArg = []
-    staticOrVar = []
-
     def __init__(self):
-        pass      
+        self.fieldOrArg = []
+        self.staticOrVar = []    
 
     def reset(self):
         self.fieldOrArg = []
@@ -368,8 +366,10 @@ class CompilationEngine(Analyzer):
             
             self._compileClassVarDec()
 
-            print(self.classST.fieldOrArg)
-            print(self.classST.staticOrVar)
+        print('self.classST.fieldOrArg: ')
+        print(self.classST.fieldOrArg)
+        print('\n' + 'self.classST.staticOrVar: ')
+        print(self.classST.staticOrVar)   
 
         while(self.tokens[self.index][1] == 'constructor' or
               self.tokens[self.index][1] == 'function'    or
@@ -438,10 +438,17 @@ class CompilationEngine(Analyzer):
 
         self._compileParameterList()
 
+        print('\n' + 'self.subroutineST.fieldOrArg: ')
+        print(self.subroutineST.fieldOrArg)
+        print('\n' + 'self.subroutineST.staticOrVar: ')
+        print(self.subroutineST.staticOrVar)
+
         self.compiledJack.append(self.tokens[self.index])
         self.index += 1
 
         self._compileSubroutineBody()
+
+        self.subroutineST.reset()
 
         self.compiledJack.append('/subroutineDec')
 
@@ -452,21 +459,33 @@ class CompilationEngine(Analyzer):
             self.compiledJack.append('/parameterList')
             return
         
-        self.compiledJack.append(self.tokens[self.index])
-        self.index += 1
+        subroutineType = self.tokens[self.index][1]
 
         self.compiledJack.append(self.tokens[self.index])
         self.index += 1
+
+        subroutineName = self.tokens[self.index][1]
+
+        self.compiledJack.append(self.tokens[self.index])
+        self.index += 1
+
+        self.subroutineST.define(subroutineName, subroutineType, 'ARG')
 
         while(self.tokens[self.index][1] == ','):
             self.compiledJack.append(self.tokens[self.index])
             self.index += 1
 
-            self.compiledJack.append(self.tokens[self.index])
-            self.index += 1
+            subroutineType = self.tokens[self.index][1]
 
             self.compiledJack.append(self.tokens[self.index])
             self.index += 1
+
+            subroutineName = self.tokens[self.index][1]
+
+            self.compiledJack.append(self.tokens[self.index])
+            self.index += 1
+
+            self.subroutineST.define(subroutineName, subroutineType, 'ARG')
 
         self.compiledJack.append('/parameterList')
 
@@ -797,6 +816,6 @@ vmMaker.compile()
 vmMaker._outputTokensAsXML()
 vmMaker._outputCompiledAsXML()
 
-print(vmMaker.tokenizedJack)
+# print(vmMaker.tokenizedJack)
 
 print("I'm done :)")
