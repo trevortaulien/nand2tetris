@@ -354,10 +354,10 @@ class CompilationEngine(Analyzer):
     def _compileClass(self):
         self.compiledJack.append('class')
 
-        self.className = self.tokens[self.index][1]
-
         self.compiledJack.append(self.tokens[self.index])
         self.index += 1
+
+        self.className = self.tokens[self.index][1]
 
         self.compiledJack.append(self.tokens[self.index])
         self.index += 1
@@ -460,7 +460,8 @@ class CompilationEngine(Analyzer):
     def _compileParameterList(self):
         self.compiledJack.append('parameterList')
 
-        self.subroutineST.define('this', self.className, 'ARG')
+        if(self.tokens[self.index - 4][1] == 'method'):
+            self.subroutineST.define('this', self.className, 'ARG')
 
         if(self.tokens[self.index][1] == ')'):
             self.compiledJack.append('/parameterList')
