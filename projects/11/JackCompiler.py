@@ -254,9 +254,6 @@ class Tokenizer(Analyzer):
 
 class SymbolTable():
 
-    segmentName = {'FIELD' : 'this'  , 'ARG' : 'argument',
-                   'STATIC': 'static', 'VAR' : 'local'   }
-
     def __init__(self):
         self.fieldOrArg = []
         self.staticOrVar = []    
@@ -302,14 +299,13 @@ class SymbolTable():
                 return index
         return -1
 
-    def varSegment(self, name):
-        return self.segmentName[self.kindOf(name)] + ' ' + str(self.indexOf(name))
-
 class VMWriter(Analyzer):
 
     compiledVM = []
+
     segments = {'CONSTANT' : 'constant', 'ARGUMENT' : 'argument', 'LOCAL'   : 'local'  , 'STATIC' : 'static',
-                'THIS'     : 'this'    , 'THAT'     : 'that'    , 'POINTER' : 'pointer', 'TEMP'   : 'temp'  }
+                'THIS'     : 'this'    , 'THAT'     : 'that'    , 'POINTER' : 'pointer', 'TEMP'   : 'temp'  ,
+                'FIELD'    : 'this'    , 'ARG'      : 'argument', 'VAR'     : 'local'  }
     commands = {'ADD' : 'add', 'SUB' : 'sub', 'NEG' : 'neg',
                 'EQ'  : 'eq' , 'GT'  : 'gt' , 'LT'  : 'lt' ,
                 'AND' : 'and', 'OR'  : 'or' , 'NOT' : 'not'}
@@ -319,10 +315,10 @@ class VMWriter(Analyzer):
         pass
 
     def writePush(self, segment, index):
-        self.compiledVM.append('push' + self.segments[segment] + str(index))
+        self.compiledVM.append('push ' + self.segments[segment] + ' ' + str(index))
 
     def writePop(self, segment, index):
-        self.compiledVM.append('pop' + self.segments[segment] + str(index))
+        self.compiledVM.append('pop ' + self.segments[segment] + ' ' + str(index))
 
     def writeArithmetic(self, command):
         self.compiledVM.append(self.commands[command])
@@ -349,7 +345,6 @@ class CompilationEngine(Analyzer):
 
     index = 0
     compiledJack = []
-    compiledVM = []
     className = 'replace me'
     labelIndex = 0
     label = 'replace me'
@@ -358,6 +353,7 @@ class CompilationEngine(Analyzer):
         self.tokens = tokenizedJack
         self.classST = SymbolTable()
         self.subroutineST = SymbolTable()
+        self.vmWriter = VMWriter()
 
     def startEngine(self):
         self._compileClass()
@@ -597,9 +593,9 @@ class CompilationEngine(Analyzer):
         self.index += 1
 
         if(self.subroutineST.indexOf(self.tokens[self.index][1]) != -1):
-            self.compiledVM.append('push ' + self.subroutineST.varSegment(self.tokens[self.index][1]))
+            self.vmWriter.writePush(self.subroutineST.kindOf(self.tokens[self.index][1]), self.subroutineST.indexOf(self.tokens[self.index][1]))
         else:
-            self.compiledVM.append('push ' + self.classST.varSegment(self.tokens[self.index][1]))
+            self.vmWriter.writePush(self.classST.kindOf(self.tokens[self.index][1]), self.classST.indexOf(self.tokens[self.index][1]))
 
         self.compiledJack.append(self.tokens[self.index])
         self.index += 1
@@ -637,8 +633,8 @@ class CompilationEngine(Analyzer):
         L1 = self._nextLabel()
         L2 = self._nextLabel()
 
-        self.compiledVM.append('not')
-        self.compiledVM.append('if-goto ' + L1)
+        self.vmWriter.writeArithmetic('NOT')
+        self.vmWriter.writeIf(L1)
 
         self.compiledJack.append(self.tokens[self.index])
         self.index += 1
@@ -648,8 +644,8 @@ class CompilationEngine(Analyzer):
 
         self._compileStatements()
 
-        self.compiledVM.append('goto ' + L2)
-        self.compiledVM.append('label ' + L1)
+        self.vmWriter.writeGoto(L2)
+        self.vmWriter.writeLabel(L1)
 
         self.compiledJack.append(self.tokens[self.index])
         self.index += 1
@@ -663,7 +659,7 @@ class CompilationEngine(Analyzer):
 
             self._compileStatements()
 
-            self.compiledVM.append('label ' + L2)
+            self.vmWriter.writeLabel(L2)
 
             self.compiledJack.append(self.tokens[self.index])
             self.index += 1
@@ -682,12 +678,12 @@ class CompilationEngine(Analyzer):
         L1 = self._nextLabel()
         L2 = self._nextLabel()
 
-        self.compiledVM.append('label ' + L1)
+        self.vmWriter.writeLabel(L1)
 
         self._compileExpression()
 
-        self.compiledVM.append('not')
-        self.compiledVM.append('if-goto ' + L2)
+        self.vmWriter.writeArithmetic('NOT')
+        self.vmWriter.writeIf(L2)
 
         self.compiledJack.append(self.tokens[self.index])
         self.index += 1
@@ -697,8 +693,8 @@ class CompilationEngine(Analyzer):
 
         self._compileStatements()
 
-        self.compiledJack.append('goto ' + L1)
-        self.compiledJack.append('label ' + L2)
+        self.vmWriter.writeGoto(L1)
+        self.vmWriter.writeLabel(L2)
 
         self.compiledJack.append(self.tokens[self.index])
         self.index += 1
@@ -727,7 +723,7 @@ class CompilationEngine(Analyzer):
         if(self.tokens[self.index][1] != ';'):
             self._compileExpression()
 
-        self.compiledVM.append('return')
+        self.vmWriter.writeReturn()
 
         self.compiledJack.append(self.tokens[self.index])
         self.index += 1
