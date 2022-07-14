@@ -10,6 +10,7 @@ class Analyzer:
     sourceJack = []
     tokenizedJack = []
     compiledJack = []
+    compiledVM = []
     xmlTokens = []
     xmlCompiled = []
 
@@ -39,6 +40,7 @@ class Analyzer:
         ce.startEngine()
 
         self.compiledJack = ce.compiledJack
+        self.compiledVM = ce.compiledVM
 
     def outputVM(self):
         pass
@@ -252,6 +254,9 @@ class Tokenizer(Analyzer):
 
 class SymbolTable():
 
+    segmentName = {'FIELD' : 'this'  , 'ARG' : 'argument',
+                   'STATIC': 'static', 'VAR' : 'local'   }
+
     def __init__(self):
         self.fieldOrArg = []
         self.staticOrVar = []    
@@ -295,6 +300,10 @@ class SymbolTable():
         for index, entry in enumerate(self.staticOrVar):
             if(entry[0] == name):
                 return index
+        return -1
+
+    def varSegment(self, name):
+        return self.segmentName[self.kindOf(name)] + ' ' + str(self.indexOf(name))
 
 class VMWriter(Analyzer):
 
@@ -341,7 +350,9 @@ class CompilationEngine(Analyzer):
     index = 0
     compiledJack = []
     compiledVM = []
-    className = []
+    className = 'replace me'
+    labelIndex = 0
+    label = 'replace me'
 
     def __init__(self, tokenizedJack):
         self.tokens = tokenizedJack
@@ -370,10 +381,10 @@ class CompilationEngine(Analyzer):
             
             self._compileClassVarDec()
 
-        print('self.classST.fieldOrArg: ')
-        print(self.classST.fieldOrArg)
-        print('\n' + 'self.classST.staticOrVar: ')
-        print(self.classST.staticOrVar)   
+        # print('self.classST.fieldOrArg: ')
+        # print(self.classST.fieldOrArg)
+        # print('\n' + 'self.classST.staticOrVar: ')
+        # print(self.classST.staticOrVar)   
 
         while(self.tokens[self.index][1] == 'constructor' or
               self.tokens[self.index][1] == 'function'    or
@@ -382,7 +393,7 @@ class CompilationEngine(Analyzer):
             self._compileSubroutineDec()
 
         self.compiledJack.append(self.tokens[self.index])
-        self.index += 1     # this increment may be unnecessary
+        self.index += 1
 
         self.compiledJack.append('/class')
 
@@ -442,16 +453,16 @@ class CompilationEngine(Analyzer):
 
         self._compileParameterList()
 
-        print('\n' + 'self.subroutineST.fieldOrArg: ')
-        print(self.subroutineST.fieldOrArg)
+        # print('\n' + 'self.subroutineST.fieldOrArg: ')
+        # print(self.subroutineST.fieldOrArg)
 
         self.compiledJack.append(self.tokens[self.index])
         self.index += 1
 
         self._compileSubroutineBody()
 
-        print('\n' + 'self.subroutineST.staticOrVar: ')
-        print(self.subroutineST.staticOrVar)
+        # print('\n' + 'self.subroutineST.staticOrVar: ')
+        # print(self.subroutineST.staticOrVar)
 
         self.subroutineST.reset()
 
@@ -585,6 +596,11 @@ class CompilationEngine(Analyzer):
         self.compiledJack.append(self.tokens[self.index])
         self.index += 1
 
+        if(self.subroutineST.indexOf(self.tokens[self.index][1]) != -1):
+            self.compiledVM.append('push ' + self.subroutineST.varSegment(self.tokens[self.index][1]))
+        else:
+            self.compiledVM.append('push ' + self.classST.varSegment(self.tokens[self.index][1]))
+
         self.compiledJack.append(self.tokens[self.index])
         self.index += 1
 
@@ -618,6 +634,12 @@ class CompilationEngine(Analyzer):
 
         self._compileExpression()
 
+        L1 = self._nextLabel()
+        L2 = self._nextLabel()
+
+        self.compiledVM.append('not')
+        self.compiledVM.append('if-goto ' + L1)
+
         self.compiledJack.append(self.tokens[self.index])
         self.index += 1
 
@@ -625,6 +647,9 @@ class CompilationEngine(Analyzer):
         self.index += 1
 
         self._compileStatements()
+
+        self.compiledVM.append('goto ' + L2)
+        self.compiledVM.append('label ' + L1)
 
         self.compiledJack.append(self.tokens[self.index])
         self.index += 1
@@ -637,6 +662,8 @@ class CompilationEngine(Analyzer):
             self.index += 1
 
             self._compileStatements()
+
+            self.compiledVM.append('label ' + L2)
 
             self.compiledJack.append(self.tokens[self.index])
             self.index += 1
@@ -652,7 +679,15 @@ class CompilationEngine(Analyzer):
         self.compiledJack.append(self.tokens[self.index])
         self.index += 1
 
+        L1 = self._nextLabel()
+        L2 = self._nextLabel()
+
+        self.compiledVM.append('label ' + L1)
+
         self._compileExpression()
+
+        self.compiledVM.append('not')
+        self.compiledVM.append('if-goto ' + L2)
 
         self.compiledJack.append(self.tokens[self.index])
         self.index += 1
@@ -661,6 +696,9 @@ class CompilationEngine(Analyzer):
         self.index += 1
 
         self._compileStatements()
+
+        self.compiledJack.append('goto ' + L1)
+        self.compiledJack.append('label ' + L2)
 
         self.compiledJack.append(self.tokens[self.index])
         self.index += 1
@@ -688,6 +726,8 @@ class CompilationEngine(Analyzer):
 
         if(self.tokens[self.index][1] != ';'):
             self._compileExpression()
+
+        self.compiledVM.append('return')
 
         self.compiledJack.append(self.tokens[self.index])
         self.index += 1
@@ -828,6 +868,11 @@ class CompilationEngine(Analyzer):
 
         self.compiledJack.append('/expressionList')
 
+    def _nextLabel(self):
+        label = self.className + '.L' + str(self.labelIndex)
+        self.labelIndex += 1
+        return label
+
 vmMaker = Analyzer()
 vmMaker.tokenize()
 vmMaker.compile()
@@ -835,5 +880,6 @@ vmMaker._outputTokensAsXML()
 vmMaker._outputCompiledAsXML()
 
 # print(vmMaker.tokenizedJack)
+print(vmMaker.compiledVM)
 
 print("I'm done :)")
