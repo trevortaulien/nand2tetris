@@ -5,7 +5,7 @@ import sys
 from lxml import etree
 import xml.dom.minidom as md
 
-class Analyzer:
+class Analyzer():
 
     sourceJack = []
     tokenizedJack = []
@@ -40,7 +40,7 @@ class Analyzer:
         ce.startEngine()
 
         self.compiledJack = ce.compiledJack
-        self.compiledVM = ce.compiledVM
+        self.compiledVM = ce.getCompiledVM()
 
     def outputVM(self):
         pass
@@ -157,7 +157,7 @@ class Analyzer:
         # with open(outputPath, 'w') as s:
         #    s.write(self.xmlCompiled)
 
-class Tokenizer(Analyzer):
+class Tokenizer():
 
     symbols = {'{' : 0 , '}' : 1 , '(' : 2 , ')' : 3 , '[' : 4 , 
                ']' : 5 , '.' : 6 , ',' : 7 , ';' : 8 , '+' : 9 , 
@@ -299,7 +299,7 @@ class SymbolTable():
                 return index
         return -1
 
-class VMWriter(Analyzer):
+class VMWriter():
 
     compiledVM = []
 
@@ -341,7 +341,7 @@ class VMWriter(Analyzer):
     def writeReturn(self):
         self.compiledVM.append('return')
 
-class CompilationEngine(Analyzer):
+class CompilationEngine():
 
     index = 0
     compiledJack = []
@@ -868,6 +868,9 @@ class CompilationEngine(Analyzer):
         label = self.className + '.L' + str(self.labelIndex)
         self.labelIndex += 1
         return label
+
+    def getCompiledVM(self):
+        return self.vmWriter.compiledVM
 
 vmMaker = Analyzer()
 vmMaker.tokenize()
