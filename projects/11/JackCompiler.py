@@ -269,10 +269,27 @@ class SymbolTable():
             self.staticOrVar.append([name,type,kind])
 
     def varCount(self, kind):
-        if(kind == 'FIELD' or kind == 'ARG'):
-            return len(self.fieldOrArg)
-        elif(kind == 'STATIC' or kind == 'VAR'):
-            return len(self.staticOrVar)
+        count = 0
+        if(kind == 'FIELD'):
+            for entry in self.fieldOrArg:
+                if(entry[2] == 'FIELD'):
+                    count += 1
+            return count
+        elif(kind == 'ARG'):
+            for entry in self.fieldOrArg:
+                if(entry[2] == 'ARG'):
+                    count += 1
+            return count
+        elif(kind == 'STATIC'):
+            for entry in self.staticOrVar:
+                if(entry[2] == 'STATIC'):
+                    count += 1
+            return count
+        elif(kind == 'VAR'):
+            for entry in self.staticOrVar:
+                if(entry[2] == 'VAR'):
+                    count += 1
+            return count
 
     def kindOf(self, name):
         for entry in self.fieldOrArg:
@@ -435,6 +452,8 @@ class CompilationEngine():
     def _compileSubroutineDec(self):
         self.compiledJack.append('subroutineDec')
 
+        subroutineType = self.tokens[self.index][1]
+
         self.compiledJack.append(self.tokens[self.index])
         self.index += 1
 
@@ -454,6 +473,11 @@ class CompilationEngine():
 
         self.compiledJack.append(self.tokens[self.index])
         self.index += 1
+
+        if(subroutineType == 'constructor'):
+            self.vmWriter.writePush('CONSTANT', self.classST.varCount('FIELD'))
+            self.vmWriter.writeCall('Memory.alloc', 1)
+            self.vmWriter.writePop('POINTER', 0)
 
         self._compileSubroutineBody()
 
