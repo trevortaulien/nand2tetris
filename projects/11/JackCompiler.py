@@ -325,7 +325,10 @@ class VMWriter():
                 'FIELD'    : 'this'    , 'ARG'      : 'argument', 'VAR'     : 'local'  }
     commands = {'ADD' : 'add', 'SUB' : 'sub', 'NEG' : 'neg',
                 'EQ'  : 'eq' , 'GT'  : 'gt' , 'LT'  : 'lt' ,
-                'AND' : 'and', 'OR'  : 'or' , 'NOT' : 'not'}
+                'AND' : 'and', 'OR'  : 'or' , 'NOT' : 'not',
+                '+'   : 'add', '-'   : 'neg', '&'   : 'and',
+                '|'   : 'or' , '<'   : 'lt' , '>'   : 'gt' ,
+                '='   : 'eq' , '~'   : 'not'}
 
 
     def __init__(self):
@@ -338,7 +341,12 @@ class VMWriter():
         self.compiledVM.append('pop ' + self.segments[segment] + ' ' + str(index))
 
     def writeArithmetic(self, command):
-        self.compiledVM.append(self.commands[command])
+        if(command == '*'):
+            self.writeCall('Math.multiplay', 2)
+        elif(command == '/'):
+            self.writeCall('Math.divide', 2)
+        else:
+            self.compiledVM.append(self.commands[command])
 
     def writeLabel(self, label):
         self.compiledVM.append('label ' + label)
@@ -759,6 +767,8 @@ class CompilationEngine():
 
         self._compileTerm()
 
+        commandsToPush = []
+
         while(self.tokens[self.index][1] == '+' or
               self.tokens[self.index][1] == '-' or
               self.tokens[self.index][1] == '*' or
@@ -768,10 +778,15 @@ class CompilationEngine():
               self.tokens[self.index][1] == '<' or
               self.tokens[self.index][1] == '>' or
               self.tokens[self.index][1] == '='):
+            commandsToPush.append(self.tokens[self.index][1])
+            
             self.compiledJack.append(self.tokens[self.index])
             self.index += 1
             
             self._compileTerm()
+
+        for command in reversed(commandsToPush):
+            self.vmWriter.writeArithmetic(command)
 
         self.compiledJack.append('/expression')
 
@@ -795,10 +810,14 @@ class CompilationEngine():
         # (unaryOp term) #
         elif(self.tokens[self.index][1] == '-' or          
            self.tokens[self.index][1] == '~'):
+           unaryOp = self.tokens[self.index][1]
+           
            self.compiledJack.append(self.tokens[self.index])
            self.index += 1
 
            self._compileTerm()
+
+           self.vmWriter.writeArithmetic(unaryOp)
 
            self.compiledJack.append('/term')
            return
@@ -829,6 +848,13 @@ class CompilationEngine():
              self.compiledJack.append('/term')
 
         else:
+            if(self.subroutineST.indexOf(self.tokens[self.index][1]) != -1):
+                self.vmWriter.writePush(self.subroutineST.kindOf(self.tokens[self.index][1]),self.subroutineST.indexOf(self.tokens[self.index][1]))
+            elif(self.classST.indexOf(self.tokens[self.index][1]) != -1):
+                self.vmWriter.writePush(self.classST.kindOf(self.tokens[self.index][1]), self.classST.indexOf(self.tokens[self.index][1]))
+            else:
+                self.vmWriter.writePush('CONSTANT', int(self.tokens[self.index][1]))
+
             self.compiledJack.append(self.tokens[self.index])
             self.index += 1
 
