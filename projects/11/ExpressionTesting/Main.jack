@@ -1,0 +1,13 @@
+class Main {
+
+   field int z;
+   static boolean y;
+
+   function void main(char w) {
+      var int x;
+
+      let z = printInt(x, w, y, z);
+      return this;
+   }
+
+}

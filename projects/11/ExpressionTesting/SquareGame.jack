@@ -1,0 +1,34 @@
+class SquareGame {
+   field Square square; // the square of this game
+   field int direction; // the square's current direction: 
+                        // 0=none, 1=up, 2=down, 3=left, 4=right
+
+   /** Constructs a new Square Game. */
+   constructor SquareGame new() {
+      // Creates a 30 by 30 pixels square and positions it at the top-left
+      // of the screen.
+      let square = Square.new(0, 0, 30);
+      let direction = 0;  // initial state is no movement
+      return this;
+   }
+
+   /** Disposes this game. */
+   method void dispose() {
+      do square.dispose();
+      do Memory.deAlloc(this);
+      return;
+   }
+
+   /** Moves the square in the current direction. */
+   method void moveSquare() {
+      if (direction = 1) { do square.moveUp(); }
+      if (direction = 2) { do square.moveDown(); }
+      if (direction = 3) { do square.moveLeft(); }
+      if (direction = 4) { do square.moveRight(); }
+      do Sys.wait(5);  // delays the next movement
+      return;
+   }
+}
+
+
+
