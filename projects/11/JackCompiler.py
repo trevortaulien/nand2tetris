@@ -5,6 +5,8 @@ import sys
 from lxml import etree
 import xml.dom.minidom as md
 
+from pyparsing import opAssoc
+
 class Analyzer():
 
     sourceJack = []
@@ -364,6 +366,14 @@ class VMWriter():
     def writeReturn(self):
         self.compiledVM.append('return')
 
+    def writePlaceHolder(self, placeholder):
+        self.compiledVM.append(placeholder)
+
+    def replacePlaceHolder(self, placeholder, replacement):
+        for command in self.compiledVM:
+            if(command == placeholder):
+                self.compiledVM[self.compiledVM.index(command)] = replacement
+
 class CompilationEngine():
 
     index = 0
@@ -463,7 +473,7 @@ class CompilationEngine():
         self.compiledJack.append(self.tokens[self.index])
         self.index += 1
 
-        subroutineType = self.tokens[self.index][1]
+        self.subroutineType = self.tokens[self.index][1]
 
         self.compiledJack.append(self.tokens[self.index])
         self.index += 1
@@ -484,7 +494,7 @@ class CompilationEngine():
         self.compiledJack.append(self.tokens[self.index])
         self.index += 1
 
-        self.vmWriter.writeFunction(self.className + '.' + subroutineName, nVars)
+        self.vmWriter.writePlaceHolder(self.className + '.' + subroutineName)
 
         if(subroutineCategory == 'constructor'):
             self.vmWriter.writePush('CONSTANT', self.classST.varCount('FIELD'))
@@ -493,8 +503,10 @@ class CompilationEngine():
 
         self._compileSubroutineBody()
 
-        # print('\n' + 'self.subroutineST.staticOrVar: ')
-        # print(self.subroutineST.staticOrVar)
+        print('\n' + 'self.subroutineST.staticOrVar: ')
+        print(self.subroutineST.staticOrVar)
+
+        self.vmWriter.replacePlaceHolder(self.className + '.' + subroutineName, 'function ' + self.className + '.' + subroutineName + ' ' + str(self.subroutineST.varCount('VAR')))
 
         self.subroutineST.reset()
 
@@ -760,6 +772,8 @@ class CompilationEngine():
         self.compiledJack.append(self.tokens[self.index])
         self.index += 1
 
+        self.vmWriter.writePop('TEMP', 0)
+
         self.compiledJack.append('/doStatement')
 
     def _compileReturn(self):
@@ -770,6 +784,9 @@ class CompilationEngine():
 
         if(self.tokens[self.index][1] != ';'):
             self._compileExpression()
+
+        if(self.subroutineType == 'void'):
+            self.vmWriter.writePush('CONSTANT', 0)
 
         self.vmWriter.writeReturn()
 
@@ -872,6 +889,11 @@ class CompilationEngine():
                 self.vmWriter.writePush(self.classST.kindOf(self.tokens[self.index][1]), self.classST.indexOf(self.tokens[self.index][1]))
             elif(self.tokens[self.index][1] == 'this'):
                 self.vmWriter.writePush('POINTER', 0)
+            elif(self.tokens[self.index][1] == 'true'):
+                self.vmWriter.writePush('CONSTANT', 1)
+                self.vmWriter.writeArithmetic('NEG')
+            elif(self.tokens[self.index][1] == 'false' or self.tokens[self.index][1] == 'null'):
+                self.vmWriter.writePush('CONSTANT', 0)
             else:
                 self.vmWriter.writePush('CONSTANT', int(self.tokens[self.index][1]))
 
