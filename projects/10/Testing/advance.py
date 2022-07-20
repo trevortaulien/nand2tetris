@@ -27,7 +27,7 @@ def advance():
         tokenBag = tokenBag[index:]
         return possibleToken
 
-    # IDENTIFIER  
+    # IDENTIFIER
     while(tokenBag[index].isalpha() or tokenBag[index] == '_'):
         possibleToken = possibleToken + tokenBag[index]
         if(tokenBag[index + 1] in symbols):
@@ -38,6 +38,10 @@ def advance():
         while(tokenBag[index].isdigit()):
             possibleToken = possibleToken + tokenBag[index]
             index += 1
+        if(tokenBag[index] in symbols):
+            index += 1
+            tokenBag = tokenBag[index:]
+            return possibleToken
 
     # INT_CONST
     while(tokenBag[index].isdigit()):
