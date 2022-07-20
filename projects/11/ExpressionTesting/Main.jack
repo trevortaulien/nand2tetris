@@ -3,11 +3,14 @@ class Main {
    field int z;
    static boolean y;
 
-   function void main(char w) {
-      var int x;
+   function void main() {
+      var int x, i;
+      let x = 3;
 
-      let z = printInt(x, w, y, z);
-      return this;
+      if(x = 3){
+        let z = 2 + y;
+      }
+      return;
    }
 
 }

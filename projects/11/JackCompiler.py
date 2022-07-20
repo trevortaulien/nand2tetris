@@ -43,7 +43,11 @@ class Analyzer():
         self.compiledVM = ce.getCompiledVM()
 
     def outputVM(self):
-        pass
+        outputPath = sys.argv[1].replace('.jack', '.vm')
+
+        with open(outputPath, 'w') as v:
+            for vmCommand in self.compiledVM:
+                v.write(vmCommand + '\n')
 
     def _getJack(self):
 
@@ -150,12 +154,6 @@ class Analyzer():
         with open(outputPath, 'w') as c:
             for item in self.xmlCompiled:
                 c.write(item + '\n')
-
-        # dom = md.parse(outputPath)
-        # self.xmlCompiled = dom.toprettyxml()
-
-        # with open(outputPath, 'w') as s:
-        #    s.write(self.xmlCompiled)
 
 class Tokenizer():
 
@@ -342,7 +340,7 @@ class VMWriter():
 
     def writeArithmetic(self, command):
         if(command == '*'):
-            self.writeCall('Math.multiplay', 2)
+            self.writeCall('Math.multiply', 2)
         elif(command == '/'):
             self.writeCall('Math.divide', 2)
         else:
@@ -460,13 +458,17 @@ class CompilationEngine():
     def _compileSubroutineDec(self):
         self.compiledJack.append('subroutineDec')
 
+        subroutineCategory = self.tokens[self.index][1]
+
+        self.compiledJack.append(self.tokens[self.index])
+        self.index += 1
+
         subroutineType = self.tokens[self.index][1]
 
         self.compiledJack.append(self.tokens[self.index])
         self.index += 1
 
-        self.compiledJack.append(self.tokens[self.index])
-        self.index += 1
+        subroutineName = self.tokens[self.index][1]
 
         self.compiledJack.append(self.tokens[self.index])
         self.index += 1
@@ -474,7 +476,7 @@ class CompilationEngine():
         self.compiledJack.append(self.tokens[self.index])
         self.index += 1
 
-        self._compileParameterList()
+        nVars = self._compileParameterList()
 
         # print('\n' + 'self.subroutineST.fieldOrArg: ')
         # print(self.subroutineST.fieldOrArg)
@@ -482,7 +484,9 @@ class CompilationEngine():
         self.compiledJack.append(self.tokens[self.index])
         self.index += 1
 
-        if(subroutineType == 'constructor'):
+        self.vmWriter.writeFunction(self.className + '.' + subroutineName, nVars)
+
+        if(subroutineCategory == 'constructor'):
             self.vmWriter.writePush('CONSTANT', self.classST.varCount('FIELD'))
             self.vmWriter.writeCall('Memory.alloc', 1)
             self.vmWriter.writePop('POINTER', 0)
@@ -499,12 +503,14 @@ class CompilationEngine():
     def _compileParameterList(self):
         self.compiledJack.append('parameterList')
 
+        nVars = 0
+
         if(self.tokens[self.index - 4][1] == 'method'):
             self.subroutineST.define('this', self.className, 'ARG')
 
         if(self.tokens[self.index][1] == ')'):
             self.compiledJack.append('/parameterList')
-            return
+            return nVars 
         
         subroutineArgType = self.tokens[self.index][1]
 
@@ -516,25 +522,31 @@ class CompilationEngine():
         self.compiledJack.append(self.tokens[self.index])
         self.index += 1
 
+        nVars += 1
+
         self.subroutineST.define(subroutineArgName, subroutineArgType, 'ARG')
 
         while(self.tokens[self.index][1] == ','):
             self.compiledJack.append(self.tokens[self.index])
             self.index += 1
 
-            subroutineType = self.tokens[self.index][1]
+            subroutineArgType = self.tokens[self.index][1]
 
             self.compiledJack.append(self.tokens[self.index])
             self.index += 1
 
-            subroutineName = self.tokens[self.index][1]
+            subroutineArgName = self.tokens[self.index][1]
 
             self.compiledJack.append(self.tokens[self.index])
             self.index += 1
 
-            self.subroutineST.define(subroutineName, subroutineType, 'ARG')
+            nVars += 1
+
+            self.subroutineST.define(subroutineArgName, subroutineArgType, 'ARG')
 
         self.compiledJack.append('/parameterList')
+
+        return nVars
 
     def _compileSubroutineBody(self):
         self.compiledJack.append('subroutineBody')
@@ -626,11 +638,6 @@ class CompilationEngine():
 
         varName = self.tokens[self.index][1]
 
-        if(self.subroutineST.indexOf(varName) != -1):
-            self.vmWriter.writePush(self.subroutineST.kindOf(varName), self.subroutineST.indexOf(varName))
-        else:
-            self.vmWriter.writePush(self.classST.kindOf(varName), self.classST.indexOf(varName))
-
         self.compiledJack.append(self.tokens[self.index])
         self.index += 1
 
@@ -702,6 +709,8 @@ class CompilationEngine():
 
             self.compiledJack.append(self.tokens[self.index])
             self.index += 1
+        else:
+            self.vmWriter.writeLabel(L2)
 
         self.compiledJack.append('/ifStatement')
 
@@ -953,8 +962,9 @@ class CompilationEngine():
 vmMaker = Analyzer()
 vmMaker.tokenize()
 vmMaker.compile()
-vmMaker._outputTokensAsXML()
-vmMaker._outputCompiledAsXML()
+# vmMaker._outputTokensAsXML()
+# vmMaker._outputCompiledAsXML()
+vmMaker.outputVM()
 
 # print(vmMaker.tokenizedJack)
 print(vmMaker.compiledVM)

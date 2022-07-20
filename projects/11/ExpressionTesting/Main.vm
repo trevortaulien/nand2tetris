@@ -1,0 +1,16 @@
+function main 0
+push constant 3
+pop local 0
+push local 0
+push constant 3
+eq
+not
+if-goto Main.L0
+push constant 2
+push static 0
+add
+pop this 0
+goto Main.L1
+label Main.L0
+label Main.L1
+return
