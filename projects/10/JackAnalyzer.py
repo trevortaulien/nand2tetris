@@ -204,9 +204,9 @@ class Tokenizer(Analyzer):
             while(self.tokenBag[index].isdigit()):
                 possibleToken = possibleToken + self.tokenBag[index]
                 index += 1
-            if(tokenBag[index] in self.symbols):
+            if(self.tokenBag[index] in self.symbols):
                 index += 1
-                tokenBag = tokenBag[index:]
+                self.tokenBag = self.tokenBag[index:]
                 return possibleToken
 
         # INT_CONST
