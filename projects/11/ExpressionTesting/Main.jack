@@ -1,15 +1,12 @@
 class Main {
 
-   field int z;
-   static boolean y;
-
    function void main() {
-      var int x, i;
-      let x = 3;
-
-      if(x = 3){
-        let z = 2 + y;
-      }
+      
+      var int len;
+      var Point p1, p2;
+      let p1 = Point.new(2,3);
+      let p2 = Point.new(4,5);
+      let len = p1.distance(p2);
       return;
    }
 

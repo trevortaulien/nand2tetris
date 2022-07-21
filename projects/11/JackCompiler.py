@@ -206,6 +206,9 @@ class Tokenizer():
             while(self.tokenBag[index].isdigit()):
                 possibleToken = possibleToken + self.tokenBag[index]
                 index += 1
+            if(self.tokenBag[index] in self.symbols):
+                self.tokenBag = self.tokenBag[index:]
+                return possibleToken
 
         # INT_CONST
         while(self.tokenBag[index].isdigit()):
@@ -410,10 +413,10 @@ class CompilationEngine():
             
             self._compileClassVarDec()
 
-        # print('self.classST.fieldOrArg: ')
-        # print(self.classST.fieldOrArg)
-        # print('\n' + 'self.classST.staticOrVar: ')
-        # print(self.classST.staticOrVar)   
+        print('self.classST.fieldOrArg: ')
+        print(self.classST.fieldOrArg)
+        print('\n' + 'self.classST.staticOrVar: ')
+        print(self.classST.staticOrVar)   
 
         while(self.tokens[self.index][1] == 'constructor' or
               self.tokens[self.index][1] == 'function'    or
@@ -468,7 +471,7 @@ class CompilationEngine():
     def _compileSubroutineDec(self):
         self.compiledJack.append('subroutineDec')
 
-        subroutineCategory = self.tokens[self.index][1]
+        self.subroutineCategory = self.tokens[self.index][1]
 
         self.compiledJack.append(self.tokens[self.index])
         self.index += 1
@@ -488,15 +491,15 @@ class CompilationEngine():
 
         nVars = self._compileParameterList()
 
-        # print('\n' + 'self.subroutineST.fieldOrArg: ')
-        # print(self.subroutineST.fieldOrArg)
+        print('\n' + 'self.subroutineST.fieldOrArg: ')
+        print(self.subroutineST.fieldOrArg)
 
         self.compiledJack.append(self.tokens[self.index])
         self.index += 1
 
         self.vmWriter.writePlaceHolder(self.className + '.' + subroutineName)
 
-        if(subroutineCategory == 'constructor'):
+        if(self.subroutineCategory == 'constructor'):
             self.vmWriter.writePush('CONSTANT', self.classST.varCount('FIELD'))
             self.vmWriter.writeCall('Memory.alloc', 1)
             self.vmWriter.writePop('POINTER', 0)
@@ -926,6 +929,15 @@ class CompilationEngine():
         elif(self.tokens[self.index + 1][1] == '.'):
             classVarName = self.tokens[self.index][1]
 
+            selfRef = 0
+
+            if(self.subroutineST.indexOf(classVarName) != -1):
+                self.vmWriter.writePush(self.subroutineST.kindOf(classVarName), self.subroutineST.indexOf(classVarName))
+                selfRef = 1
+            elif(self.classST.indexOf(classVarName) != -1):
+                self.vmWriter.writePush(self.classST.kindOf(classVarName), self.classST.indexOf(classVarName))
+                selfRef = 1
+
             self.compiledJack.append(self.tokens[self.index])
             self.index += 1
 
@@ -938,12 +950,19 @@ class CompilationEngine():
             self.index += 1
 
             self.compiledJack.append(self.tokens[self.index])
-            self.index += 1
+            self.index += 1            
 
             nVars = self._compileExpressionList()
 
-            segment = classVarName + '.' + subroutineName
-            self.vmWriter.writeCall(segment, nVars)
+            if(self.subroutineST.indexOf(classVarName) != -1):
+                className = self.subroutineST.typeOf(classVarName)
+            elif(self.classST.indexOf(classVarName) != -1):
+                className = self.classST.typeOf(classVarName)
+            else:
+                className = classVarName
+
+            segment = className + '.' + subroutineName
+            self.vmWriter.writeCall(segment, nVars + selfRef)
 
             self.compiledJack.append(self.tokens[self.index])
             self.index += 1
