@@ -205,7 +205,6 @@ class Tokenizer(Analyzer):
                 possibleToken = possibleToken + self.tokenBag[index]
                 index += 1
             if(self.tokenBag[index] in self.symbols):
-                index += 1
                 self.tokenBag = self.tokenBag[index:]
                 return possibleToken
 

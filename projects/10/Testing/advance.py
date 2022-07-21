@@ -39,7 +39,6 @@ def advance():
             possibleToken = possibleToken + tokenBag[index]
             index += 1
         if(tokenBag[index] in symbols):
-            index += 1
             tokenBag = tokenBag[index:]
             return possibleToken
 
