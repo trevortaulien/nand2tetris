@@ -918,7 +918,7 @@ class CompilationEngine():
 
             nVars = self._compileExpressionList()
 
-            self.vmWriter.writeCall(subroutineName, nVars)
+            self.vmWriter.writeCall(self.className + '.' + subroutineName, nVars)
 
             self.compiledJack.append(self.tokens[self.index])
             self.index += 1
