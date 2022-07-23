@@ -914,13 +914,18 @@ class CompilationEngine():
         if(self.tokens[self.index + 1][1] == '('):
             subroutineName = self.tokens[self.index][1]
 
-            self.compiledJack.append(self.tokens[self.index])
-            self.index += 1
+            nVars = 0
 
             self.compiledJack.append(self.tokens[self.index])
             self.index += 1
 
-            nVars = self._compileExpressionList()
+            self.compiledJack.append(self.tokens[self.index])
+            self.index += 1
+
+            self.vmWriter.writePush('POINTER', 0)
+            nVars += 1
+
+            nVars =  nVars + self._compileExpressionList()
 
             self.vmWriter.writeCall(self.className + '.' + subroutineName, nVars)
 
