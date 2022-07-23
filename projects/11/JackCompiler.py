@@ -504,6 +504,10 @@ class CompilationEngine():
             self.vmWriter.writeCall('Memory.alloc', 1)
             self.vmWriter.writePop('POINTER', 0)
 
+        if(self.subroutineCategory == 'method'):
+            self.vmWriter.writePush('ARGUMENT', 0)
+            self.vmWriter.writePop('POINTER', 0)
+
         self._compileSubroutineBody()
 
         print('\n' + 'self.subroutineST.staticOrVar: ')
