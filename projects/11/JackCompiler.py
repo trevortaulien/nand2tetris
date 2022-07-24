@@ -660,11 +660,22 @@ class CompilationEngine():
         self.compiledJack.append(self.tokens[self.index])
         self.index += 1
 
+        arrayStatus = -1
+
         if(self.tokens[self.index][1] == '['):
             self.compiledJack.append(self.tokens[self.index])
             self.index += 1
 
+            arrayStatus = 1
+
+            if(self.subroutineST.indexOf(varName) != -1):
+                self.vmWriter.writePush(self.subroutineST.kindOf(varName), self.subroutineST.indexOf(varName))
+            else:
+                self.vmWriter.writePush(self.classST.kindOf(varName), self.classST.indexOf(varName))
+
             self._compileExpression()
+
+            self.vmWriter.writeArithmetic('ADD')
 
             self.compiledJack.append(self.tokens[self.index])
             self.index += 1
@@ -673,6 +684,18 @@ class CompilationEngine():
         self.index += 1
 
         self._compileExpression()
+
+        if(arrayStatus == 1):
+            self.vmWriter.writePop('TEMP', 0)
+            self.vmWriter.writePop('POINTER', 1)
+            self.vmWriter.writePush('TEMP', 0)
+            self.vmWriter.writePop('THAT', 0)
+
+            self.compiledJack.append(self.tokens[self.index])
+            self.index += 1
+
+            self.compiledJack.append('/letStatement')
+            return
 
         if(self.subroutineST.indexOf(varName) != -1):
             self.vmWriter.writePop(self.subroutineST.kindOf(varName), self.subroutineST.indexOf(varName))
@@ -867,13 +890,25 @@ class CompilationEngine():
 
         # varName '[' expression ']' #
         elif(self.tokens[self.index + 1][1] == '['):
+            
+            varName = self.tokens[self.index][1]
+            
             self.compiledJack.append(self.tokens[self.index])
             self.index += 1
 
             self.compiledJack.append(self.tokens[self.index])
             self.index += 1
+
+            if(self.subroutineST.indexOf(varName) != -1):
+                self.vmWriter.writePush(self.subroutineST.kindOf(varName), self.subroutineST.indexOf(varName))
+            else:
+                self.vmWriter.writePush(self.classST.kindOf(varName), self.classST.indexOf(varName))
 
             self._compileExpression()
+
+            self.vmWriter.writeArithmetic('ADD')
+            self.vmWriter.writePop('POINTER', 1)
+            self.vmWriter.writePush('THAT', 0)
 
             self.compiledJack.append(self.tokens[self.index])
             self.index += 1
@@ -893,6 +928,7 @@ class CompilationEngine():
                 self.vmWriter.writePush('TEMP', 0)
                 self.vmWriter.writePush('CONSTANT', ord(char))
                 self.vmWriter.writeCall('String.appendChar', 2)
+                self.vmWriter.writePop('TEMP', 0)
             self.vmWriter.writePush('TEMP', 0)
 
             self.compiledJack.append(self.tokens[self.index])
