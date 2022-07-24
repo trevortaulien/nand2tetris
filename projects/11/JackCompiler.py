@@ -1,11 +1,6 @@
 print("I'm working :)")
 
-import os
 import sys
-from lxml import etree
-import xml.dom.minidom as md
-
-from pyparsing import opAssoc
 
 class Analyzer():
 
@@ -413,10 +408,10 @@ class CompilationEngine():
             
             self._compileClassVarDec()
 
-        print('self.classST.fieldOrArg: ')
-        print(self.classST.fieldOrArg)
-        print('\n' + 'self.classST.staticOrVar: ')
-        print(self.classST.staticOrVar)   
+        # print('self.classST.fieldOrArg: ')
+        # print(self.classST.fieldOrArg)
+        # print('\n' + 'self.classST.staticOrVar: ')
+        # print(self.classST.staticOrVar)   
 
         while(self.tokens[self.index][1] == 'constructor' or
               self.tokens[self.index][1] == 'function'    or
@@ -491,8 +486,8 @@ class CompilationEngine():
 
         nVars = self._compileParameterList()
 
-        print('\n' + 'self.subroutineST.fieldOrArg: ')
-        print(self.subroutineST.fieldOrArg)
+        # print('\n' + 'self.subroutineST.fieldOrArg: ')
+        # print(self.subroutineST.fieldOrArg)
 
         self.compiledJack.append(self.tokens[self.index])
         self.index += 1
@@ -510,8 +505,8 @@ class CompilationEngine():
 
         self._compileSubroutineBody()
 
-        print('\n' + 'self.subroutineST.staticOrVar: ')
-        print(self.subroutineST.staticOrVar)
+        # print('\n' + 'self.subroutineST.staticOrVar: ')
+        # print(self.subroutineST.staticOrVar)
 
         self.vmWriter.replacePlaceHolder(self.className + '.' + subroutineName, 'function ' + self.className + '.' + subroutineName + ' ' + str(self.subroutineST.varCount('VAR')))
 
@@ -1073,6 +1068,6 @@ vmMaker._outputCompiledAsXML()
 vmMaker.outputVM()
 
 # print(vmMaker.tokenizedJack)
-print(vmMaker.compiledVM)
+# print(vmMaker.compiledVM)
 
 print("I'm done :)")
