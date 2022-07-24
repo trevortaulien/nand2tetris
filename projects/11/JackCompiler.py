@@ -882,6 +882,26 @@ class CompilationEngine():
             return
         #            #               #
 
+        # String Constant #
+        elif(self.tokens[self.index][0] == 'STRING_CONST'):
+            someString = self.tokens[self.index][1]
+
+            self.vmWriter.writePush('CONSTANT', int(len(someString)))
+            self.vmWriter.writeCall('String.new', 1)
+            self.vmWriter.writePop('TEMP', 0)
+            for index, char in enumerate(someString):
+                self.vmWriter.writePush('TEMP', 0)
+                self.vmWriter.writePush('CONSTANT', ord(char))
+                self.vmWriter.writeCall('String.appendChar', 2)
+            self.vmWriter.writePush('TEMP', 0)
+
+            self.compiledJack.append(self.tokens[self.index])
+            self.index += 1
+
+            self.compiledJack.append('/term')
+            return
+        #       #         #
+
         elif(self.tokens[self.index + 1][1] == '(' or
              self.tokens[self.index + 1][1] == '.'):
              
@@ -1012,8 +1032,8 @@ class CompilationEngine():
 vmMaker = Analyzer()
 vmMaker.tokenize()
 vmMaker.compile()
-# vmMaker._outputTokensAsXML()
-# vmMaker._outputCompiledAsXML()
+vmMaker._outputTokensAsXML()
+vmMaker._outputCompiledAsXML()
 vmMaker.outputVM()
 
 # print(vmMaker.tokenizedJack)
