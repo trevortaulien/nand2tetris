@@ -1,15 +1,13 @@
 print("I'm working :)")
 
-import os
 import sys
-from lxml import etree
-import xml.dom.minidom as md
 
-class Analyzer:
+class Analyzer():
 
     sourceJack = []
     tokenizedJack = []
     compiledJack = []
+    compiledVM = []
     xmlTokens = []
     xmlCompiled = []
 
@@ -39,9 +37,14 @@ class Analyzer:
         ce.startEngine()
 
         self.compiledJack = ce.compiledJack
+        self.compiledVM = ce.getCompiledVM()
 
     def outputVM(self):
-        pass
+        outputPath = sys.argv[1].replace('.jack', '.vm')
+
+        with open(outputPath, 'w') as v:
+            for vmCommand in self.compiledVM:
+                v.write(vmCommand + '\n')
 
     def _getJack(self):
 
@@ -149,13 +152,7 @@ class Analyzer:
             for item in self.xmlCompiled:
                 c.write(item + '\n')
 
-        # dom = md.parse(outputPath)
-        # self.xmlCompiled = dom.toprettyxml()
-
-        # with open(outputPath, 'w') as s:
-        #    s.write(self.xmlCompiled)
-
-class Tokenizer(Analyzer):
+class Tokenizer():
 
     symbols = {'{' : 0 , '}' : 1 , '(' : 2 , ')' : 3 , '[' : 4 , 
                ']' : 5 , '.' : 6 , ',' : 7 , ';' : 8 , '+' : 9 , 
@@ -253,13 +250,141 @@ class Tokenizer(Analyzer):
     def _stringVal(self, token):
         return token[1:-1]
 
-class CompilationEngine(Analyzer):
+class SymbolTable():
+
+    def __init__(self):
+        self.fieldOrArg = []
+        self.staticOrVar = []    
+
+    def reset(self):
+        self.fieldOrArg = []
+        self.staticOrVar = []
+
+    def define(self, name, type, kind):
+        if(kind == 'FIELD' or kind == 'ARG'):
+            self.fieldOrArg.append([name,type,kind])
+        elif(kind == 'STATIC' or kind == 'VAR'):
+            self.staticOrVar.append([name,type,kind])
+
+    def varCount(self, kind):
+        count = 0
+        if(kind == 'FIELD'):
+            for entry in self.fieldOrArg:
+                if(entry[2] == 'FIELD'):
+                    count += 1
+            return count
+        elif(kind == 'ARG'):
+            for entry in self.fieldOrArg:
+                if(entry[2] == 'ARG'):
+                    count += 1
+            return count
+        elif(kind == 'STATIC'):
+            for entry in self.staticOrVar:
+                if(entry[2] == 'STATIC'):
+                    count += 1
+            return count
+        elif(kind == 'VAR'):
+            for entry in self.staticOrVar:
+                if(entry[2] == 'VAR'):
+                    count += 1
+            return count
+
+    def kindOf(self, name):
+        for entry in self.fieldOrArg:
+            if(entry[0] == name):
+                return entry[2]
+        for entry in self.staticOrVar:
+            if(entry[0] == name):
+                return entry[2]
+
+    def typeOf(self, name):
+        for entry in self.fieldOrArg:
+            if(entry[0] == name):
+                return entry[1]
+        for entry in self.staticOrVar:
+            if(entry[0] == name):
+                return entry[1]
+
+    def indexOf(self, name):
+        for index, entry in enumerate(self.fieldOrArg):
+            if(entry[0] == name):
+                return index
+        for index, entry in enumerate(self.staticOrVar):
+            if(entry[0] == name):
+                return index
+        return -1
+
+class VMWriter():
+
+    compiledVM = []
+
+    segments = {'CONSTANT' : 'constant', 'ARGUMENT' : 'argument', 'LOCAL'   : 'local'  , 'STATIC' : 'static',
+                'THIS'     : 'this'    , 'THAT'     : 'that'    , 'POINTER' : 'pointer', 'TEMP'   : 'temp'  ,
+                'FIELD'    : 'this'    , 'ARG'      : 'argument', 'VAR'     : 'local'  }
+    commands = {'ADD' : 'add', 'SUB' : 'sub', 'NEG' : 'neg',
+                'EQ'  : 'eq' , 'GT'  : 'gt' , 'LT'  : 'lt' ,
+                'AND' : 'and', 'OR'  : 'or' , 'NOT' : 'not',
+                '+'   : 'add', '-'   : 'neg', '&'   : 'and',
+                '|'   : 'or' , '<'   : 'lt' , '>'   : 'gt' ,
+                '='   : 'eq' , '~'   : 'not'}
+
+
+    def __init__(self):
+        pass
+
+    def writePush(self, segment, index):
+        self.compiledVM.append('push ' + self.segments[segment] + ' ' + str(index))
+
+    def writePop(self, segment, index):
+        self.compiledVM.append('pop ' + self.segments[segment] + ' ' + str(index))
+
+    def writeArithmetic(self, command):
+        if(command == '*'):
+            self.writeCall('Math.multiply', 2)
+        elif(command == '/'):
+            self.writeCall('Math.divide', 2)
+        else:
+            self.compiledVM.append(self.commands[command])
+
+    def writeLabel(self, label):
+        self.compiledVM.append('label ' + label)
+
+    def writeGoto(self, label):
+        self.compiledVM.append('goto ' + label)
+
+    def writeIf(self, label):
+        self.compiledVM.append('if-goto ' + label)
+
+    def writeCall(self, name, nVars):
+        self.compiledVM.append('call ' + name + ' ' + str(nVars))
+
+    def writeFunction(self, name, nVars):
+        self.compiledVM.append('function ' + name + ' ' + str(nVars))
+
+    def writeReturn(self):
+        self.compiledVM.append('return')
+
+    def writePlaceHolder(self, placeholder):
+        self.compiledVM.append(placeholder)
+
+    def replacePlaceHolder(self, placeholder, replacement):
+        for command in self.compiledVM:
+            if(command == placeholder):
+                self.compiledVM[self.compiledVM.index(command)] = replacement
+
+class CompilationEngine():
 
     index = 0
     compiledJack = []
+    className = 'replace me'
+    labelIndex = 0
+    label = 'replace me'
 
     def __init__(self, tokenizedJack):
         self.tokens = tokenizedJack
+        self.classST = SymbolTable()
+        self.subroutineST = SymbolTable()
+        self.vmWriter = VMWriter()
 
     def startEngine(self):
         self._compileClass()
@@ -269,6 +394,8 @@ class CompilationEngine(Analyzer):
 
         self.compiledJack.append(self.tokens[self.index])
         self.index += 1
+
+        self.className = self.tokens[self.index][1]
 
         self.compiledJack.append(self.tokens[self.index])
         self.index += 1
@@ -281,6 +408,11 @@ class CompilationEngine(Analyzer):
             
             self._compileClassVarDec()
 
+        # print('self.classST.fieldOrArg: ')
+        # print(self.classST.fieldOrArg)
+        # print('\n' + 'self.classST.staticOrVar: ')
+        # print(self.classST.staticOrVar)   
+
         while(self.tokens[self.index][1] == 'constructor' or
               self.tokens[self.index][1] == 'function'    or
               self.tokens[self.index][1] == 'method'):
@@ -288,27 +420,43 @@ class CompilationEngine(Analyzer):
             self._compileSubroutineDec()
 
         self.compiledJack.append(self.tokens[self.index])
-        self.index += 1     # this increment may be unnecessary
+        self.index += 1
 
         self.compiledJack.append('/class')
 
     def _compileClassVarDec(self):
         self.compiledJack.append('classVarDec')
 
-        self.compiledJack.append(self.tokens[self.index])
-        self.index += 1
+        if(self.tokens[self.index][1] == 'static'):
+            symbolKind = 'STATIC'
+        if(self.tokens[self.index][1] == 'field'):
+            symbolKind = 'FIELD'
 
         self.compiledJack.append(self.tokens[self.index])
         self.index += 1
 
+        symbolType = self.tokens[self.index][1]
+
         self.compiledJack.append(self.tokens[self.index])
         self.index += 1
+
+        symbolName = self.tokens[self.index][1]
+
+        self.compiledJack.append(self.tokens[self.index])
+        self.index += 1
+
+        self.classST.define(symbolName, symbolType, symbolKind)
         
         while(self.tokens[self.index][1] == ','):
             self.compiledJack.append(self.tokens[self.index])
             self.index += 1
+
+            symbolName = self.tokens[self.index][1]
+
             self.compiledJack.append(self.tokens[self.index])
             self.index += 1
+
+            self.classST.define(symbolName, symbolType, symbolKind)
 
         self.compiledJack.append(self.tokens[self.index])
         self.index += 1
@@ -318,8 +466,17 @@ class CompilationEngine(Analyzer):
     def _compileSubroutineDec(self):
         self.compiledJack.append('subroutineDec')
 
+        self.subroutineCategory = self.tokens[self.index][1]
+
         self.compiledJack.append(self.tokens[self.index])
         self.index += 1
+
+        self.subroutineType = self.tokens[self.index][1]
+
+        self.compiledJack.append(self.tokens[self.index])
+        self.index += 1
+
+        subroutineName = self.tokens[self.index][1]
 
         self.compiledJack.append(self.tokens[self.index])
         self.index += 1
@@ -327,42 +484,83 @@ class CompilationEngine(Analyzer):
         self.compiledJack.append(self.tokens[self.index])
         self.index += 1
 
+        nVars = self._compileParameterList()
+
+        # print('\n' + 'self.subroutineST.fieldOrArg: ')
+        # print(self.subroutineST.fieldOrArg)
+
         self.compiledJack.append(self.tokens[self.index])
         self.index += 1
 
-        self._compileParameterList()
+        self.vmWriter.writePlaceHolder(self.className + '.' + subroutineName)
 
-        self.compiledJack.append(self.tokens[self.index])
-        self.index += 1
+        if(self.subroutineCategory == 'constructor'):
+            self.vmWriter.writePush('CONSTANT', self.classST.varCount('FIELD'))
+            self.vmWriter.writeCall('Memory.alloc', 1)
+            self.vmWriter.writePop('POINTER', 0)
+
+        if(self.subroutineCategory == 'method'):
+            self.vmWriter.writePush('ARGUMENT', 0)
+            self.vmWriter.writePop('POINTER', 0)
 
         self._compileSubroutineBody()
+
+        # print('\n' + 'self.subroutineST.staticOrVar: ')
+        # print(self.subroutineST.staticOrVar)
+
+        self.vmWriter.replacePlaceHolder(self.className + '.' + subroutineName, 'function ' + self.className + '.' + subroutineName + ' ' + str(self.subroutineST.varCount('VAR')))
+
+        self.subroutineST.reset()
 
         self.compiledJack.append('/subroutineDec')
 
     def _compileParameterList(self):
         self.compiledJack.append('parameterList')
 
+        nVars = 0
+
+        if(self.tokens[self.index - 4][1] == 'method'):
+            self.subroutineST.define('this', self.className, 'ARG')
+
         if(self.tokens[self.index][1] == ')'):
             self.compiledJack.append('/parameterList')
-            return
+            return nVars 
         
-        self.compiledJack.append(self.tokens[self.index])
-        self.index += 1
+        subroutineArgType = self.tokens[self.index][1]
 
         self.compiledJack.append(self.tokens[self.index])
         self.index += 1
+
+        subroutineArgName = self.tokens[self.index][1]
+
+        self.compiledJack.append(self.tokens[self.index])
+        self.index += 1
+
+        nVars += 1
+
+        self.subroutineST.define(subroutineArgName, subroutineArgType, 'ARG')
 
         while(self.tokens[self.index][1] == ','):
             self.compiledJack.append(self.tokens[self.index])
             self.index += 1
 
-            self.compiledJack.append(self.tokens[self.index])
-            self.index += 1
+            subroutineArgType = self.tokens[self.index][1]
 
             self.compiledJack.append(self.tokens[self.index])
             self.index += 1
+
+            subroutineArgName = self.tokens[self.index][1]
+
+            self.compiledJack.append(self.tokens[self.index])
+            self.index += 1
+
+            nVars += 1
+
+            self.subroutineST.define(subroutineArgName, subroutineArgType, 'ARG')
 
         self.compiledJack.append('/parameterList')
+
+        return nVars
 
     def _compileSubroutineBody(self):
         self.compiledJack.append('subroutineBody')
@@ -388,22 +586,32 @@ class CompilationEngine(Analyzer):
     def _compileVarDec(self):
         while(self.tokens[self.index][1] == 'var'):
             self.compiledJack.append('varDec')
+            
+            self.compiledJack.append(self.tokens[self.index])
+            self.index += 1
+
+            subroutineVarType = self.tokens[self.index][1]
 
             self.compiledJack.append(self.tokens[self.index])
             self.index += 1
 
-            self.compiledJack.append(self.tokens[self.index])
-            self.index += 1
+            subroutineVarName = self.tokens[self.index][1]
 
             self.compiledJack.append(self.tokens[self.index])
             self.index += 1
+
+            self.subroutineST.define(subroutineVarName, subroutineVarType, 'VAR')
 
             while(self.tokens[self.index][1] == ','):
                 self.compiledJack.append(self.tokens[self.index])
                 self.index += 1
 
+                subroutineVarName = self.tokens[self.index][1]
+
                 self.compiledJack.append(self.tokens[self.index])
                 self.index += 1
+
+                self.subroutineST.define(subroutineVarName, subroutineVarType, 'VAR')
 
             self.compiledJack.append(self.tokens[self.index])
             self.index += 1
@@ -442,14 +650,27 @@ class CompilationEngine(Analyzer):
         self.compiledJack.append(self.tokens[self.index])
         self.index += 1
 
+        varName = self.tokens[self.index][1]
+
         self.compiledJack.append(self.tokens[self.index])
         self.index += 1
+
+        arrayStatus = -1
 
         if(self.tokens[self.index][1] == '['):
             self.compiledJack.append(self.tokens[self.index])
             self.index += 1
 
+            arrayStatus = 1
+
+            if(self.subroutineST.indexOf(varName) != -1):
+                self.vmWriter.writePush(self.subroutineST.kindOf(varName), self.subroutineST.indexOf(varName))
+            else:
+                self.vmWriter.writePush(self.classST.kindOf(varName), self.classST.indexOf(varName))
+
             self._compileExpression()
+
+            self.vmWriter.writeArithmetic('ADD')
 
             self.compiledJack.append(self.tokens[self.index])
             self.index += 1
@@ -458,6 +679,23 @@ class CompilationEngine(Analyzer):
         self.index += 1
 
         self._compileExpression()
+
+        if(arrayStatus == 1):
+            self.vmWriter.writePop('TEMP', 0)
+            self.vmWriter.writePop('POINTER', 1)
+            self.vmWriter.writePush('TEMP', 0)
+            self.vmWriter.writePop('THAT', 0)
+
+            self.compiledJack.append(self.tokens[self.index])
+            self.index += 1
+
+            self.compiledJack.append('/letStatement')
+            return
+
+        if(self.subroutineST.indexOf(varName) != -1):
+            self.vmWriter.writePop(self.subroutineST.kindOf(varName), self.subroutineST.indexOf(varName))
+        else:
+            self.vmWriter.writePop(self.classST.kindOf(varName), self.classST.indexOf(varName))
 
         self.compiledJack.append(self.tokens[self.index])
         self.index += 1
@@ -475,6 +713,12 @@ class CompilationEngine(Analyzer):
 
         self._compileExpression()
 
+        L1 = self._nextLabel()
+        L2 = self._nextLabel()
+
+        self.vmWriter.writeArithmetic('NOT')
+        self.vmWriter.writeIf(L1)
+
         self.compiledJack.append(self.tokens[self.index])
         self.index += 1
 
@@ -482,6 +726,9 @@ class CompilationEngine(Analyzer):
         self.index += 1
 
         self._compileStatements()
+
+        self.vmWriter.writeGoto(L2)
+        self.vmWriter.writeLabel(L1)
 
         self.compiledJack.append(self.tokens[self.index])
         self.index += 1
@@ -495,8 +742,12 @@ class CompilationEngine(Analyzer):
 
             self._compileStatements()
 
+            self.vmWriter.writeLabel(L2)
+
             self.compiledJack.append(self.tokens[self.index])
             self.index += 1
+        else:
+            self.vmWriter.writeLabel(L2)
 
         self.compiledJack.append('/ifStatement')
 
@@ -509,7 +760,15 @@ class CompilationEngine(Analyzer):
         self.compiledJack.append(self.tokens[self.index])
         self.index += 1
 
+        L1 = self._nextLabel()
+        L2 = self._nextLabel()
+
+        self.vmWriter.writeLabel(L1)
+
         self._compileExpression()
+
+        self.vmWriter.writeArithmetic('NOT')
+        self.vmWriter.writeIf(L2)
 
         self.compiledJack.append(self.tokens[self.index])
         self.index += 1
@@ -518,6 +777,9 @@ class CompilationEngine(Analyzer):
         self.index += 1
 
         self._compileStatements()
+
+        self.vmWriter.writeGoto(L1)
+        self.vmWriter.writeLabel(L2)
 
         self.compiledJack.append(self.tokens[self.index])
         self.index += 1
@@ -535,6 +797,8 @@ class CompilationEngine(Analyzer):
         self.compiledJack.append(self.tokens[self.index])
         self.index += 1
 
+        self.vmWriter.writePop('TEMP', 0)
+
         self.compiledJack.append('/doStatement')
 
     def _compileReturn(self):
@@ -546,6 +810,11 @@ class CompilationEngine(Analyzer):
         if(self.tokens[self.index][1] != ';'):
             self._compileExpression()
 
+        if(self.subroutineType == 'void'):
+            self.vmWriter.writePush('CONSTANT', 0)
+
+        self.vmWriter.writeReturn()
+
         self.compiledJack.append(self.tokens[self.index])
         self.index += 1
 
@@ -556,6 +825,8 @@ class CompilationEngine(Analyzer):
 
         self._compileTerm()
 
+        commandsToPush = []
+
         while(self.tokens[self.index][1] == '+' or
               self.tokens[self.index][1] == '-' or
               self.tokens[self.index][1] == '*' or
@@ -565,10 +836,17 @@ class CompilationEngine(Analyzer):
               self.tokens[self.index][1] == '<' or
               self.tokens[self.index][1] == '>' or
               self.tokens[self.index][1] == '='):
+            if(self.tokens[self.index][1] == '-'):
+                commandsToPush.append('+')
+            commandsToPush.append(self.tokens[self.index][1])
+
             self.compiledJack.append(self.tokens[self.index])
             self.index += 1
             
             self._compileTerm()
+
+        for command in reversed(commandsToPush):
+            self.vmWriter.writeArithmetic(command)
 
         self.compiledJack.append('/expression')
 
@@ -592,10 +870,14 @@ class CompilationEngine(Analyzer):
         # (unaryOp term) #
         elif(self.tokens[self.index][1] == '-' or          
            self.tokens[self.index][1] == '~'):
+           unaryOp = self.tokens[self.index][1]
+           
            self.compiledJack.append(self.tokens[self.index])
            self.index += 1
 
            self._compileTerm()
+
+           self.vmWriter.writeArithmetic(unaryOp)
 
            self.compiledJack.append('/term')
            return
@@ -603,13 +885,25 @@ class CompilationEngine(Analyzer):
 
         # varName '[' expression ']' #
         elif(self.tokens[self.index + 1][1] == '['):
+            
+            varName = self.tokens[self.index][1]
+            
             self.compiledJack.append(self.tokens[self.index])
             self.index += 1
 
             self.compiledJack.append(self.tokens[self.index])
             self.index += 1
+
+            if(self.subroutineST.indexOf(varName) != -1):
+                self.vmWriter.writePush(self.subroutineST.kindOf(varName), self.subroutineST.indexOf(varName))
+            else:
+                self.vmWriter.writePush(self.classST.kindOf(varName), self.classST.indexOf(varName))
 
             self._compileExpression()
+
+            self.vmWriter.writeArithmetic('ADD')
+            self.vmWriter.writePop('POINTER', 1)
+            self.vmWriter.writePush('THAT', 0)
 
             self.compiledJack.append(self.tokens[self.index])
             self.index += 1
@@ -617,6 +911,27 @@ class CompilationEngine(Analyzer):
             self.compiledJack.append('/term')
             return
         #            #               #
+
+        # String Constant #
+        elif(self.tokens[self.index][0] == 'STRING_CONST'):
+            someString = self.tokens[self.index][1]
+
+            self.vmWriter.writePush('CONSTANT', int(len(someString)))
+            self.vmWriter.writeCall('String.new', 1)
+            self.vmWriter.writePop('TEMP', 0)
+            for index, char in enumerate(someString):
+                self.vmWriter.writePush('TEMP', 0)
+                self.vmWriter.writePush('CONSTANT', ord(char))
+                self.vmWriter.writeCall('String.appendChar', 2)
+                self.vmWriter.writePop('TEMP', 0)
+            self.vmWriter.writePush('TEMP', 0)
+
+            self.compiledJack.append(self.tokens[self.index])
+            self.index += 1
+
+            self.compiledJack.append('/term')
+            return
+        #       #         #
 
         elif(self.tokens[self.index + 1][1] == '(' or
              self.tokens[self.index + 1][1] == '.'):
@@ -626,6 +941,20 @@ class CompilationEngine(Analyzer):
              self.compiledJack.append('/term')
 
         else:
+            if(self.subroutineST.indexOf(self.tokens[self.index][1]) != -1):
+                self.vmWriter.writePush(self.subroutineST.kindOf(self.tokens[self.index][1]),self.subroutineST.indexOf(self.tokens[self.index][1]))
+            elif(self.classST.indexOf(self.tokens[self.index][1]) != -1):
+                self.vmWriter.writePush(self.classST.kindOf(self.tokens[self.index][1]), self.classST.indexOf(self.tokens[self.index][1]))
+            elif(self.tokens[self.index][1] == 'this'):
+                self.vmWriter.writePush('POINTER', 0)
+            elif(self.tokens[self.index][1] == 'true'):
+                self.vmWriter.writePush('CONSTANT', 1)
+                self.vmWriter.writeArithmetic('NEG')
+            elif(self.tokens[self.index][1] == 'false' or self.tokens[self.index][1] == 'null'):
+                self.vmWriter.writePush('CONSTANT', 0)
+            else:
+                self.vmWriter.writePush('CONSTANT', int(self.tokens[self.index][1]))
+
             self.compiledJack.append(self.tokens[self.index])
             self.index += 1
 
@@ -634,13 +963,22 @@ class CompilationEngine(Analyzer):
     def _compileSubroutineCall(self):
         # subroutineName '(' expressionList ')' #
         if(self.tokens[self.index + 1][1] == '('):
-            self.compiledJack.append(self.tokens[self.index])
-            self.index += 1
+            subroutineName = self.tokens[self.index][1]
+
+            nVars = 0
 
             self.compiledJack.append(self.tokens[self.index])
             self.index += 1
 
-            self._compileExpressionList()
+            self.compiledJack.append(self.tokens[self.index])
+            self.index += 1
+
+            self.vmWriter.writePush('POINTER', 0)
+            nVars += 1
+
+            nVars =  nVars + self._compileExpressionList()
+
+            self.vmWriter.writeCall(self.className + '.' + subroutineName, nVars)
 
             self.compiledJack.append(self.tokens[self.index])
             self.index += 1
@@ -649,8 +987,16 @@ class CompilationEngine(Analyzer):
 
         # (className | varName) '.' subroutineName '(' expressionList ')' #
         elif(self.tokens[self.index + 1][1] == '.'):
-            self.compiledJack.append(self.tokens[self.index])
-            self.index += 1
+            classVarName = self.tokens[self.index][1]
+
+            selfRef = 0
+
+            if(self.subroutineST.indexOf(classVarName) != -1):
+                self.vmWriter.writePush(self.subroutineST.kindOf(classVarName), self.subroutineST.indexOf(classVarName))
+                selfRef = 1
+            elif(self.classST.indexOf(classVarName) != -1):
+                self.vmWriter.writePush(self.classST.kindOf(classVarName), self.classST.indexOf(classVarName))
+                selfRef = 1
 
             self.compiledJack.append(self.tokens[self.index])
             self.index += 1
@@ -658,10 +1004,25 @@ class CompilationEngine(Analyzer):
             self.compiledJack.append(self.tokens[self.index])
             self.index += 1
 
+            subroutineName = self.tokens[self.index][1]
+
             self.compiledJack.append(self.tokens[self.index])
             self.index += 1
 
-            self._compileExpressionList()
+            self.compiledJack.append(self.tokens[self.index])
+            self.index += 1            
+
+            nVars = self._compileExpressionList()
+
+            if(self.subroutineST.indexOf(classVarName) != -1):
+                className = self.subroutineST.typeOf(classVarName)
+            elif(self.classST.indexOf(classVarName) != -1):
+                className = self.classST.typeOf(classVarName)
+            else:
+                className = classVarName
+
+            segment = className + '.' + subroutineName
+            self.vmWriter.writeCall(segment, nVars + selfRef)
 
             self.compiledJack.append(self.tokens[self.index])
             self.index += 1
@@ -671,24 +1032,42 @@ class CompilationEngine(Analyzer):
     def _compileExpressionList(self):
         self.compiledJack.append('expressionList')
 
+        nVars = 0
+
         if(self.tokens[self.index][1] == ')'):
             self.compiledJack.append('/expressionList')
-            return
+            return nVars
 
         self._compileExpression()
+        nVars += 1
 
         while(self.tokens[self.index][1] == ','):
             self.compiledJack.append(self.tokens[self.index])
             self.index += 1
 
+            nVars += 1
+
             self._compileExpression()
 
         self.compiledJack.append('/expressionList')
+        return nVars
+
+    def _nextLabel(self):
+        label = self.className + '.L' + str(self.labelIndex)
+        self.labelIndex += 1
+        return label
+
+    def getCompiledVM(self):
+        return self.vmWriter.compiledVM
 
 vmMaker = Analyzer()
 vmMaker.tokenize()
 vmMaker.compile()
 vmMaker._outputTokensAsXML()
 vmMaker._outputCompiledAsXML()
+vmMaker.outputVM()
+
+# print(vmMaker.tokenizedJack)
+# print(vmMaker.compiledVM)
 
 print("I'm done :)")
