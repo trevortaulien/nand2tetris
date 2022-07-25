@@ -206,9 +206,109 @@ goto WHILE_EXP0
 label WHILE_END0
 push local 0
 return
-function Math.divide 0
+function Math.divide 4
 push argument 0
+pop local 2
+push argument 1
+pop local 3
+push constant 0
+pop local 1
+push argument 0
+push constant 0
+lt
+if-goto IF_TRUE0
+goto IF_FALSE0
+label IF_TRUE0
+push local 1
+not
+pop local 1
+push argument 0
+call Math.abs 1
+pop local 2
+label IF_FALSE0
+push argument 1
+push constant 0
+lt
+if-goto IF_TRUE1
+goto IF_FALSE1
+label IF_TRUE1
+push local 1
+not
+pop local 1
+push argument 1
+call Math.abs 1
+pop local 3
+label IF_FALSE1
+push local 3
+push local 2
+gt
+push local 3
+push constant 0
+lt
+or
+if-goto IF_TRUE2
+goto IF_FALSE2
+label IF_TRUE2
+push constant 0
 return
+label IF_FALSE2
+push local 2
+push local 3
+push local 3
+add
+call Math.divide 2
+pop local 0
+push local 2
+push constant 2
+push local 0
+call Math.multiply 2
+push local 3
+call Math.multiply 2
+sub
+push local 3
+lt
+if-goto IF_TRUE3
+goto IF_FALSE3
+label IF_TRUE3
+push local 1
+if-goto IF_TRUE4
+goto IF_FALSE4
+label IF_TRUE4
+push constant 2
+push local 0
+call Math.multiply 2
+push constant 1
+neg
+call Math.multiply 2
+return
+label IF_FALSE4
+push constant 2
+push local 0
+call Math.multiply 2
+return
+goto IF_END3
+label IF_FALSE3
+push local 1
+if-goto IF_TRUE5
+goto IF_FALSE5
+label IF_TRUE5
+push constant 2
+push local 0
+call Math.multiply 2
+push constant 1
+add
+push constant 1
+neg
+call Math.multiply 2
+return
+label IF_FALSE5
+push constant 2
+push local 0
+call Math.multiply 2
+push constant 1
+add
+return
+label IF_END3
 function Math.sqrt 0
 push argument 0
 return
