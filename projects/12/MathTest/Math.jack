@@ -133,20 +133,11 @@ class Math {
         let y = 0;
         let j = 7;      // n/2 - 1 where n = 16
         while(j > -1){
-            do Output.printString("j: ");
-            do Output.printInt(j);
             let temp0 = (y + Math.twoToJ(j));
-            do Output.printString("temp0: ");
-            do Output.printInt(temp0);
             let temp1 = temp0 * temp0;
-            do Output.printString("temp1: ");
-            do Output.printInt(temp1);
             if(((temp1 < x) | (temp1 = x)) & (temp1 > 0)){
                 let y = y + Math.twoToJ(j);
             }
-            do Output.printString("y: ");
-            do Output.printInt(y);
-            do Output.println();
             let j = (j - 1);
         }
         return y;

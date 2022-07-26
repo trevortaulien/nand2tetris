@@ -397,70 +397,15 @@ neg
 gt
 not
 if-goto WHILE_END0
-push constant 3
-call String.new 1
-push constant 106
-call String.appendChar 2
-push constant 58
-call String.appendChar 2
-push constant 32
-call String.appendChar 2
-call Output.printString 1
-pop temp 0
-push local 1
-call Output.printInt 1
-pop temp 0
 push local 0
 push local 1
 call Math.twoToJ 1
 add
 pop local 2
-push constant 7
-call String.new 1
-push constant 116
-call String.appendChar 2
-push constant 101
-call String.appendChar 2
-push constant 109
-call String.appendChar 2
-push constant 112
-call String.appendChar 2
-push constant 48
-call String.appendChar 2
-push constant 58
-call String.appendChar 2
-push constant 32
-call String.appendChar 2
-call Output.printString 1
-pop temp 0
-push local 2
-call Output.printInt 1
-pop temp 0
 push local 2
 push local 2
 call Math.multiply 2
 pop local 3
-push constant 7
-call String.new 1
-push constant 116
-call String.appendChar 2
-push constant 101
-call String.appendChar 2
-push constant 109
-call String.appendChar 2
-push constant 112
-call String.appendChar 2
-push constant 49
-call String.appendChar 2
-push constant 58
-call String.appendChar 2
-push constant 32
-call String.appendChar 2
-call Output.printString 1
-pop temp 0
-push local 3
-call Output.printInt 1
-pop temp 0
 push local 3
 push argument 0
 lt
@@ -481,21 +426,6 @@ call Math.twoToJ 1
 add
 pop local 0
 label IF_FALSE0
-push constant 3
-call String.new 1
-push constant 121
-call String.appendChar 2
-push constant 58
-call String.appendChar 2
-push constant 32
-call String.appendChar 2
-call Output.printString 1
-pop temp 0
-push local 0
-call Output.printInt 1
-pop temp 0
-call Output.println 0
-pop temp 0
 push local 1
 push constant 1
 sub
