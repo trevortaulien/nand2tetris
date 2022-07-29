@@ -2,14 +2,14 @@ print("I'm running :)")
 
 heap = {}
 
-for address in range(2048, 2148):
+for address in range(2048, 16383):
     heap[address] = 0
 
 hBase = 2048
 
 # Initial Conditions #
 heap[hBase] = 0
-heap[hBase + 1] = 98
+heap[hBase + 1] = 14334
 free = hBase
 
 def malloc(size):
@@ -39,6 +39,7 @@ def malloc(size):
         heap[newNext] = postNext
         heap[newNext + 1] = segSize
         free = startFree
+    # print(block)
     return block
 
 
@@ -60,17 +61,49 @@ def printOutput():
         print("{:<8} {:<15}".format(addr, value))
 
 
-malloc(3)
-malloc(5)
-malloc(2)
-dealloc(2055)
-malloc(8)
-dealloc(2062)
-dealloc(2066)
-dealloc(2050)
-malloc(66)
-malloc(6)
+# malloc(3)
+# malloc(5)
+# malloc(2)
+# dealloc(2055)
+# malloc(8)
+# dealloc(2062)
+# dealloc(2066)
+# dealloc(2050)
+# malloc(66)
+# malloc(6)
+
+# malloc(20)
+# malloc(20)
+# malloc(45)
+# dealloc(2072)
+# malloc(10)
+# dealloc(2050)
+# malloc(6)
+
+a = malloc(20)
+print('a: ' + str(a))
 print('Free: ' + str(free))
-printOutput()
+b = malloc(3)
+print('b: ' + str(b))
+print('Free: ' + str(free))
+c = malloc(500)
+print('c: ' + str(c))
+print('Free: ' + str(free))
+dealloc(a)
+dealloc(b)
+b = malloc(3)
+print('b: ' + str(b))
+print('Free: ' + str(free))
+dealloc(c)
+dealloc(b)
+a = malloc(8000)
+print('a: ' + str(a))
+print('Free: ' + str(free))
+dealloc(a)
+a = malloc(7000)
+dealloc(a)
+print('a: ' + str(a))
+print('Free: ' + str(free))
+# printOutput()
 
 print("I'm done :)")
