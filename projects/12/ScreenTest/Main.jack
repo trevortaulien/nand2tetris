@@ -61,6 +61,8 @@ class Main {
         do Screen.drawLine(117,85,102,100);       // bottom left diag    
         do Screen.drawLine(106,60,86,60);         // horizontal left
         do Screen.drawLine(117,35,102,20);        // top left diag   
+
+        do Screen.clearScreen();
         
         return;
     }

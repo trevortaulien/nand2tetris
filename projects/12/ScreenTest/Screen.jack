@@ -22,6 +22,16 @@ class Screen {
 
     /** Erases the entire screen. */
     function void clearScreen() {
+        var Array screen;
+        var int address;
+
+        let screen = 16384;
+        let address = 0;
+        while(address < 8193){
+            let screen[address] = 0;
+            let address = address + 1;
+        }
+
         return;
     }
 
@@ -205,6 +215,20 @@ class Screen {
 
     /** Draws a filled circle of radius r<=181 around (x,y), using the current color. */
     function void drawCircle(int x, int y, int r) {
+        var int dy;
+
+        if(r > 181){
+            do Output.printString("CIRCLE RADIUS TOO BIG");
+            return;
+        }
+        
+        let dy = -r;
+
+        while(dy < r){
+            do Screen.drawLine(x - ( Math.sqrt((r * r) - (dy * dy)) ), y + dy, x + ( Math.sqrt((r * r) - (dy * dy)) ), y + dy);
+            let dy = dy + 1;
+        }
+
         return;
     }
 }
