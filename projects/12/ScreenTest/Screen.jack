@@ -217,6 +217,7 @@ class Screen {
                 do Screen.drawLine(x1, y1, x2, y1);
                 let y1 = y1 + 1;
             }
+            return;
         }
         // top right to bottom left
         if( (x2 < x1) & (y2 > y1) ){
@@ -224,6 +225,7 @@ class Screen {
                 do Screen.drawLine(x2, y1, x1, y1);
                 let y1 = y1 + 1;
             }
+            return;
         }
         // bottom right to top left
         if( (x2 < x1) & (y2 < y1) ){
@@ -231,6 +233,7 @@ class Screen {
                 do Screen.drawLine(x2, y2, x1, y2);
                 let y2 = y2 + 1;
             }
+            return;
         }
         // bottom left to top right
         if( (x2 > x1) & (y2 < y1) ){
@@ -238,6 +241,7 @@ class Screen {
                 do Screen.drawLine(x1, y2, x2, y2);
                 let y2 = y2 + 1;
             }
+            return;
         }
         
         return;
