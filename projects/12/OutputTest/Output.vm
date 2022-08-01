@@ -1735,5 +1735,12 @@ push static 1
 push constant 8
 sub
 pop static 1
+push constant 32
+call Output.printChar 1
+pop temp 0
+push static 1
+push constant 8
+sub
+pop static 1
 push constant 0
 return
