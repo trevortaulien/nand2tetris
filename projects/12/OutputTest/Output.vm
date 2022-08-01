@@ -488,15 +488,15 @@ push constant 0
 call Output.create 12
 pop temp 0
 push constant 65
-push constant 0
-push constant 0
-push constant 0
-push constant 0
-push constant 0
-push constant 0
-push constant 0
-push constant 0
-push constant 0
+push constant 12
+push constant 30
+push constant 51
+push constant 51
+push constant 63
+push constant 63
+push constant 51
+push constant 51
+push constant 51
 push constant 0
 push constant 0
 call Output.create 12
@@ -1639,17 +1639,101 @@ push constant 11
 add
 pop static 2
 label IF_FALSE1
+push static 2
+push constant 252
+gt
+if-goto IF_TRUE2
+goto IF_FALSE2
+label IF_TRUE2
+push constant 0
+pop static 2
+label IF_FALSE2
 push constant 0
 return
-function Output.printString 0
+function Output.printString 2
+push argument 0
+call String.length 1
+pop local 0
+push constant 0
+pop local 1
+label WHILE_EXP0
+push local 1
+push local 0
+lt
+not
+if-goto WHILE_END0
+push argument 0
+push local 1
+call String.charAt 2
+call Output.printChar 1
+pop temp 0
+push local 1
+push constant 1
+add
+pop local 1
+goto WHILE_EXP0
+label WHILE_END0
 push constant 0
 return
-function Output.printInt 0
+function Output.printInt 3
+push constant 10
+call String.new 1
+pop local 0
+push local 0
+push argument 0
+call String.setInt 2
+pop temp 0
+push local 0
+call String.length 1
+pop local 1
+push constant 0
+pop local 2
+push argument 0
+push constant 0
+lt
+if-goto IF_TRUE0
+goto IF_FALSE0
+label IF_TRUE0
+push constant 45
+call Output.printChar 1
+pop temp 0
+push local 2
+push constant 1
+add
+pop local 2
+label IF_FALSE0
+label WHILE_EXP0
+push local 2
+push local 1
+lt
+not
+if-goto WHILE_END0
+push local 0
+push local 2
+call String.charAt 2
+call Output.printChar 1
+pop temp 0
+push local 2
+push constant 1
+add
+pop local 2
+goto WHILE_EXP0
+label WHILE_END0
 push constant 0
 return
 function Output.println 0
 push constant 0
+pop static 1
+push static 2
+push constant 11
+add
+pop static 2
+push constant 0
 return
 function Output.backSpace 0
+push static 1
+push constant 8
+sub
+pop static 1
 push constant 0
 return
