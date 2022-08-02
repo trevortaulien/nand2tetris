@@ -15,13 +15,16 @@ class Array {
 
     /** Constructs a new Array of the given size. */
     function Array new(int size) {
-        do Memory.alloc(size);
-        return this;
+        var int baseAddr;
+
+        let baseAddr = Memory.alloc(size);
+
+        return baseAddr;
     }
 
     /** Disposes this array. */
     method void dispose() {
         do Memory.deAlloc(this);
-        return;;;
+        return;
     }
 }
