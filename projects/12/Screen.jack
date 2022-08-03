@@ -12,10 +12,783 @@
 class Screen {
 
     static boolean color;
+    static Array x_array, y_array;
 
     /** Initializes the Screen. */
     function void init() {
         let color = true;
+
+        let x_array = Array.new(512);
+        let x_array[0] = 0;
+        let x_array[1] = 0;
+        let x_array[2] = 0;
+        let x_array[3] = 0;
+        let x_array[4] = 0;
+        let x_array[5] = 0;
+        let x_array[6] = 0;
+        let x_array[7] = 0;
+        let x_array[8] = 0;
+        let x_array[9] = 0;
+        let x_array[10] = 0;
+        let x_array[11] = 0;
+        let x_array[12] = 0;
+        let x_array[13] = 0;
+        let x_array[14] = 0;
+        let x_array[15] = 0;
+        let x_array[16] = 1;
+        let x_array[17] = 1;
+        let x_array[18] = 1;
+        let x_array[19] = 1;
+        let x_array[20] = 1;
+        let x_array[21] = 1;
+        let x_array[22] = 1;
+        let x_array[23] = 1;
+        let x_array[24] = 1;
+        let x_array[25] = 1;
+        let x_array[26] = 1;
+        let x_array[27] = 1;
+        let x_array[28] = 1;
+        let x_array[29] = 1;
+        let x_array[30] = 1;
+        let x_array[31] = 1;
+        let x_array[32] = 2;
+        let x_array[33] = 2;
+        let x_array[34] = 2;
+        let x_array[35] = 2;
+        let x_array[36] = 2;
+        let x_array[37] = 2;
+        let x_array[38] = 2;
+        let x_array[39] = 2;
+        let x_array[40] = 2;
+        let x_array[41] = 2;
+        let x_array[42] = 2;
+        let x_array[43] = 2;
+        let x_array[44] = 2;
+        let x_array[45] = 2;
+        let x_array[46] = 2;
+        let x_array[47] = 2;
+        let x_array[48] = 3;
+        let x_array[49] = 3;
+        let x_array[50] = 3;
+        let x_array[51] = 3;
+        let x_array[52] = 3;
+        let x_array[53] = 3;
+        let x_array[54] = 3;
+        let x_array[55] = 3;
+        let x_array[56] = 3;
+        let x_array[57] = 3;
+        let x_array[58] = 3;
+        let x_array[59] = 3;
+        let x_array[60] = 3;
+        let x_array[61] = 3;
+        let x_array[62] = 3;
+        let x_array[63] = 3;
+        let x_array[64] = 4;
+        let x_array[65] = 4;
+        let x_array[66] = 4;
+        let x_array[67] = 4;
+        let x_array[68] = 4;
+        let x_array[69] = 4;
+        let x_array[70] = 4;
+        let x_array[71] = 4;
+        let x_array[72] = 4;
+        let x_array[73] = 4;
+        let x_array[74] = 4;
+        let x_array[75] = 4;
+        let x_array[76] = 4;
+        let x_array[77] = 4;
+        let x_array[78] = 4;
+        let x_array[79] = 4;
+        let x_array[80] = 5;
+        let x_array[81] = 5;
+        let x_array[82] = 5;
+        let x_array[83] = 5;
+        let x_array[84] = 5;
+        let x_array[85] = 5;
+        let x_array[86] = 5;
+        let x_array[87] = 5;
+        let x_array[88] = 5;
+        let x_array[89] = 5;
+        let x_array[90] = 5;
+        let x_array[91] = 5;
+        let x_array[92] = 5;
+        let x_array[93] = 5;
+        let x_array[94] = 5;
+        let x_array[95] = 5;
+        let x_array[96] = 6;
+        let x_array[97] = 6;
+        let x_array[98] = 6;
+        let x_array[99] = 6;
+        let x_array[100] = 6;
+        let x_array[101] = 6;
+        let x_array[102] = 6;
+        let x_array[103] = 6;
+        let x_array[104] = 6;
+        let x_array[105] = 6;
+        let x_array[106] = 6;
+        let x_array[107] = 6;
+        let x_array[108] = 6;
+        let x_array[109] = 6;
+        let x_array[110] = 6;
+        let x_array[111] = 6;
+        let x_array[112] = 7;
+        let x_array[113] = 7;
+        let x_array[114] = 7;
+        let x_array[115] = 7;
+        let x_array[116] = 7;
+        let x_array[117] = 7;
+        let x_array[118] = 7;
+        let x_array[119] = 7;
+        let x_array[120] = 7;
+        let x_array[121] = 7;
+        let x_array[122] = 7;
+        let x_array[123] = 7;
+        let x_array[124] = 7;
+        let x_array[125] = 7;
+        let x_array[126] = 7;
+        let x_array[127] = 7;
+        let x_array[128] = 8;
+        let x_array[129] = 8;
+        let x_array[130] = 8;
+        let x_array[131] = 8;
+        let x_array[132] = 8;
+        let x_array[133] = 8;
+        let x_array[134] = 8;
+        let x_array[135] = 8;
+        let x_array[136] = 8;
+        let x_array[137] = 8;
+        let x_array[138] = 8;
+        let x_array[139] = 8;
+        let x_array[140] = 8;
+        let x_array[141] = 8;
+        let x_array[142] = 8;
+        let x_array[143] = 8;
+        let x_array[144] = 9;
+        let x_array[145] = 9;
+        let x_array[146] = 9;
+        let x_array[147] = 9;
+        let x_array[148] = 9;
+        let x_array[149] = 9;
+        let x_array[150] = 9;
+        let x_array[151] = 9;
+        let x_array[152] = 9;
+        let x_array[153] = 9;
+        let x_array[154] = 9;
+        let x_array[155] = 9;
+        let x_array[156] = 9;
+        let x_array[157] = 9;
+        let x_array[158] = 9;
+        let x_array[159] = 9;
+        let x_array[160] = 10;
+        let x_array[161] = 10;
+        let x_array[162] = 10;
+        let x_array[163] = 10;
+        let x_array[164] = 10;
+        let x_array[165] = 10;
+        let x_array[166] = 10;
+        let x_array[167] = 10;
+        let x_array[168] = 10;
+        let x_array[169] = 10;
+        let x_array[170] = 10;
+        let x_array[171] = 10;
+        let x_array[172] = 10;
+        let x_array[173] = 10;
+        let x_array[174] = 10;
+        let x_array[175] = 10;
+        let x_array[176] = 11;
+        let x_array[177] = 11;
+        let x_array[178] = 11;
+        let x_array[179] = 11;
+        let x_array[180] = 11;
+        let x_array[181] = 11;
+        let x_array[182] = 11;
+        let x_array[183] = 11;
+        let x_array[184] = 11;
+        let x_array[185] = 11;
+        let x_array[186] = 11;
+        let x_array[187] = 11;
+        let x_array[188] = 11;
+        let x_array[189] = 11;
+        let x_array[190] = 11;
+        let x_array[191] = 11;
+        let x_array[192] = 12;
+        let x_array[193] = 12;
+        let x_array[194] = 12;
+        let x_array[195] = 12;
+        let x_array[196] = 12;
+        let x_array[197] = 12;
+        let x_array[198] = 12;
+        let x_array[199] = 12;
+        let x_array[200] = 12;
+        let x_array[201] = 12;
+        let x_array[202] = 12;
+        let x_array[203] = 12;
+        let x_array[204] = 12;
+        let x_array[205] = 12;
+        let x_array[206] = 12;
+        let x_array[207] = 12;
+        let x_array[208] = 13;
+        let x_array[209] = 13;
+        let x_array[210] = 13;
+        let x_array[211] = 13;
+        let x_array[212] = 13;
+        let x_array[213] = 13;
+        let x_array[214] = 13;
+        let x_array[215] = 13;
+        let x_array[216] = 13;
+        let x_array[217] = 13;
+        let x_array[218] = 13;
+        let x_array[219] = 13;
+        let x_array[220] = 13;
+        let x_array[221] = 13;
+        let x_array[222] = 13;
+        let x_array[223] = 13;
+        let x_array[224] = 14;
+        let x_array[225] = 14;
+        let x_array[226] = 14;
+        let x_array[227] = 14;
+        let x_array[228] = 14;
+        let x_array[229] = 14;
+        let x_array[230] = 14;
+        let x_array[231] = 14;
+        let x_array[232] = 14;
+        let x_array[233] = 14;
+        let x_array[234] = 14;
+        let x_array[235] = 14;
+        let x_array[236] = 14;
+        let x_array[237] = 14;
+        let x_array[238] = 14;
+        let x_array[239] = 14;
+        let x_array[240] = 15;
+        let x_array[241] = 15;
+        let x_array[242] = 15;
+        let x_array[243] = 15;
+        let x_array[244] = 15;
+        let x_array[245] = 15;
+        let x_array[246] = 15;
+        let x_array[247] = 15;
+        let x_array[248] = 15;
+        let x_array[249] = 15;
+        let x_array[250] = 15;
+        let x_array[251] = 15;
+        let x_array[252] = 15;
+        let x_array[253] = 15;
+        let x_array[254] = 15;
+        let x_array[255] = 15;
+        let x_array[256] = 16;
+        let x_array[257] = 16;
+        let x_array[258] = 16;
+        let x_array[259] = 16;
+        let x_array[260] = 16;
+        let x_array[261] = 16;
+        let x_array[262] = 16;
+        let x_array[263] = 16;
+        let x_array[264] = 16;
+        let x_array[265] = 16;
+        let x_array[266] = 16;
+        let x_array[267] = 16;
+        let x_array[268] = 16;
+        let x_array[269] = 16;
+        let x_array[270] = 16;
+        let x_array[271] = 16;
+        let x_array[272] = 17;
+        let x_array[273] = 17;
+        let x_array[274] = 17;
+        let x_array[275] = 17;
+        let x_array[276] = 17;
+        let x_array[277] = 17;
+        let x_array[278] = 17;
+        let x_array[279] = 17;
+        let x_array[280] = 17;
+        let x_array[281] = 17;
+        let x_array[282] = 17;
+        let x_array[283] = 17;
+        let x_array[284] = 17;
+        let x_array[285] = 17;
+        let x_array[286] = 17;
+        let x_array[287] = 17;
+        let x_array[288] = 18;
+        let x_array[289] = 18;
+        let x_array[290] = 18;
+        let x_array[291] = 18;
+        let x_array[292] = 18;
+        let x_array[293] = 18;
+        let x_array[294] = 18;
+        let x_array[295] = 18;
+        let x_array[296] = 18;
+        let x_array[297] = 18;
+        let x_array[298] = 18;
+        let x_array[299] = 18;
+        let x_array[300] = 18;
+        let x_array[301] = 18;
+        let x_array[302] = 18;
+        let x_array[303] = 18;
+        let x_array[304] = 19;
+        let x_array[305] = 19;
+        let x_array[306] = 19;
+        let x_array[307] = 19;
+        let x_array[308] = 19;
+        let x_array[309] = 19;
+        let x_array[310] = 19;
+        let x_array[311] = 19;
+        let x_array[312] = 19;
+        let x_array[313] = 19;
+        let x_array[314] = 19;
+        let x_array[315] = 19;
+        let x_array[316] = 19;
+        let x_array[317] = 19;
+        let x_array[318] = 19;
+        let x_array[319] = 19;
+        let x_array[320] = 20;
+        let x_array[321] = 20;
+        let x_array[322] = 20;
+        let x_array[323] = 20;
+        let x_array[324] = 20;
+        let x_array[325] = 20;
+        let x_array[326] = 20;
+        let x_array[327] = 20;
+        let x_array[328] = 20;
+        let x_array[329] = 20;
+        let x_array[330] = 20;
+        let x_array[331] = 20;
+        let x_array[332] = 20;
+        let x_array[333] = 20;
+        let x_array[334] = 20;
+        let x_array[335] = 20;
+        let x_array[336] = 21;
+        let x_array[337] = 21;
+        let x_array[338] = 21;
+        let x_array[339] = 21;
+        let x_array[340] = 21;
+        let x_array[341] = 21;
+        let x_array[342] = 21;
+        let x_array[343] = 21;
+        let x_array[344] = 21;
+        let x_array[345] = 21;
+        let x_array[346] = 21;
+        let x_array[347] = 21;
+        let x_array[348] = 21;
+        let x_array[349] = 21;
+        let x_array[350] = 21;
+        let x_array[351] = 21;
+        let x_array[352] = 22;
+        let x_array[353] = 22;
+        let x_array[354] = 22;
+        let x_array[355] = 22;
+        let x_array[356] = 22;
+        let x_array[357] = 22;
+        let x_array[358] = 22;
+        let x_array[359] = 22;
+        let x_array[360] = 22;
+        let x_array[361] = 22;
+        let x_array[362] = 22;
+        let x_array[363] = 22;
+        let x_array[364] = 22;
+        let x_array[365] = 22;
+        let x_array[366] = 22;
+        let x_array[367] = 22;
+        let x_array[368] = 23;
+        let x_array[369] = 23;
+        let x_array[370] = 23;
+        let x_array[371] = 23;
+        let x_array[372] = 23;
+        let x_array[373] = 23;
+        let x_array[374] = 23;
+        let x_array[375] = 23;
+        let x_array[376] = 23;
+        let x_array[377] = 23;
+        let x_array[378] = 23;
+        let x_array[379] = 23;
+        let x_array[380] = 23;
+        let x_array[381] = 23;
+        let x_array[382] = 23;
+        let x_array[383] = 23;
+        let x_array[384] = 24;
+        let x_array[385] = 24;
+        let x_array[386] = 24;
+        let x_array[387] = 24;
+        let x_array[388] = 24;
+        let x_array[389] = 24;
+        let x_array[390] = 24;
+        let x_array[391] = 24;
+        let x_array[392] = 24;
+        let x_array[393] = 24;
+        let x_array[394] = 24;
+        let x_array[395] = 24;
+        let x_array[396] = 24;
+        let x_array[397] = 24;
+        let x_array[398] = 24;
+        let x_array[399] = 24;
+        let x_array[400] = 25;
+        let x_array[401] = 25;
+        let x_array[402] = 25;
+        let x_array[403] = 25;
+        let x_array[404] = 25;
+        let x_array[405] = 25;
+        let x_array[406] = 25;
+        let x_array[407] = 25;
+        let x_array[408] = 25;
+        let x_array[409] = 25;
+        let x_array[410] = 25;
+        let x_array[411] = 25;
+        let x_array[412] = 25;
+        let x_array[413] = 25;
+        let x_array[414] = 25;
+        let x_array[415] = 25;
+        let x_array[416] = 26;
+        let x_array[417] = 26;
+        let x_array[418] = 26;
+        let x_array[419] = 26;
+        let x_array[420] = 26;
+        let x_array[421] = 26;
+        let x_array[422] = 26;
+        let x_array[423] = 26;
+        let x_array[424] = 26;
+        let x_array[425] = 26;
+        let x_array[426] = 26;
+        let x_array[427] = 26;
+        let x_array[428] = 26;
+        let x_array[429] = 26;
+        let x_array[430] = 26;
+        let x_array[431] = 26;
+        let x_array[432] = 27;
+        let x_array[433] = 27;
+        let x_array[434] = 27;
+        let x_array[435] = 27;
+        let x_array[436] = 27;
+        let x_array[437] = 27;
+        let x_array[438] = 27;
+        let x_array[439] = 27;
+        let x_array[440] = 27;
+        let x_array[441] = 27;
+        let x_array[442] = 27;
+        let x_array[443] = 27;
+        let x_array[444] = 27;
+        let x_array[445] = 27;
+        let x_array[446] = 27;
+        let x_array[447] = 27;
+        let x_array[448] = 28;
+        let x_array[449] = 28;
+        let x_array[450] = 28;
+        let x_array[451] = 28;
+        let x_array[452] = 28;
+        let x_array[453] = 28;
+        let x_array[454] = 28;
+        let x_array[455] = 28;
+        let x_array[456] = 28;
+        let x_array[457] = 28;
+        let x_array[458] = 28;
+        let x_array[459] = 28;
+        let x_array[460] = 28;
+        let x_array[461] = 28;
+        let x_array[462] = 28;
+        let x_array[463] = 28;
+        let x_array[464] = 29;
+        let x_array[465] = 29;
+        let x_array[466] = 29;
+        let x_array[467] = 29;
+        let x_array[468] = 29;
+        let x_array[469] = 29;
+        let x_array[470] = 29;
+        let x_array[471] = 29;
+        let x_array[472] = 29;
+        let x_array[473] = 29;
+        let x_array[474] = 29;
+        let x_array[475] = 29;
+        let x_array[476] = 29;
+        let x_array[477] = 29;
+        let x_array[478] = 29;
+        let x_array[479] = 29;
+        let x_array[480] = 30;
+        let x_array[481] = 30;
+        let x_array[482] = 30;
+        let x_array[483] = 30;
+        let x_array[484] = 30;
+        let x_array[485] = 30;
+        let x_array[486] = 30;
+        let x_array[487] = 30;
+        let x_array[488] = 30;
+        let x_array[489] = 30;
+        let x_array[490] = 30;
+        let x_array[491] = 30;
+        let x_array[492] = 30;
+        let x_array[493] = 30;
+        let x_array[494] = 30;
+        let x_array[495] = 30;
+        let x_array[496] = 31;
+        let x_array[497] = 31;
+        let x_array[498] = 31;
+        let x_array[499] = 31;
+        let x_array[500] = 31;
+        let x_array[501] = 31;
+        let x_array[502] = 31;
+        let x_array[503] = 31;
+        let x_array[504] = 31;
+        let x_array[505] = 31;
+        let x_array[506] = 31;
+        let x_array[507] = 31;
+        let x_array[508] = 31;
+        let x_array[509] = 31;
+        let x_array[510] = 31;
+        let x_array[511] = 31;
+
+        let y_array = Array.new(256);
+        let y_array[0]  = 16384 + 0;
+        let y_array[1]  = 16384 + 32;
+        let y_array[2]  = 16384 + 64;
+        let y_array[3]  = 16384 + 96;
+        let y_array[4]  = 16384 + 128;
+        let y_array[5]  = 16384 + 160;
+        let y_array[6]  = 16384 + 192;
+        let y_array[7]  = 16384 + 224;
+        let y_array[8]  = 16384 + 256;
+        let y_array[9]  = 16384 + 288;
+        let y_array[10] = 16384 + 320;
+        let y_array[11] = 16384 + 352;
+        let y_array[12] = 16384 + 384;
+        let y_array[13] = 16384 + 416;
+        let y_array[14] = 16384 + 448;
+        let y_array[15] = 16384 + 480;
+        let y_array[16] = 16384 + 512;
+        let y_array[17] = 16384 + 544;
+        let y_array[18] = 16384 + 576;
+        let y_array[19] = 16384 + 608;
+        let y_array[20] = 16384 + 640;
+        let y_array[21] = 16384 + 672;
+        let y_array[22] = 16384 + 704;
+        let y_array[23] = 16384 + 736;
+        let y_array[24] = 16384 + 768;
+        let y_array[25] = 16384 + 800;
+        let y_array[26] = 16384 + 832;
+        let y_array[27] = 16384 + 864;
+        let y_array[28] = 16384 + 896;
+        let y_array[29] = 16384 + 928;
+        let y_array[30] = 16384 + 960;
+        let y_array[31] = 16384 + 992;
+        let y_array[32] = 16384 + 1024;
+        let y_array[33] = 16384 + 1056;
+        let y_array[34] = 16384 + 1088;
+        let y_array[35] = 16384 + 1120;
+        let y_array[36] = 16384 + 1152;
+        let y_array[37] = 16384 + 1184;
+        let y_array[38] = 16384 + 1216;
+        let y_array[39] = 16384 + 1248;
+        let y_array[40] = 16384 + 1280;
+        let y_array[41] = 16384 + 1312;
+        let y_array[42] = 16384 + 1344;
+        let y_array[43] = 16384 + 1376;
+        let y_array[44] = 16384 + 1408;
+        let y_array[45] = 16384 + 1440;
+        let y_array[46] = 16384 + 1472;
+        let y_array[47] = 16384 + 1504;
+        let y_array[48] = 16384 + 1536;
+        let y_array[49] = 16384 + 1568;
+        let y_array[50] = 16384 + 1600;
+        let y_array[51] = 16384 + 1632;
+        let y_array[52] = 16384 + 1664;
+        let y_array[53] = 16384 + 1696;
+        let y_array[54] = 16384 + 1728;
+        let y_array[55] = 16384 + 1760;
+        let y_array[56] = 16384 + 1792;
+        let y_array[57] = 16384 + 1824;
+        let y_array[58] = 16384 + 1856;
+        let y_array[59] = 16384 + 1888;
+        let y_array[60] = 16384 + 1920;
+        let y_array[61] = 16384 + 1952;
+        let y_array[62] = 16384 + 1984;
+        let y_array[63] = 16384 + 2016;
+        let y_array[64] = 16384 + 2048;
+        let y_array[65] = 16384 + 2080;
+        let y_array[66] = 16384 + 2112;
+        let y_array[67] = 16384 + 2144;
+        let y_array[68] = 16384 + 2176;
+        let y_array[69] = 16384 + 2208;
+        let y_array[70] = 16384 + 2240;
+        let y_array[71] = 16384 + 2272;
+        let y_array[72] = 16384 + 2304;
+        let y_array[73] = 16384 + 2336;
+        let y_array[74] = 16384 + 2368;
+        let y_array[75] = 16384 + 2400;
+        let y_array[76] = 16384 + 2432;
+        let y_array[77] = 16384 + 2464;
+        let y_array[78] = 16384 + 2496;
+        let y_array[79] = 16384 + 2528;
+        let y_array[80] = 16384 + 2560;
+        let y_array[81] = 16384 + 2592;
+        let y_array[82] = 16384 + 2624;
+        let y_array[83] = 16384 + 2656;
+        let y_array[84] = 16384 + 2688;
+        let y_array[85] = 16384 + 2720;
+        let y_array[86] = 16384 + 2752;
+        let y_array[87] = 16384 + 2784;
+        let y_array[88] = 16384 + 2816;
+        let y_array[89] = 16384 + 2848;
+        let y_array[90] = 16384 + 2880;
+        let y_array[91] = 16384 + 2912;
+        let y_array[92] = 16384 + 2944;
+        let y_array[93] = 16384 + 2976;
+        let y_array[94] = 16384 + 3008;
+        let y_array[95] = 16384 + 3040;
+        let y_array[96] = 16384 + 3072;
+        let y_array[97] = 16384 + 3104;
+        let y_array[98] = 16384 + 3136;
+        let y_array[99] = 16384 + 3168;
+        let y_array[100] = 16384 + 3200;
+        let y_array[101] = 16384 + 3232;
+        let y_array[102] = 16384 + 3264;
+        let y_array[103] = 16384 + 3296;
+        let y_array[104] = 16384 + 3328;
+        let y_array[105] = 16384 + 3360;
+        let y_array[106] = 16384 + 3392;
+        let y_array[107] = 16384 + 3424;
+        let y_array[108] = 16384 + 3456;
+        let y_array[109] = 16384 + 3488;
+        let y_array[110] = 16384 + 3520;
+        let y_array[111] = 16384 + 3552;
+        let y_array[112] = 16384 + 3584;
+        let y_array[113] = 16384 + 3616;
+        let y_array[114] = 16384 + 3648;
+        let y_array[115] = 16384 + 3680;
+        let y_array[116] = 16384 + 3712;
+        let y_array[117] = 16384 + 3744;
+        let y_array[118] = 16384 + 3776;
+        let y_array[119] = 16384 + 3808;
+        let y_array[120] = 16384 + 3840;
+        let y_array[121] = 16384 + 3872;
+        let y_array[122] = 16384 + 3904;
+        let y_array[123] = 16384 + 3936;
+        let y_array[124] = 16384 + 3968;
+        let y_array[125] = 16384 + 4000;
+        let y_array[126] = 16384 + 4032;
+        let y_array[127] = 16384 + 4064;
+        let y_array[128] = 16384 + 4096;
+        let y_array[129] = 16384 + 4128;
+        let y_array[130] = 16384 + 4160;
+        let y_array[131] = 16384 + 4192;
+        let y_array[132] = 16384 + 4224;
+        let y_array[133] = 16384 + 4256;
+        let y_array[134] = 16384 + 4288;
+        let y_array[135] = 16384 + 4320;
+        let y_array[136] = 16384 + 4352;
+        let y_array[137] = 16384 + 4384;
+        let y_array[138] = 16384 + 4416;
+        let y_array[139] = 16384 + 4448;
+        let y_array[140] = 16384 + 4480;
+        let y_array[141] = 16384 + 4512;
+        let y_array[142] = 16384 + 4544;
+        let y_array[143] = 16384 + 4576;
+        let y_array[144] = 16384 + 4608;
+        let y_array[145] = 16384 + 4640;
+        let y_array[146] = 16384 + 4672;
+        let y_array[147] = 16384 + 4704;
+        let y_array[148] = 16384 + 4736;
+        let y_array[149] = 16384 + 4768;
+        let y_array[150] = 16384 + 4800;
+        let y_array[151] = 16384 + 4832;
+        let y_array[152] = 16384 + 4864;
+        let y_array[153] = 16384 + 4896;
+        let y_array[154] = 16384 + 4928;
+        let y_array[155] = 16384 + 4960;
+        let y_array[156] = 16384 + 4992;
+        let y_array[157] = 16384 + 5024;
+        let y_array[158] = 16384 + 5056;
+        let y_array[159] = 16384 + 5088;
+        let y_array[160] = 16384 + 5120;
+        let y_array[161] = 16384 + 5152;
+        let y_array[162] = 16384 + 5184;
+        let y_array[163] = 16384 + 5216;
+        let y_array[164] = 16384 + 5248;
+        let y_array[165] = 16384 + 5280;
+        let y_array[166] = 16384 + 5312;
+        let y_array[167] = 16384 + 5344;
+        let y_array[168] = 16384 + 5376;
+        let y_array[169] = 16384 + 5408;
+        let y_array[170] = 16384 + 5440;
+        let y_array[171] = 16384 + 5472;
+        let y_array[172] = 16384 + 5504;
+        let y_array[173] = 16384 + 5536;
+        let y_array[174] = 16384 + 5568;
+        let y_array[175] = 16384 + 5600;
+        let y_array[176] = 16384 + 5632;
+        let y_array[177] = 16384 + 5664;
+        let y_array[178] = 16384 + 5696;
+        let y_array[179] = 16384 + 5728;
+        let y_array[180] = 16384 + 5760;
+        let y_array[181] = 16384 + 5792;
+        let y_array[182] = 16384 + 5824;
+        let y_array[183] = 16384 + 5856;
+        let y_array[184] = 16384 + 5888;
+        let y_array[185] = 16384 + 5920;
+        let y_array[186] = 16384 + 5952;
+        let y_array[187] = 16384 + 5984;
+        let y_array[188] = 16384 + 6016;
+        let y_array[189] = 16384 + 6048;
+        let y_array[190] = 16384 + 6080;
+        let y_array[191] = 16384 + 6112;
+        let y_array[192] = 16384 + 6144;
+        let y_array[193] = 16384 + 6176;
+        let y_array[194] = 16384 + 6208;
+        let y_array[195] = 16384 + 6240;
+        let y_array[196] = 16384 + 6272;
+        let y_array[197] = 16384 + 6304;
+        let y_array[198] = 16384 + 6336;
+        let y_array[199] = 16384 + 6368;
+        let y_array[200] = 16384 + 6400;
+        let y_array[201] = 16384 + 6432;
+        let y_array[202] = 16384 + 6464;
+        let y_array[203] = 16384 + 6496;
+        let y_array[204] = 16384 + 6528;
+        let y_array[205] = 16384 + 6560;
+        let y_array[206] = 16384 + 6592;
+        let y_array[207] = 16384 + 6624;
+        let y_array[208] = 16384 + 6656;
+        let y_array[209] = 16384 + 6688;
+        let y_array[210] = 16384 + 6720;
+        let y_array[211] = 16384 + 6752;
+        let y_array[212] = 16384 + 6784;
+        let y_array[213] = 16384 + 6816;
+        let y_array[214] = 16384 + 6848;
+        let y_array[215] = 16384 + 6880;
+        let y_array[216] = 16384 + 6912;
+        let y_array[217] = 16384 + 6944;
+        let y_array[218] = 16384 + 6976;
+        let y_array[219] = 16384 + 7008;
+        let y_array[220] = 16384 + 7040;
+        let y_array[221] = 16384 + 7072;
+        let y_array[222] = 16384 + 7104;
+        let y_array[223] = 16384 + 7136;
+        let y_array[224] = 16384 + 7168;
+        let y_array[225] = 16384 + 7200;
+        let y_array[226] = 16384 + 7232;
+        let y_array[227] = 16384 + 7264;
+        let y_array[228] = 16384 + 7296;
+        let y_array[229] = 16384 + 7328;
+        let y_array[230] = 16384 + 7360;
+        let y_array[231] = 16384 + 7392;
+        let y_array[232] = 16384 + 7424;
+        let y_array[233] = 16384 + 7456;
+        let y_array[234] = 16384 + 7488;
+        let y_array[235] = 16384 + 7520;
+        let y_array[236] = 16384 + 7552;
+        let y_array[237] = 16384 + 7584;
+        let y_array[238] = 16384 + 7616;
+        let y_array[239] = 16384 + 7648;
+        let y_array[240] = 16384 + 7680;
+        let y_array[241] = 16384 + 7712;
+        let y_array[242] = 16384 + 7744;
+        let y_array[243] = 16384 + 7776;
+        let y_array[244] = 16384 + 7808;
+        let y_array[245] = 16384 + 7840;
+        let y_array[246] = 16384 + 7872;
+        let y_array[247] = 16384 + 7904;
+        let y_array[248] = 16384 + 7936;
+        let y_array[249] = 16384 + 7968;
+        let y_array[250] = 16384 + 8000;
+        let y_array[251] = 16384 + 8032;
+        let y_array[252] = 16384 + 8064;
+        let y_array[253] = 16384 + 8096;
+        let y_array[254] = 16384 + 8128;
+        let y_array[255] = 16384 + 8160;
 
         return;
     }
@@ -66,11 +839,9 @@ class Screen {
     /** Draws the (x,y) pixel, using the current color. */
     function void drawPixel(int x, int y) {
         var int pixelWordAddress, pixelWordBit, currentWord, newWord;
-
-        let pixelWordAddress = (y * 32) + (x / 16)  + 16384;
-        while((x > 16) | (x = 16)){
-            let x = x - 16;
-        }
+        
+        let pixelWordAddress = x_array[x] + y_array[y];
+        let x = x & 15;
         let pixelWordBit = Screen.twoToX(x);
 
         let currentWord = Memory.peek(pixelWordAddress);
@@ -93,6 +864,23 @@ class Screen {
         let b = 0;
         let diff = 0;
 
+        // horizontal line
+        if( (y2 - y1) = 0 ){
+            let y = y2;
+            if(x2 > x1){
+                let x = x1;
+            }
+            else{
+                let x = x2;
+            }
+            let dx = x2 - x1;
+            let dx = Math.abs(dx);
+            while((dx > 0) | (dx = 0)){
+                do Screen.drawPixel(x + dx, y);
+                let dx = dx - 1;
+            }
+            return;
+        }
         // top left to bottom right
         if( (x2 > x1) & (y2 > y1) ){
             let x = x1;
@@ -111,6 +899,7 @@ class Screen {
                     let diff = diff - dx;
                 }
             }
+            return;
         }
         // top right to bottom left
         if( (x2 < x1) & (y2 > y1) ){
@@ -130,6 +919,7 @@ class Screen {
                     let diff = diff - dx;
                 }
             }
+            return;
         }
         // bottom right to top left
         if( (x2 < x1) & (y2 < y1) ){
@@ -149,6 +939,7 @@ class Screen {
                     let diff = diff - dx;
                 }
             }
+            return;
         }
         // bottom left to top right
         if( (x2 > x1) & (y2 < y1) ){
@@ -168,25 +959,8 @@ class Screen {
                     let diff = diff - dx;
                 }
             }
-        }    
-
-        // horizontal line
-        if( (y2 - y1) = 0 ){
-            let y = y2;
-            if(x2 > x1){
-                let x = x1;
-            }
-            else{
-                let x = x2;
-            }
-            let dx = x2 - x1;
-            let dx = Math.abs(dx);
-            while(dx > 0){
-                do Screen.drawPixel(x + dx, y);
-                let dx = dx - 1;
-            }
-        }
-
+            return;
+        }   
         // vertical line
         if( (x2 - x1) = 0 ){
             let x = x2;
@@ -198,10 +972,11 @@ class Screen {
             }
             let dy = y2 - y1;
             let dy = Math.abs(dy);
-            while(dy > 0){
+            while((dx > 0) | (dx = 0)){
                 do Screen.drawPixel(x, y + dy);
                 let dy = dy - 1;
             }
+            return;
         }
 
         return;
@@ -212,39 +987,11 @@ class Screen {
     function void drawRectangle(int x1, int y1, int x2, int y2) {
         
         // top left to bottom right
-        if( (x2 > x1) & (y2 > y1) ){
             while((y1 < y2) | (y1 = y2)){
                 do Screen.drawLine(x1, y1, x2, y1);
                 let y1 = y1 + 1;
             }
             return;
-        }
-        // top right to bottom left
-        if( (x2 < x1) & (y2 > y1) ){
-            while((y1 < y2) | (y1 = y2)){
-                do Screen.drawLine(x2, y1, x1, y1);
-                let y1 = y1 + 1;
-            }
-            return;
-        }
-        // bottom right to top left
-        if( (x2 < x1) & (y2 < y1) ){
-            while((y2 < y1) | (y1 = y2)){
-                do Screen.drawLine(x2, y2, x1, y2);
-                let y2 = y2 + 1;
-            }
-            return;
-        }
-        // bottom left to top right
-        if( (x2 > x1) & (y2 < y1) ){
-            while((y2 < y1) | (y1 = y2)){
-                do Screen.drawLine(x1, y2, x2, y2);
-                let y2 = y2 + 1;
-            }
-            return;
-        }
-        
-        return;
     }
 
     /** Draws a filled circle of radius r<=181 around (x,y), using the current color. */
