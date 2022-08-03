@@ -213,10 +213,15 @@ class Output {
 
         while(row < 11){
             while(column < 8){
-                //do Screen.drawLine(0,0,row + 10,column + 10);
                 if( ~((charMap[row] & Output.place(column)) = 0) ){
+                    do Screen.setColor(true);
                     do Screen.drawPixel(cursorXpos + column, cursorYpos + row);     
                 }
+                else{
+                    do Screen.setColor(false);
+                    do Screen.drawPixel(cursorXpos + column, cursorYpos + row);
+                }
+
                 let column = column + 1;
             }
             let column = 0;
