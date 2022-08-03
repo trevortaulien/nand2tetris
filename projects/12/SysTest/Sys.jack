@@ -38,10 +38,8 @@ class Sys {
 
         let correctionFactor = 0;
 
-        while(duration > 0){
-            while(correctionFactor < 20000){
-                do Math.divide(32000, 510);
-                do Math.divide(32000, 510);
+        while(duration > 1){
+            while(correctionFactor < 4000){
                 let correctionFactor = correctionFactor + 1;
             }
             let duration = duration - 1;
