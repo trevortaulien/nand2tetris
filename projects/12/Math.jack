@@ -40,12 +40,26 @@ class Math {
         return false;
     }
 
+    function int twoToJ(int j){
+        if(j = 0){ return 1; }
+        if(j = 1){ return 2; }
+        if(j = 2){ return 4; }
+        if(j = 3){ return 8; }
+        if(j = 4){ return 16; }
+        if(j = 5){ return 32; }
+        if(j = 6){ return 64; }
+        if(j = 7){ return 128; }
+        return -1;
+    }
+
     /** Returns the absolute value of x. */
     function int abs(int x) {
         if(x > 0){
             return x;
         }
-        return (~x) + 1;
+        else{
+            return (~x) + 1;
+        }
     }
 
     /** Returns the product of x and y. 
@@ -54,21 +68,21 @@ class Math {
      *  the Jack expressions x*y and multiply(x,y) return the same value.
      */
     function int multiply(int x, int y) {
-        //var int sum, shiftedX, i;
+        var int sum, shiftedX, i;
         
-        //let shiftedX = x;
-        //let i = 0;
-        //while(i < 16){
-        //    if(Math.bit(y, i) = true){
-        //        let sum = sum + shiftedX
-        //    }
-        //    let shiftedX = shiftedX * 2;
-        //    let i = i + 1;
-        //}
+        let sum = 0;
+        let shiftedX = x;
+        let i = 0;
+        while(i < 16){
+            if(Math.bit(y, i) = true){
+                let sum = sum + shiftedX;
+            }
+            let shiftedX = shiftedX + shiftedX;
+            let i = i + 1;
+        }
 
-        //return sum;
+        return sum;
 
-        return Math.bit(y,0);
     }
 
     /** Returns the integer part of x/y.
@@ -77,17 +91,71 @@ class Math {
      *  the Jack expressions x/y and divide(x,y) return the same value.
      */
     function int divide(int x, int y) {
+        var int q;
+        var boolean sign;   // true = negative
+        var int posX, posY;
+        
+        let posX = x;
+        let posY = y;
+
+        let sign = false;
+        if(x < 0){
+            let sign = ~sign;
+            let posX = Math.abs(x);
+        }
+        if(y < 0){
+            let sign = ~sign;
+            let posY = Math.abs(y);
+        }
+
+        if((posY > posX) | (posY < 0)){
+            return 0;
+        }
+        let q = Math.divide(posX,(posY + posY));
+        if((posX - (2 * q * posY)) < posY){
+            if(sign){
+                return 2 * q * (-1);
+            }
+            return 2 * q;
+        }
+        else{
+            if(sign){
+                return ((2 * q) + 1) * (-1);
+            }
+            return (2 * q) + 1;
+        }
     }
 
     /** Returns the integer part of the square root of x. */
     function int sqrt(int x) {
+        var int y, j, temp0, temp1;
+
+        let y = 0;
+        let j = 7;      // n/2 - 1 where n = 16
+        while(j > -1){
+            let temp0 = (y + Math.twoToJ(j));
+            let temp1 = temp0 * temp0;
+            if(((temp1 < x) | (temp1 = x)) & (temp1 > 0)){
+                let y = y + Math.twoToJ(j);
+            }
+            let j = (j - 1);
+        }
+        return y;
     }
 
     /** Returns the greater number. */
     function int max(int a, int b) {
+        if(a > b){
+            return a;
+        }
+        return b;
     }
 
     /** Returns the smaller number. */
     function int min(int a, int b) {
+        if(a < b){
+            return a;
+        }
+        return b;
     }
 }
