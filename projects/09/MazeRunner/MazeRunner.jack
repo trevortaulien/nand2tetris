@@ -16,7 +16,7 @@ class MazeRunner{
         let exit = false;
         
         
-        do maze.draw();
+        do maze.levelSelect();
         do square.draw();
 
         while(~exit){

@@ -7,7 +7,7 @@ class Maze{
         return this;
     }
 
-    method void draw() {
+    method void levelSelect() {
         if(level = 49) { do draw_level1(); return; }
         if(level = 50) { do draw_level2(); return; }
         if(level = 51) { do draw_level3(); return; }
