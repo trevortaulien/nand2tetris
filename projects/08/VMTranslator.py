@@ -147,7 +147,11 @@ class VMTranslator:
                 vm = f.readlines()
                 self._flattenAndAppend(vm, self.rawVM)
 
-        self.asmOutFileName = os.path.basename(sys.argv[1])
+        if(sys.argv[1][-1] == '/'):
+            self.asmOutFileName = sys.argv[1].split('/')[-2]
+        else:
+            self.asmOutFileName = sys.argv[1].split('/')[-1]
+        
         self.outputPath = str(sys.argv[1] + '/' + self.asmOutFileName)
 
 class Parser(VMTranslator):
