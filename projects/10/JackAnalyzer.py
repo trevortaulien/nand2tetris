@@ -2,8 +2,6 @@ print("I'm working :)")
 
 import os
 import sys
-from lxml import etree
-import xml.dom.minidom as md
 
 class Analyzer:
 
@@ -12,9 +10,11 @@ class Analyzer:
     compiledJack = []
     xmlTokens = []
     xmlCompiled = []
+    outputPath = 'Replace Me'
 
     def __init__(self):
-        self._getJack()
+        # self._getJack()
+        pass
 
     def tokenize(self):
 
@@ -103,8 +103,8 @@ class Analyzer:
         #             self.sourceJack.append(sourceFile)
         ###########################################################################################
 
-        with open(sys.argv[1], 'r') as j:
-            self.sourceJack = j.readlines()
+#        with open(sys.argv[1], 'r') as j:
+#            self.sourceJack = j.readlines()
 
         # flattenFileLists()
         removeInLineComments()
@@ -116,7 +116,7 @@ class Analyzer:
 
     def _outputTokensAsXML(self):
         
-        outputPath = sys.argv[1].replace('.jack','T_.xml')
+        outputPath = self.outputPath.replace('.jack','T.xml')
 
         tokenTypeXML = {'KEYWORD' : 'keyword', 
                      'SYMBOL' : 'symbol', 
@@ -128,6 +128,15 @@ class Analyzer:
         self.xmlTokens.append('<tokens>')
 
         for token in self.tokenizedJack:
+            if(token[1] == '<'):
+                token[1] = '&lt;'
+            if(token[1] == '>'):
+                token[1] = '&gt;'
+            if(token[1] == '"'):
+                token[1] = '&quot;'
+            if(token[1] == '&'):
+                token[1] = '&amp;'
+
             self.xmlTokens.append('<' + tokenTypeXML[token[0]] + '> ' + token[1] + ' </' + tokenTypeXML[token[0]] + '>')
 
         self.xmlTokens.append('</tokens>')
@@ -137,23 +146,33 @@ class Analyzer:
                 t.write(token + '\n')
 
     def _outputCompiledAsXML(self):
-        outputPath = sys.argv[1].replace('.jack', '_.xml')
+        outputPath = self.outputPath.replace('.jack', '.xml')
+
+        tokenTypeXML = {'KEYWORD' : 'keyword', 
+                     'SYMBOL' : 'symbol', 
+                     'IDENTIFIER' : 'identifier', 
+                     'INT_CONST' : 'integerConstant',
+                     'STRING_CONST' : 'stringConstant'
+                     }
 
         for item in self.compiledJack:
             if isinstance(item, str):
                 self.xmlCompiled.append('<' + item + '>')
             else:
-                self.xmlCompiled.append('<' + item[0].lower() + '> ' + item[1] + ' </' + item[0].lower() + '>')
+                if(item[1] == '<'):
+                   item[1] = '&lt;'
+                if(item[1] == '>'):
+                   item[1] = '&gt;'
+                if(item[1] == '"'):
+                   item[1] = '&quot;'
+                if(item[1] == '&'):
+                    item[1] = '&amp;'
+
+                self.xmlCompiled.append('<' + tokenTypeXML[item[0]] + '> ' + item[1] + ' </' + tokenTypeXML[item[0]] + '>')
 
         with open(outputPath, 'w') as c:
             for item in self.xmlCompiled:
                 c.write(item + '\n')
-
-        # dom = md.parse(outputPath)
-        # self.xmlCompiled = dom.toprettyxml()
-
-        # with open(outputPath, 'w') as s:
-        #    s.write(self.xmlCompiled)
 
 class Tokenizer(Analyzer):
 
@@ -685,10 +704,56 @@ class CompilationEngine(Analyzer):
 
         self.compiledJack.append('/expressionList')
 
-vmMaker = Analyzer()
-vmMaker.tokenize()
-vmMaker.compile()
-vmMaker._outputTokensAsXML()
-vmMaker._outputCompiledAsXML()
+def singleInArg():
+
+    vmMaker = Analyzer()
+
+    with open(sys.argv[1], 'r') as j:
+        vmMaker.sourceJack = j.readlines()
+
+    vmMaker.outputPath = sys.argv[1]
+    vmMaker._getJack()
+    vmMaker.tokenize()
+    vmMaker.compile()
+    vmMaker._outputTokensAsXML()
+    vmMaker._outputCompiledAsXML()
+
+def checkJackFile(fileName):
+    if(fileName.find('.jack') == -1):
+        return False
+    return True
+
+def multiInArg():
+
+    dirContents = os.listdir(sys.argv[1])
+    jackFileNames = list(filter(checkJackFile, dirContents))
+
+    for file in jackFileNames:
+        vmMaker = Analyzer()
+
+        with open(sys.argv[1] + file, 'r') as j:
+            vmMaker.sourceJack = j.readlines()
+
+        vmMaker.outputPath = sys.argv[1] + file
+        vmMaker._getJack()
+        vmMaker.tokenize()
+        vmMaker.compile()
+        vmMaker._outputTokensAsXML()
+        vmMaker._outputCompiledAsXML()
+
+def run():
+    inArg = sys.argv[1]
+    if(os.path.isfile(inArg) == True):
+        singleInArg()
+    else:
+        multiInArg()
+
+run()
+
+# vmMaker = Analyzer()
+# vmMaker.tokenize()
+# vmMaker.compile()
+# vmMaker._outputTokensAsXML()
+# vmMaker._outputCompiledAsXML()
 
 print("I'm done :)")
