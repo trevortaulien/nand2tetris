@@ -11,6 +11,8 @@ call Screen.init 0
 pop temp 0
 call Main.main 0
 pop temp 0
+call Sys.halt 0
+pop temp 0
 push constant 0
 return
 function Sys.halt 1
