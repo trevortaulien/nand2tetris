@@ -117,10 +117,11 @@ class Parser(VMTranslator):
     def _removeComments(self, lines):
         noCommentsVM = []
         for line in lines:
-            if((line[0] == '/') & (line[1] == '/')):
-                pass
-            else:
-                noCommentsVM.append(line)
+            if(len(line) >= 2):
+                if((line[0] == '/') & (line[1] == '/')):
+                    pass
+                else:
+                    noCommentsVM.append(line)
         return noCommentsVM
 
     def _removeWhitespace(self, lines):
@@ -146,6 +147,8 @@ class Parser(VMTranslator):
         noEOL = []
         for line in lines:
             line = line.replace('\r\n', '')
+            line = line.replace('\n', '')
+            line = line.replace('\r', '')
             noEOL.append(line)
 
         return noEOL
