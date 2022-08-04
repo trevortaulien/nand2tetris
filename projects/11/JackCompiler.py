@@ -1124,10 +1124,10 @@ def multiInArg():
     for file in jackFileNames:
         vmMaker = Analyzer()
 
-        with open(sys.argv[1] + file, 'r') as j:
+        with open(sys.argv[1] + '/' + file, 'r') as j:
             vmMaker.sourceJack = j.readlines()
 
-        vmMaker.outputPath = sys.argv[1] + file
+        vmMaker.outputPath = sys.argv[1] + '/' + file
         vmMaker._getJack()
         vmMaker.tokenize()
         vmMaker.compile()
