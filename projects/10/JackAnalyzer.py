@@ -5,15 +5,21 @@ import sys
 
 class Analyzer:
 
-    sourceJack = []
-    tokenizedJack = []
-    compiledJack = []
-    xmlTokens = []
-    xmlCompiled = []
-    outputPath = 'Replace Me'
+    # sourceJack = []
+    # tokenizedJack = []
+    # compiledJack = []
+    # xmlTokens = []
+    # xmlCompiled = []
+    # outputPath = 'Replace Me'
 
     def __init__(self):
         # self._getJack()
+        self.sourceJack = []
+        self.tokenizedJack = []
+        self.compiledJack = []
+        self.xmlTokens = []
+        self.xmlCompiled = []
+        self.outputPath = 'Replace Me'
         pass
 
     def tokenize(self):
@@ -274,11 +280,13 @@ class Tokenizer(Analyzer):
 
 class CompilationEngine(Analyzer):
 
-    index = 0
-    compiledJack = []
+    # index = 0
+    # compiledJack = []
 
     def __init__(self, tokenizedJack):
         self.tokens = tokenizedJack
+        self.index = 0
+        self.compiledJack = []
 
     def startEngine(self):
         self._compileClass()
@@ -731,10 +739,10 @@ def multiInArg():
     for file in jackFileNames:
         vmMaker = Analyzer()
 
-        with open(sys.argv[1] + file, 'r') as j:
+        with open(sys.argv[1] + '/' + file, 'r') as j:
             vmMaker.sourceJack = j.readlines()
 
-        vmMaker.outputPath = sys.argv[1] + file
+        vmMaker.outputPath = sys.argv[1] + '/'  + file
         vmMaker._getJack()
         vmMaker.tokenize()
         vmMaker.compile()
