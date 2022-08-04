@@ -1,0 +1,91 @@
+/** Hanoi Game Graphic Control*/
+class Graphic {
+   field int rodHeight, rodWidth;
+   field int diskHeight, baseWidth;
+   field Array rods;
+   /** constructor */
+   constructor Graphic new (int _rodHeight, int _rodWidth) {
+      // initialize attribute of rods
+      let rodHeight = _rodHeight;
+      let rodWidth = _rodWidth;
+      // initialize attribute of disk
+      let diskHeight = 10;
+      let baseWidth = 20;  // use base to calculate different disk width
+      // initialize rods position 85 255 425
+      let rods = Array.new(3);
+      let rods[0] = 85;
+      let rods[1] = 255;
+      let rods[2] = 425;     
+      return this; 
+   }
+   /** update game board*/
+   method void updateScreen(Array states) {
+      var int i, n;
+      let i = 0;
+      let n = 3;
+      // clean rod ares
+      do Screen.setColor(false);
+      do Screen.drawRectangle(0, 128, 511, 255);
+      // redraw game state
+      do drawRods();
+      while (i < n) {
+         do drawDisk(i + 1, states[i]);
+         let i = i + 1;
+      }
+      return;
+   }
+   /** Draw three rods */
+   method void drawRods() {
+      var int i, n;
+      let n = 3;
+      let i = 0;
+      do Screen.setColor(true);
+      while (i < n) {
+        do Screen.drawRectangle(rods[i] - (rodWidth / 2),
+                    255 - rodHeight,
+                    rods[i] + (rodWidth / 2),
+                    255);
+        let i = i + 1;
+      }
+      return;
+   }
+
+   /** 
+     * use 3 bits parameter state to draw disks at rod i
+     * MSB represents large disk and LSB represents small disk
+     * use a bitmask to check each bit and determine wether draw or not
+     */
+   method void drawDisk(int i, int state) {
+      var int x1, x2;
+      var int bitmask, level, size;
+      let bitmask = 4;  // 0b100
+      let level = 1;
+      let size = 3;
+      while (bitmask > 0) {
+         if (state & bitmask) {
+            let x1 = rods[i-1] - (diskWidth(size) / 2);
+            let x2 = rods[i-1] + (diskWidth(size) / 2);
+            do Graphic.drawRect(x1, 255 - (level-1 * diskHeight) - diskHeight,
+                                    x2, 255 - (level-1 * diskHeight));
+            let level = level + 1;
+         }
+         let bitmask = bitmask / 2;
+         let size = size - 1;
+      }
+      return;
+   }   
+   /** calculate diskwidth from base width */
+   method int diskWidth(int i) {
+      return baseWidth + ((i - 1) * 68);
+   }
+   /** draw a white rectangle, use it to draw disk*/
+   function void drawRect(int x1, int y1, int x2, int y2) {
+      do Screen.setColor(true);
+      do Screen.drawRectangle(x1, y1, x2, y2);
+
+      do Screen.setColor(false);
+      do Screen.drawRectangle(x1 + 1, y1 + 1, x2 - 1, y2 - 1);
+
+      return;
+   }      
+}

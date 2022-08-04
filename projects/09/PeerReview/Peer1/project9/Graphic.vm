@@ -1,0 +1,261 @@
+function Graphic.new 0
+push constant 5
+call Memory.alloc 1
+pop pointer 0
+push argument 0
+pop this 0
+push argument 1
+pop this 1
+push constant 10
+pop this 2
+push constant 20
+pop this 3
+push constant 3
+call Array.new 1
+pop this 4
+push constant 0
+push this 4
+add
+push constant 85
+pop temp 0
+pop pointer 1
+push temp 0
+pop that 0
+push constant 1
+push this 4
+add
+push constant 255
+pop temp 0
+pop pointer 1
+push temp 0
+pop that 0
+push constant 2
+push this 4
+add
+push constant 425
+pop temp 0
+pop pointer 1
+push temp 0
+pop that 0
+push pointer 0
+return
+function Graphic.updateScreen 2
+push argument 0
+pop pointer 0
+push constant 0
+pop local 0
+push constant 3
+pop local 1
+push constant 0
+call Screen.setColor 1
+pop temp 0
+push constant 0
+push constant 128
+push constant 511
+push constant 255
+call Screen.drawRectangle 4
+pop temp 0
+push pointer 0
+call Graphic.drawRods 1
+pop temp 0
+label WHILE_EXP0
+push local 0
+push local 1
+lt
+not
+if-goto WHILE_END0
+push pointer 0
+push local 0
+push constant 1
+add
+push local 0
+push argument 1
+add
+pop pointer 1
+push that 0
+call Graphic.drawDisk 3
+pop temp 0
+push local 0
+push constant 1
+add
+pop local 0
+goto WHILE_EXP0
+label WHILE_END0
+push constant 0
+return
+function Graphic.drawRods 2
+push argument 0
+pop pointer 0
+push constant 3
+pop local 1
+push constant 0
+pop local 0
+push constant 0
+not
+call Screen.setColor 1
+pop temp 0
+label WHILE_EXP0
+push local 0
+push local 1
+lt
+not
+if-goto WHILE_END0
+push local 0
+push this 4
+add
+pop pointer 1
+push that 0
+push this 1
+push constant 2
+call Math.divide 2
+sub
+push constant 255
+push this 0
+sub
+push local 0
+push this 4
+add
+pop pointer 1
+push that 0
+push this 1
+push constant 2
+call Math.divide 2
+add
+push constant 255
+call Screen.drawRectangle 4
+pop temp 0
+push local 0
+push constant 1
+add
+pop local 0
+goto WHILE_EXP0
+label WHILE_END0
+push constant 0
+return
+function Graphic.drawDisk 5
+push argument 0
+pop pointer 0
+push constant 4
+pop local 2
+push constant 1
+pop local 3
+push constant 3
+pop local 4
+label WHILE_EXP0
+push local 2
+push constant 0
+gt
+not
+if-goto WHILE_END0
+push argument 2
+push local 2
+and
+if-goto IF_TRUE0
+goto IF_FALSE0
+label IF_TRUE0
+push argument 1
+push constant 1
+sub
+push this 4
+add
+pop pointer 1
+push that 0
+push pointer 0
+push local 4
+call Graphic.diskWidth 2
+push constant 2
+call Math.divide 2
+sub
+pop local 0
+push argument 1
+push constant 1
+sub
+push this 4
+add
+pop pointer 1
+push that 0
+push pointer 0
+push local 4
+call Graphic.diskWidth 2
+push constant 2
+call Math.divide 2
+add
+pop local 1
+push local 0
+push constant 255
+push local 3
+push constant 1
+sub
+push this 2
+call Math.multiply 2
+sub
+push this 2
+sub
+push local 1
+push constant 255
+push local 3
+push constant 1
+sub
+push this 2
+call Math.multiply 2
+sub
+call Graphic.drawRect 4
+pop temp 0
+push local 3
+push constant 1
+add
+pop local 3
+label IF_FALSE0
+push local 2
+push constant 2
+call Math.divide 2
+pop local 2
+push local 4
+push constant 1
+sub
+pop local 4
+goto WHILE_EXP0
+label WHILE_END0
+push constant 0
+return
+function Graphic.diskWidth 0
+push argument 0
+pop pointer 0
+push this 3
+push argument 1
+push constant 1
+sub
+push constant 68
+call Math.multiply 2
+add
+return
+function Graphic.drawRect 0
+push constant 0
+not
+call Screen.setColor 1
+pop temp 0
+push argument 0
+push argument 1
+push argument 2
+push argument 3
+call Screen.drawRectangle 4
+pop temp 0
+push constant 0
+call Screen.setColor 1
+pop temp 0
+push argument 0
+push constant 1
+add
+push argument 1
+push constant 1
+add
+push argument 2
+push constant 1
+sub
+push argument 3
+push constant 1
+sub
+call Screen.drawRectangle 4
+pop temp 0
+push constant 0
+return

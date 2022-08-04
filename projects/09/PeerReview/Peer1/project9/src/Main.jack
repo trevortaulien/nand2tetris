@@ -1,0 +1,11 @@
+/** Drive Hanoi game */
+class Main {
+   function void main() {
+      var Hanoi Game;
+      // set rodHeight and rodWidth, these parameter will generate diskWidth and diskHeight
+      let Game = Hanoi.new(40, 10);  
+      do Game.run();
+      do Output.printString("Win!");
+      return;
+   }
+}

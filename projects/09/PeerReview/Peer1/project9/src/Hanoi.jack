@@ -1,0 +1,171 @@
+/** Hanoi game */
+class Hanoi {
+   field Graphic painter;
+   field Array states;
+   field boolean win;
+   field char key;
+   field boolean selected;
+   field int disk;
+
+   constructor Hanoi new (int _rodHeight, int _rodWidth) {
+      let painter = Graphic.new(_rodHeight, _rodWidth);
+      // initialize diks state at each rod
+      let states = Array.new(3);
+      /*
+       * states contain 3 bits value, there are some examples
+       * to show how to represent disk at rod.
+       * decimal value 4, 2, 1 represent large, medium, small
+       * if use binary representation 4, 2, 1 become to 0b100, 0b010, 0b001
+       * and decimal value 7 become to 0b111, it means all disks are there.
+       * e.g. decimal 3 = 0b011 (medium and small), decimal 5 = 0b101 (large and small)
+       */
+      let states[0] = 7;
+      let states[1] = 0;
+      let states[2] = 0;
+      // a flag to check game complete?
+      let win = false;
+      let key = 0;
+      let disk = 0;
+      return this; 
+   }
+   /** start the game and run untill Hanoi is solved */
+   method void run() {
+      do Hanoi.setInfo();
+      while (~win) {
+        do painter.updateScreen(states);
+        do updateStatus(disk);
+        while (key = 0) {
+			let key = Keyboard.keyPressed();
+        }
+        if (~selected) {
+            if (key = 90) {
+                let disk = pop(0, states);  // 'Z'
+            }
+            if (key = 88) {
+                let disk = pop(1, states);  // 'X'
+            }
+            if (key = 67) {
+                let disk = pop(2, states);  // 'C'
+            }
+            if (disk > 0) {
+                let selected = true;
+            }
+        }
+        else {
+            if (key = 90) {
+                let disk = push(0, states, disk);  // 'Z'
+            }
+            if (key = 88) {
+                let disk = push(1, states, disk);  // 'X'
+            }
+            if (key = 67) {
+                let disk = push(2, states, disk);  // 'C'
+            }
+            if (disk = 0) {
+                let selected = false;
+            }        
+        }
+        // all disks are moved to rod 3
+        if (states[2] = 7) {
+            let win = true;
+            do painter.updateScreen(states);
+        }
+        let key = 0;
+        do clearStatus();
+        do Sys.wait(200);
+      } 
+      return;
+   }
+   /** basic game information for user */
+   function void setInfo() {
+      do Output.printString("Welcome to Hanoi Game!");
+      do Output.println();
+      do Output.printString("You can select a disk from rod's top.");
+      do Output.println();
+      do Output.printString("If a disk is selected, then choose a rod to push it.");
+      do Output.println();
+      do Output.printString("Press z, x and c to choose rod1, rod2 and rod3.");
+      do Output.println();
+      do Output.printString("Status: ");
+      return;
+   }
+
+   /** pop a disk from rod if the operation is valid, else do nothing*/
+   method int pop(int i, Array states) {
+      var int bitmask;
+      var boolean flag;
+      let bitmask = 1;
+      let flag = false;
+      while ((bitmask < 8) & (~flag)) {
+        if ((states[i] & bitmask) > 0) {
+            let flag = true;
+        }
+        else {
+            let bitmask = bitmask * 2;
+        }
+      }
+      if (bitmask = 4) {
+        let states[i] = states[i] & 3; // 0b011
+      }
+      if (bitmask = 2) {
+        let states[i] = states[i] & 5; //0b101
+      }
+      if (bitmask = 1) {
+        let states[i] = states[i] & 6; //0b110
+      }
+      if (bitmask = 8) {
+        return 0;
+      }
+      return bitmask;
+   }
+
+   /** push a disk to rod, if the operation is valid, else do nothing */
+   method int push(int i, Array states, int disk) {
+      var int bitmask, top;
+      var boolean flag;
+      let bitmask = 1;
+      let flag = false;
+      while ((bitmask < 8) & (~flag)) {
+        if ((states[i] & bitmask) > 0) {
+            let flag = true;
+        }
+        else {
+            let bitmask = bitmask * 2;
+        }
+      }      
+      let top = bitmask;
+      if (top > disk) {
+        let states[i] = states[i] | disk;
+        let disk = 0;
+      }
+      return disk;
+   }
+   /** status can help user to check which disk is selected */
+   method void updateStatus(int disk) {
+      if (disk = 4) {
+        do Output.printString("large disk selected ");
+      }
+      if (disk = 2) {
+        do Output.printString("medium disk selected"); 
+      }
+      if (disk = 1) {
+        do Output.printString("small disk selected ");
+      }
+      if (disk = 0) {
+        do Output.printString("No disk selected    ");
+      }
+      return;
+   }
+
+   /** reset cursor to start position of status */
+   method void clearStatus() {
+      var int i, n;
+      let i = 0;
+      let n = 20;
+      while (i < n) {
+        do Output.backSpace();
+        let i = i + 1;
+      }
+      return;
+   }
+}

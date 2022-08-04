@@ -1,0 +1,97 @@
+/** Represents a linked Queue of integers with a Queue interface. */
+class Queue {
+    field int data;          // a Queue consists of a data field,
+    field Queue next;         // followed by a Queue
+    field int length;
+
+    /* Creates a Queue. */
+    constructor Queue new() {
+        let data = 0;
+        let next = null;
+        let length = 0;
+        return this;
+    }
+
+    /** Accessors. */
+    method int getData() { return data; }
+    method int getNext() { return next; }
+    method int getLength() { return length; }
+    method void setData(int item) { let data = item; return; }
+    method void setNext(Queue q) { let next = q; return; }
+
+    method void pushBack(int item) {
+        var int i;
+        var Queue current;
+        var Queue newNode;
+
+        if (length = 0) {
+            let data = item;
+            let length = 1;
+        } else {
+            let current = this;
+            // find the end of the Queue
+            let i = 1;
+            while (i < length) {
+                let current = current.getNext();
+                let i = i + 1;
+            }
+            let newNode = Queue.new();
+            do newNode.setData(item);
+            do current.setNext(newNode);
+            let length = length + 1;
+        }
+        return;
+    }
+
+    method int popFront() {
+        var Queue current;
+        var int item;
+        let current = this;
+        let item = getData();
+        let current = getNext();
+        if (length > 1) {
+            let data = current.getData();
+            if (length > 2) {
+                let next = current.getNext();
+            } else {
+                let next = null;
+            }
+        } else {
+            let data = 0;
+            let next = null;
+        }
+        let length = length - 1;
+        return item;
+    }
+
+    /** Prints this Queue. */
+    method void print() {
+        var Queue current;    // initializes current to the first item
+        let current = this;  // of this Queue
+        if (length < 1) {
+            do Output.printString("(empty)");
+        } else {
+            while (~(current = null)) {
+                do Output.printInt(current.getData());
+                do Output.printChar(32); // prints a space
+                let current = current.getNext();
+            }
+        }
+        
+        do Output.println();
+        return;
+    }
+
+    /** Disposes this Queue by recursively disposing its tail. */
+    method void dispose() {
+        if (~(next = null)) {
+            do next.dispose();
+        }
+        // Uses an OS routine to recycle this object.
+        do Memory.deAlloc(this);
+        return;
+    }
+
+    // More Queue processing methods can come here.
+
+}

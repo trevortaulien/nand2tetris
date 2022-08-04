@@ -1,0 +1,80 @@
+class Sieve {
+    field Queue numbers;
+    field Queue primes;
+
+    constructor Sieve new() {
+	    do initializeQueues();
+        return this;
+    }
+
+    method int mod(int a, int b) {
+        return a - (b * (a/b));
+    }
+
+    method void initializeQueues() {
+	    let primes = Queue.new();
+	    let numbers = Queue.new();
+        return;
+    }
+
+    method void computeTo(int n) {
+        var int i;
+        var int p;
+        var Queue temp;
+        var int num;
+        var int sqrt;
+        var int numbersLength;
+        var boolean loop;
+        var int modresult;
+        let sqrt = Math.sqrt(n);
+	    //reset queues to empty
+	    if (n < 2) {
+	        do Output.printString("n must not be less than 2");
+            do Output.println();
+            return;
+	    }
+	    do initializeQueues();
+        // fill the numbers queue
+        let i = 2;
+	    while (i < (n + 1)) {
+	        do numbers.pushBack(i);
+            let i = i + 1;
+	    }
+
+        let loop = true;
+        while (loop) {
+            //Obtain the next prime p by removing the first value in queue of numbers
+            let p = numbers.popFront();
+            do primes.pushBack(p);
+            let temp = Queue.new();
+            let i = 0;
+            //let numbersLength = numbers.getLength();
+            while (numbers.getLength() > 0) {
+                let num = numbers.popFront();
+                //go through the queue of numbers, eliminating numbers divisible by p
+                let modresult = mod(num, p);
+                if (modresult > 0) {
+                    do temp.pushBack(num);
+                }
+                let i = i + 1;
+            }
+            let numbers = temp;
+            if (p > sqrt) {
+                let loop = false;
+            }
+        }
+        // remaining numbers are all prime, add them to the primes queue
+        while (numbers.getLength() > 0) {
+            let p = numbers.popFront();
+            do primes.pushBack(p);
+        }
+        return;
+    }
+
+    method void reportResults() {
+        do Output.printString("Primes:");
+        do primes.print();
+	    do Output.println();
+        return;
+    }
+}

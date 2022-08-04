@@ -1,0 +1,22 @@
+function Main.main 1
+push constant 40
+push constant 10
+call Hanoi.new 2
+pop local 0
+push local 0
+call Hanoi.run 1
+pop temp 0
+push constant 4
+call String.new 1
+push constant 87
+call String.appendChar 2
+push constant 105
+call String.appendChar 2
+push constant 110
+call String.appendChar 2
+push constant 33
+call String.appendChar 2
+call Output.printString 1
+pop temp 0
+push constant 0
+return

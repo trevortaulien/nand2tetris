@@ -1,0 +1,22 @@
+class Main {
+    /**
+     Sieve of Erastothenes.
+     Reports all prime numbers between 2 and a user-specified value.
+     */
+    function void main() {
+        var int number;
+        var Sieve mySieve;
+
+        let mySieve = Sieve.new();
+
+        let number = 1;
+        while (number > 0) {
+            let number = Keyboard.readInt("Maximum n to compute (0 to quit)? ");
+            if (number > 0) {
+                do mySieve.computeTo(number);
+                do mySieve.reportResults();
+            }
+        }
+        return;
+    }
+}

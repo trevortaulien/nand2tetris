@@ -1,0 +1,33 @@
+// This file is part of www.nand2tetris.org
+// and the book "The Elements of Computing Systems"
+// by Nisan and Schocken, MIT Press.
+// File name: projects/11/Pong/Main.jack
+
+/**
+ * The main class of the Pong game.
+ */
+ 
+/** Demonstrates the use of the List abstraction. */
+
+class Main {
+
+    /** Initializes a Pong game and starts running it. */
+    function void main() {
+        var PongGame game;
+		var PongGame2 game2;
+		var PongGame3 game3;
+        do PongGame.newInstance();
+        let game = PongGame.getInstance();
+        do game.run();
+        do game.dispose();	
+        do PongGame2.newInstance();
+        let game2 = PongGame2.getInstance();
+        do game2.run();
+        do game2.dispose();
+        do PongGame3.newInstance();
+        let game3 = PongGame3.getInstance();
+        do game3.run();
+        do game3.dispose();			
+        return;
+    }
+}
